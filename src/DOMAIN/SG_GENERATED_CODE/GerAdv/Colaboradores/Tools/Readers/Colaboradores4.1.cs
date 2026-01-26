@@ -33,8 +33,6 @@ LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBClientesDicI
 LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Cidade}]
 LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
 LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.CampoCodigo}]=[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}]
-LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
-LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
  
                    {cWhere}
                    {orderQuery}

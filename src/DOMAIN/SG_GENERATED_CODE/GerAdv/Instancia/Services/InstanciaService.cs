@@ -4,7 +4,7 @@
 // Tabela:Instancia
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInstanciaFactory instanciaFactory, IInstanciaReader reader, IInstanciaValidation validation, IInstanciaWriter writer, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterInstancia> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IInstanciaService, IDisposable
+public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInstanciaFactory instanciaFactory, IInstanciaReader reader, IInstanciaValidation validation, IInstanciaWriter writer, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterInstancia> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IInstanciaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -22,8 +22,6 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
     private readonly IAcaoReader acaoReader = acaoReader;
     private readonly IForoReader foroReader = foroReader;
     private readonly ITipoRecursoReader tiporecursoReader = tiporecursoReader;
-    private readonly INENotasService nenotasService = nenotasService;
-    private readonly IProSucumbenciaService prosucumbenciaService = prosucumbenciaService;
     private readonly ITribunalService tribunalService = tribunalService;
     public async Task<IEnumerable<InstanciaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterInstancia filtro, [FromRoute, Required] string uri)
     {
@@ -313,7 +311,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         {
             InstanciaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             InstanciaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, nenotasService, prosucumbenciaService, tribunalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

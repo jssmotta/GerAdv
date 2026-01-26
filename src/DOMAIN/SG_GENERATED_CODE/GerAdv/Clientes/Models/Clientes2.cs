@@ -18,18 +18,6 @@ namespace MenphisSI.GerAdv.Models
         public int Cidade { get; set; }
 
         /// <summary>
-        /// RegimeTributacao - cliRegimeTributacao  
-        /// </summary>
-        [JsonPropertyName("regimetributacao")]
-        public int RegimeTributacao { get; set; }
-
-        /// <summary>
-        /// EnquadramentoEmpresa - cliEnquadramentoEmpresa  
-        /// </summary>
-        [JsonPropertyName("enquadramentoempresa")]
-        public int EnquadramentoEmpresa { get; set; }
-
-        /// <summary>
         /// Empresa - cliEmpresa  
         /// </summary>
         [JsonPropertyName("empresa")]
@@ -247,6 +235,18 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("rgoexpeditor")]
         public string RGOExpeditor { get; set; } = "";
+
+        /// <summary>
+        /// RegimeTributacao - cliRegimeTributacao  
+        /// </summary>
+        [JsonPropertyName("regimetributacao")]
+        public int RegimeTributacao { get; set; }
+
+        /// <summary>
+        /// EnquadramentoEmpresa - cliEnquadramentoEmpresa  
+        /// </summary>
+        [JsonPropertyName("enquadramentoempresa")]
+        public int EnquadramentoEmpresa { get; set; }
 
         /// <summary>
         /// ReportECBOnly - cliReportECBOnly  
@@ -314,18 +314,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Cidade { get; set; }
 
         /// <summary>
-        /// RegimeTributacao - cliRegimeTributacao  
-        /// </summary>
-        [JsonPropertyName("regimetributacao")]
-        public int RegimeTributacao { get; set; }
-
-        /// <summary>
-        /// EnquadramentoEmpresa - cliEnquadramentoEmpresa  
-        /// </summary>
-        [JsonPropertyName("enquadramentoempresa")]
-        public int EnquadramentoEmpresa { get; set; }
-
-        /// <summary>
         /// Empresa - cliEmpresa  
         /// </summary>
         [JsonPropertyName("empresa")]
@@ -545,6 +533,18 @@ namespace MenphisSI.GerAdv.Models.All
         public string RGOExpeditor { get; set; } = "";
 
         /// <summary>
+        /// RegimeTributacao - cliRegimeTributacao  
+        /// </summary>
+        [JsonPropertyName("regimetributacao")]
+        public int RegimeTributacao { get; set; }
+
+        /// <summary>
+        /// EnquadramentoEmpresa - cliEnquadramentoEmpresa  
+        /// </summary>
+        [JsonPropertyName("enquadramentoempresa")]
+        public int EnquadramentoEmpresa { get; set; }
+
+        /// <summary>
         /// ReportECBOnly - cliReportECBOnly  
         /// </summary>
         [JsonPropertyName("reportecbonly")]
@@ -594,11 +594,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;
-
-        [JsonPropertyName("nomeregimetributacao")]
-        public string NomeRegimeTributacao { get; set; } = string.Empty;
-
-        [JsonPropertyName("nomeenquadramentoempresa")]
-        public string NomeEnquadramentoEmpresa { get; set; } = string.Empty;
     }
 }

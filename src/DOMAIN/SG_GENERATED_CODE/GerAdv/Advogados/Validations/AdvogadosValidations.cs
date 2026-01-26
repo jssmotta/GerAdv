@@ -7,12 +7,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAdvogadosValidation
 {
     Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class AdvogadosValidation : IAdvogadosValidation
 {
-    public async Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -22,18 +22,6 @@ public class AdvogadosValidation : IAdvogadosValidation
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Compromisso associados a ele.");
-        var contratosExists1 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Advogado = id ?? default }, uri);
-        if (contratosExists1 != null && contratosExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Contratos associados a ele.");
-        var horastrabExists2 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Advogado = id ?? default }, uri);
-        if (horastrabExists2 != null && horastrabExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Horas Trab associados a ele.");
-        var parceriaprocExists3 = await parceriaprocService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParceriaProc { Advogado = id ?? default }, uri);
-        if (parceriaprocExists3 != null && parceriaprocExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Parceria Proc associados a ele.");
-        var proprocuradoresExists4 = await proprocuradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProProcuradores { Advogado = id ?? default }, uri);
-        if (proprocuradoresExists4 != null && proprocuradoresExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Pro Procuradores associados a ele.");
         return true;
     }
 

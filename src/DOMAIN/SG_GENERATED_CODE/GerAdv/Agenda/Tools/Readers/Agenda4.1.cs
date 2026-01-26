@@ -31,8 +31,7 @@ public partial class AgendaReader
 [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],
 [{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}],
 [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],
-[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],
-[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Nome}]
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBAgenda.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cidade}]
 LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
@@ -44,13 +43,9 @@ LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBFunciona
 LEFT JOIN {DBFuncaoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.CampoCodigo}]=[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Funcao}]
 LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.TipoCompromisso}]
 LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cliente}]
-LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
-LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
 LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}]
 LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}]
 LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Usuario}]
-LEFT JOIN {DBPrepostosDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Preposto}]
-LEFT JOIN {DBSetorDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBSetorDicInfo.PTabelaNome}].[{DBSetorDicInfo.CampoCodigo}]=[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Setor}]
  
                    {cWhere}
                    {orderQuery}

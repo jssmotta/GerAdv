@@ -4,7 +4,7 @@
 // Tabela:Funcionarios
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IHorasTrabService horastrabService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterFuncionarios> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IFuncionariosService, IDisposable
+public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterFuncionarios> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IFuncionariosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -23,7 +23,6 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
     private readonly IFuncaoReader funcaoReader = funcaoReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IHorasTrabService horastrabService = horastrabService;
     public async Task<IEnumerable<FuncionariosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterFuncionarios filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -312,7 +311,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         {
             FuncionariosDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             FuncionariosDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, horastrabService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

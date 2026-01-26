@@ -424,22 +424,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
         }
 
-        try
-        {
-            clientes.NomeRegimeTributacao = dr[DBRegimeTributacaoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            clientes.NomeEnquadramentoEmpresa = dr[DBEnquadramentoEmpresaDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return clientes;
     }
 
@@ -518,22 +502,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         try
         {
             clientes.NomeCidade = dr[DBCidadeDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            clientes.NomeRegimeTributacao = dr[DBRegimeTributacaoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            clientes.NomeEnquadramentoEmpresa = dr[DBEnquadramentoEmpresaDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

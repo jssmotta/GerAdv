@@ -44,7 +44,7 @@ public partial class UsersController(IUserService userService) : ControllerBase
         {
             return BadRequest(new { message = "Error setting password, operator" });
         }
-        if (await SGHelpers.IsSenhaFraca(model.Password.DecodeBase64(), dbOper!.Nome))
+        if (await SGHelpers.IsSenhaFracAsync(model.Password.DecodeBase64(), dbOper!.Nome))
         {
             return BadRequest(new { message = "Weak passord" });
         }

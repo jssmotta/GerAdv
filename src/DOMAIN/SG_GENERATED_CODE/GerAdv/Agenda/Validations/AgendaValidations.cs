@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IAgendaValidation
 {
-    Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
     Task<bool> CanDelete(int? id, IAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
@@ -29,7 +29,7 @@ public class AgendaValidation : IAgendaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -162,16 +162,6 @@ public class AgendaValidation : IAgendaValidation
             if (regOperador == null || regOperador.Id != reg.Usuario)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");
-            }
-        }
-
-        // Prepostos
-        if (!reg.Preposto.IsEmptyIDNumber())
-        {
-            var regPrepostos = await prepostosReader.ReadAsync(reg.Preposto, oCnn);
-            if (regPrepostos == null || regPrepostos.Id != reg.Preposto)
-            {
-                throw new SGValidationException($"Prepostos não encontrado ({regPrepostos?.Id}).");
             }
         }
 

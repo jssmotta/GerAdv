@@ -496,14 +496,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
         {
         }
 
-        try
-        {
-            agenda.NomePrepostos = dr[DBPrepostosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return agenda;
     }
 
@@ -642,14 +634,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
         try
         {
             agenda.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            agenda.NomePrepostos = dr[DBPrepostosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

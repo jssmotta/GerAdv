@@ -4,7 +4,7 @@
 // Tabela:Oponentes
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterOponentes> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IOponentesService, IDisposable
+public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterOponentes> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IOponentesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,8 +20,6 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
     private readonly IOponentesValidation validation = validation;
     private readonly IOponentesWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
-    private readonly IOponentesRepLegalService oponentesreplegalService = oponentesreplegalService;
     public async Task<IEnumerable<OponentesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOponentes filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -310,7 +308,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         {
             OponentesDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             OponentesDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, gruposempresasService, oponentesreplegalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

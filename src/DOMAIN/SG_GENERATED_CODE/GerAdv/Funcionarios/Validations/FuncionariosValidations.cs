@@ -7,12 +7,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IFuncionariosValidation
 {
     Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class FuncionariosValidation : IFuncionariosValidation
 {
-    public async Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -22,9 +22,6 @@ public class FuncionariosValidation : IFuncionariosValidation
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Compromisso associados a ele.");
-        var horastrabExists1 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Funcionario = id ?? default }, uri);
-        if (horastrabExists1 != null && horastrabExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Horas Trab associados a ele.");
         return true;
     }
 

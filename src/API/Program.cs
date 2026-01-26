@@ -9,12 +9,9 @@ O fluxo completo é:
 
  */
 
-using API.Bulkhead;
 using API.OpenTelemetry;
 using API.Resilience;
-using API.Services;
 using API.Sistemas.Auditor;
-using DevToolApiInterface;
 using MenphisSI.BaseCommon.Controllers;
 using MenphisSI.BaseCommon.Helpers;
 using MenphisSI.BaseCommon.Metrics;
@@ -113,6 +110,7 @@ try
         .GetSection(ResilienceSettings.SectionName)
         .Get<ResilienceSettings>() ?? new ResilienceSettings();
 
+#if HAS_LCK
     // Configurar HttpClient Factory para DevToolsApi com políticas de resiliência
     builder.Services.AddHttpClient<IDevToolsApiClient, DevToolsApiClient>((sp, client) =>
     {
@@ -128,9 +126,11 @@ try
         MaxConnectionsPerServer = 10,
         AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
     });
+    builder.Services.AddScoped<ILoginValidationService, DevToolsLoginValidationService>();
+#endif
 
     // Registrar ILoginValidationService usando DevToolsApiClient
-    builder.Services.AddScoped<ILoginValidationService, DevToolsLoginValidationService>();
+
 
     // Configurar HttpClient para reCAPTCHA com políticas de resiliiência
     var reCaptchaResilienceSettings = new ResilienceSettings

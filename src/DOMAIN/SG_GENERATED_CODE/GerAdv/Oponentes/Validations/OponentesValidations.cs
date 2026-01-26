@@ -7,24 +7,18 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOponentesValidation
 {
     Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class OponentesValidation : IOponentesValidation
 {
-    public async Task<bool> CanDelete(int? id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gruposempresasExists0 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Oponente = id ?? default }, uri);
-        if (gruposempresasExists0 != null && gruposempresasExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Grupos Empresas associados a ele.");
-        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Oponente = id ?? default }, uri);
-        if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Oponentes Rep Legal associados a ele.");
         return true;
     }
 

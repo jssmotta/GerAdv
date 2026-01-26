@@ -4,7 +4,7 @@
 // Tabela:Clientes
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterClientes> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IClientesService, IDisposable
+public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IProDespesasService prodespesasService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterClientes> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IClientesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,22 +20,10 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IClientesValidation validation = validation;
     private readonly IClientesWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IRegimeTributacaoReader regimetributacaoReader = regimetributacaoReader;
-    private readonly IEnquadramentoEmpresaReader enquadramentoempresaReader = enquadramentoempresaReader;
     private readonly IAgendaService agendaService = agendaService;
     private readonly IClientesSociosService clientessociosService = clientessociosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
-    private readonly IContaCorrenteService contacorrenteService = contacorrenteService;
-    private readonly IContratosService contratosService = contratosService;
-    private readonly IDiario2Service diario2Service = diario2Service;
-    private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
-    private readonly IHonorariosDadosContratoService honorariosdadoscontratoService = honorariosdadoscontratoService;
-    private readonly IHorasTrabService horastrabService = horastrabService;
-    private readonly ILigacoesService ligacoesService = ligacoesService;
-    private readonly IOperadoresService operadoresService = operadoresService;
-    private readonly IPreClientesService preclientesService = preclientesService;
     private readonly IProDespesasService prodespesasService = prodespesasService;
-    private readonly IReuniaoService reuniaoService = reuniaoService;
     public async Task<IEnumerable<ClientesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterClientes filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -211,7 +199,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         {
             ClientesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
             ClientesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -272,7 +260,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         {
             ClientesDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
             ClientesDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -324,7 +312,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         {
             ClientesDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             ClientesDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, diario2Service, gruposempresasService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, prodespesasService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

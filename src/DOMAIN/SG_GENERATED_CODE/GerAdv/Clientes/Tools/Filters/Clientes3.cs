@@ -28,14 +28,6 @@ public partial record FilterClientes
     [Description("Filtro para a _tabela Cidade")]
     public FilterCidade? FilterCidade { get; set; } = new();
 
-    [JsonPropertyName("filterRegimeTributacao")]
-    [Description("Filtro para a _tabela RegimeTributacao")]
-    public FilterRegimeTributacao? FilterRegimeTributacao { get; set; } = new();
-
-    [JsonPropertyName("filterEnquadramentoEmpresa")]
-    [Description("Filtro para a _tabela EnquadramentoEmpresa")]
-    public FilterEnquadramentoEmpresa? FilterEnquadramentoEmpresa { get; set; } = new();
-
     [JsonPropertyName("logicalOperator")]
     [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;

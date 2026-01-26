@@ -76,8 +76,6 @@ NOMENCLATURAS DO SISTEMA:
 - Clientes = Paciente
 FILTROS ANINHADOS DISPONÍVEIS:
 - filterCidade: filtro específico para Cidade
-- filterRegimeTributacao: filtro específico para Regime Tributacao
-- filterEnquadramentoEmpresa: filtro específico para Enquadramento Empresa
 
 
 CHECKLIST ANTES DE RETORNAR O JSON:
@@ -93,26 +91,6 @@ CAMPOS filterCidade (Cidade):
 - nome: _nome ou descrição para Cidade;
 - uf: número ou IDs;
 - sigla: Sigla;
-Campos de Auditoria (detalhes no PromptAuditor):
-- dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
-- dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
-- quemcad, quemcad_end: ID do operador que cadastrou
-- quematu, quematu_end: ID do operador que atualizou
-- visto: 0=não, 1=sim, -2147483648=ambos
-         
-
-CAMPOS filterRegimeTributacao (Regime Tributacao):
-- nome: _nome ou descrição para Regime Tributacao;
-Campos de Auditoria (detalhes no PromptAuditor):
-- dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
-- dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
-- quemcad, quemcad_end: ID do operador que cadastrou
-- quematu, quematu_end: ID do operador que atualizou
-- visto: 0=não, 1=sim, -2147483648=ambos
-         
-
-CAMPOS filterEnquadramentoEmpresa (Enquadramento Empresa):
-- nome: _nome ou descrição para Enquadramento Empresa;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema

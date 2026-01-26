@@ -341,40 +341,8 @@ public partial class ServiceFilter
             parameters.AddRange(cidade?.parametros!);
         }
 
-        var regimetributacao = this.WFiltroRegimeTributacao(filtro.FilterRegimeTributacao);
-        if (regimetributacao?.parametros != null)
-        {
-            parameters.AddRange(regimetributacao?.parametros!);
-        }
-
-        var enquadramentoempresa = this.WFiltroEnquadramentoEmpresa(filtro.FilterEnquadramentoEmpresa);
-        if (enquadramentoempresa?.parametros != null)
-        {
-            parameters.AddRange(enquadramentoempresa?.parametros!);
-        }
-
         var cWhere = new StringBuilder();
         cWhere.Append(cidade?.where);
-        if (!string.IsNullOrWhiteSpace(regimetributacao?.where))
-        {
-            if (cWhere.Length > 0)
-            {
-                cWhere.Append(filtro.LogicalOperator);
-            }
-
-            cWhere.Append(regimetributacao?.where);
-        }
-
-        if (!string.IsNullOrWhiteSpace(enquadramentoempresa?.where))
-        {
-            if (cWhere.Length > 0)
-            {
-                cWhere.Append(filtro.LogicalOperator);
-            }
-
-            cWhere.Append(enquadramentoempresa?.where);
-        }
-
         if (!(filtro.QuemCad.IsEmptyX()) && filtro.QuemCad_end.IsEmptyX())
         {
             cWhere.Append(filtro.QuemCad.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.QuemCad}] = @{(DBClientesDicInfo.QuemCad)}");

@@ -1,12 +1,9 @@
-using DevToolApiInterface.HealthCheck;
 using Domain.Sistemas.Voice.Extensions;
 using MenphisSI.BaseCommon.UserController;
 using MenphisSI.HealthCheck;
-using MenphisSI.Shared.AI;
 using MenphisSI.Shared.Infrastructure.CheckDb;
 using MenphisSI.Shared.Infrastructure.HealthChecks;
 using MenphisSI.Shared.StartApp;
-using SecurityMiddleware;
 using AuditorService = Domain.BaseCommon.Auditor.AuditorService;
 
 namespace MenphisSI.SGSys.StartApp;
@@ -62,14 +59,17 @@ public static class AppSGStartup
         
         // Register basic health check services
         AppSettingsHealthCheckDefault.Add(builder);
-        
+
+#if HAS_LCK
         // Add custom health checks
         builder.Services.AddHealthChecks()
             // GeoDbHealthCheck optimized with Lazy Singleton (reduces ~16MB of memory)
             .AddGeoBlockingHealthCheck("Geo Ip-db")
             // ConnectionPool health check to monitor database connections
             .AddCheck<HealthCheckConnectionPoolService>("Connections pool", tags: ["database", "connections", "pool"]);
-    }
+#endif
+            }
+
 
     /// <summary>
     /// Configures APPSG health check endpoints
@@ -109,8 +109,10 @@ public static class AppSGStartup
     /// </summary>
     public static void ConfigurarMiddlewaresAppSG(WebApplication app)
     {
+#if HAS_LCK
         // Add geo-blocking middleware
         app.UseGeoBlockingWithForwardedHeaders();
+#endif
     }
 
     /// <summary>

@@ -390,4 +390,4 @@ terraform/
 **Gerado por**: SourceGenesys  
 **Projeto**: MenphisSI.GerAdv  
 **Ambiente**: dev  
-**Data**: 2026-01-22
+**Data**: 2026-01-26

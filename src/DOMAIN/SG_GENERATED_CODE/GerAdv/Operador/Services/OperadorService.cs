@@ -4,7 +4,7 @@
 // Tabela:Operador
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualAcessosService pontovirtualacessosService, ISMSAliceService smsaliceService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterOperador> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IOperadorService, IDisposable
+public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IAgendaService agendaService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterOperador> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IOperadorService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,12 +20,6 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
     private readonly IOperadorValidation validation = validation;
     private readonly IOperadorWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IDiario2Service diario2Service = diario2Service;
-    private readonly IGUTAtividadesService gutatividadesService = gutatividadesService;
-    private readonly IOperadorEMailPopupService operadoremailpopupService = operadoremailpopupService;
-    private readonly IOperadorGruposAgendaService operadorgruposagendaService = operadorgruposagendaService;
-    private readonly IPontoVirtualAcessosService pontovirtualacessosService = pontovirtualacessosService;
-    private readonly ISMSAliceService smsaliceService = smsaliceService;
     public async Task<IEnumerable<OperadorResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOperador filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -325,7 +319,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         {
             OperadorDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             OperadorDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, diario2Service, gutatividadesService, operadoremailpopupService, operadorgruposagendaService, pontovirtualacessosService, smsaliceService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

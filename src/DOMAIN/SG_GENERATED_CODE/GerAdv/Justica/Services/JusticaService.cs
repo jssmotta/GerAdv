@@ -4,7 +4,7 @@
 // Tabela:Justica
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterJustica> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IJusticaService, IDisposable
+public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterJustica> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IJusticaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -22,8 +22,6 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
     private readonly IAcaoService acaoService = acaoService;
     private readonly IAgendaService agendaService = agendaService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
-    private readonly IFaseService faseService = faseService;
-    private readonly IObjetosService objetosService = objetosService;
     private readonly ITipoRecursoService tiporecursoService = tiporecursoService;
     private readonly ITribunalService tribunalService = tribunalService;
     public async Task<IEnumerable<JusticaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterJustica filtro, [FromRoute, Required] string uri)
@@ -314,7 +312,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         {
             JusticaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             JusticaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, faseService, objetosService, tiporecursoService, tribunalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, tiporecursoService, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

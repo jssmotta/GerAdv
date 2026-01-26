@@ -60,12 +60,6 @@ namespace MenphisSI.GerAdv.Models
         public int Usuario { get; set; }
 
         /// <summary>
-        /// Preposto - agePreposto  
-        /// </summary>
-        [JsonPropertyName("preposto")]
-        public int Preposto { get; set; }
-
-        /// <summary>
         /// IDCOB - ageIDCOB  
         /// </summary>
         [JsonPropertyName("idcob")]
@@ -196,6 +190,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("idinsprocesso")]
         public int IDInsProcesso { get; set; }
+
+        /// <summary>
+        /// Preposto - agePreposto  
+        /// </summary>
+        [JsonPropertyName("preposto")]
+        public int Preposto { get; set; }
 
         /// <summary>
         /// QuemID - ageQuemID  
@@ -326,12 +326,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Usuario { get; set; }
 
         /// <summary>
-        /// Preposto - agePreposto  
-        /// </summary>
-        [JsonPropertyName("preposto")]
-        public int Preposto { get; set; }
-
-        /// <summary>
         /// IDCOB - ageIDCOB  
         /// </summary>
         [JsonPropertyName("idcob")]
@@ -464,6 +458,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int IDInsProcesso { get; set; }
 
         /// <summary>
+        /// Preposto - agePreposto  
+        /// </summary>
+        [JsonPropertyName("preposto")]
+        public int Preposto { get; set; }
+
+        /// <summary>
         /// QuemID - ageQuemID  
         /// </summary>
         [JsonPropertyName("quemid")]
@@ -555,8 +555,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;
-
-        [JsonPropertyName("nomeprepostos")]
-        public string NomePrepostos { get; set; } = string.Empty;
     }
 }

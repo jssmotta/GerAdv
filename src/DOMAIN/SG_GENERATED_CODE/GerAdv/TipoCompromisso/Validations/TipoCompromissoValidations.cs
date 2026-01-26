@@ -7,12 +7,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoCompromissoValidation
 {
     Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class TipoCompromissoValidation : ITipoCompromissoValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");

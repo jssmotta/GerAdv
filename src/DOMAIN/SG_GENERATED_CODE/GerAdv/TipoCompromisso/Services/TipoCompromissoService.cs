@@ -4,7 +4,7 @@
 // Tabela:TipoCompromisso
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, IFTipoCompromissoFactory tipocompromissoFactory, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IAgendaService agendaService, INECompromissosService necompromissosService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterTipoCompromisso> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : ITipoCompromissoService, IDisposable
+public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, IFTipoCompromissoFactory tipocompromissoFactory, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IAgendaService agendaService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterTipoCompromisso> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : ITipoCompromissoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,7 +20,6 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
     private readonly ITipoCompromissoValidation validation = validation;
     private readonly ITipoCompromissoWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly INECompromissosService necompromissosService = necompromissosService;
     public async Task<IEnumerable<TipoCompromissoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -309,7 +308,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         {
             TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             TipoCompromissoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, necompromissosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

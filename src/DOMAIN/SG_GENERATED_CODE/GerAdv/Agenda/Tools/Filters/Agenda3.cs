@@ -56,10 +56,6 @@ public partial record FilterAgenda
     [Description("Filtro para a _tabela Operador")]
     public FilterOperador? FilterOperador { get; set; } = new();
 
-    [JsonPropertyName("filterPrepostos")]
-    [Description("Filtro para a _tabela Prepostos")]
-    public FilterPrepostos? FilterPrepostos { get; set; } = new();
-
     [JsonPropertyName("logicalOperator")]
     [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;

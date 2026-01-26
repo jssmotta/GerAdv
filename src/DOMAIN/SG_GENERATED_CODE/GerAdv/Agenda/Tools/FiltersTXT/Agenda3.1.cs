@@ -86,7 +86,6 @@ FILTROS ANINHADOS DISPONÍVEIS:
 - filterArea: filtro específico para Área
 - filterJustica: filtro específico para Justiça
 - filterOperador: filtro específico para Operador
-- filterPrepostos: filtro específico para Prepostos
 
 
 CHECKLIST ANTES DE RETORNAR O JSON:
@@ -319,47 +318,6 @@ CAMPOS filterOperador (Operador):
 - suportenomesolicitante: SuporteNomeSolicitante;
 - suporteultimoacesso: SuporteUltimoAcesso;
 - suporteipultimoacesso: SuporteIpUltimoAcesso;
-Campos de Auditoria (detalhes no PromptAuditor):
-- dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
-- dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
-- quemcad, quemcad_end: ID do operador que cadastrou
-- quematu, quematu_end: ID do operador que atualizou
-- visto: 0=não, 1=sim, -2147483648=ambos
-         
-
-CAMPOS filterPrepostos (Prepostos):
-- nome: _nome ou descrição para Prepostos;
-- funcao: número ou IDs;
-- setor: número ou IDs;
-- dtnasc: DtNasc;
-- qualificacao: Qualificacao;
-- sexo: sexo do Prepostos: 1=Homem; 0=Mulher; -2147483648=ambos;
-- idade: número ou IDs;
-- cpf: somente os 11 caracteres sem mascara;
-- rg: RG;
-- periodo_ini: Periodo_Ini;
-- periodo_fim: Periodo_Fim;
-- registro: Registro;
-- ctpsnumero: CTPSNumero;
-- ctpsserie: CTPSSerie;
-- ctpsdtemissao: CTPSDtEmissao;
-- pis: PIS;
-- salario: valores monetários ou com decimais;
-- liberaagenda: LiberaAgenda;
-- observacao: Observacao;
-- endereco: Endereco;
-- bairro: Bairro;
-- cidade: número ou IDs;
-- cep: CEP;
-- fone: Fone;
-- fax: Fax;
-- email: EMail;
-- pai: Pai;
-- mae: Mae;
-- class: Class;
-- etiqueta: Etiqueta;
-- ani: Ani;
-- bold: Bold;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema

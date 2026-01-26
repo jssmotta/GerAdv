@@ -51,18 +51,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <Compile Remove="CODIGO_GERADO\GerAdv_TS\**" />
+    <Compile Remove="CODIGO_GERADO\**" />
     <Compile Remove="Crypto\**" />
     <Compile Remove="DA2024\MMXX_2024MenphisSI.GerAdv.CIDADES\**" />
     <Compile Remove="DA2024\MMXX_2024MenphisSI.GerAdv.RELATIONS\**" />
-    <EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
+    <EmbeddedResource Remove="CODIGO_GERADO\**" />
     <EmbeddedResource Remove="Crypto\**" />
     <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerAdv.CIDADES\**" />
     <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerAdv.RELATIONS\**" />
-    <None Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <None Remove="CODIGO_GERADO\GerAdv_TS\**" />
+    <None Remove="CODIGO_GERADO\**" />
     <None Remove="Crypto\**" />
     <None Remove="DA2024\MMXX_2024MenphisSI.GerAdv.CIDADES\**" />
     <None Remove="DA2024\MMXX_2024MenphisSI.GerAdv.RELATIONS\**" />
@@ -78,7 +75,7 @@
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />		
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />		
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />		
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="NLog" Version="6.0.7" />
 	 
@@ -97,7 +94,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CODIGO_GERADO\" />
     <Folder Include="PERSONALIZADO\Reader\" />
   </ItemGroup>
 

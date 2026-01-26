@@ -4,7 +4,7 @@
 // Tabela:Funcao
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFactory funcaoFactory, IFuncaoReader reader, IFuncaoValidation validation, IFuncaoWriter writer, IFuncionariosService funcionariosService, IPrepostosService prepostosService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterFuncao> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IFuncaoService, IDisposable
+public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFactory funcaoFactory, IFuncaoReader reader, IFuncaoValidation validation, IFuncaoWriter writer, IFuncionariosService funcionariosService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterFuncao> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IFuncaoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,7 +20,6 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
     private readonly IFuncaoValidation validation = validation;
     private readonly IFuncaoWriter writer = writer;
     private readonly IFuncionariosService funcionariosService = funcionariosService;
-    private readonly IPrepostosService prepostosService = prepostosService;
     public async Task<IEnumerable<FuncaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterFuncao filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -309,7 +308,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         {
             FuncaoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             FuncaoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, funcionariosService, prepostosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, funcionariosService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

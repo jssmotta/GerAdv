@@ -6,13 +6,13 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IClientesValidation
 {
-    Task<bool> ValidateReg(Models.Clientes reg, IClientesService service, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IClientesService service, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Clientes reg, IClientesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IClientesService service, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IProDespesasService prodespesasService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ClientesValidation : IClientesValidation
 {
-    public async Task<bool> CanDelete(int? id, IClientesService service, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IClientesService service, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IProDespesasService prodespesasService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -28,39 +28,9 @@ public class ClientesValidation : IClientesValidation
         var colaboradoresExists2 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cliente = id ?? default }, uri);
         if (colaboradoresExists2 != null && colaboradoresExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Colaboradores associados a ele.");
-        var contacorrenteExists3 = await contacorrenteService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContaCorrente { Cliente = id ?? default }, uri);
-        if (contacorrenteExists3 != null && contacorrenteExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Conta Corrente associados a ele.");
-        var contratosExists4 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Cliente = id ?? default }, uri);
-        if (contratosExists4 != null && contratosExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Contratos associados a ele.");
-        var diario2Exists5 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Cliente = id ?? default }, uri);
-        if (diario2Exists5 != null && diario2Exists5.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Diario2 associados a ele.");
-        var gruposempresasExists6 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Cliente = id ?? default }, uri);
-        if (gruposempresasExists6 != null && gruposempresasExists6.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Grupos Empresas associados a ele.");
-        var honorariosdadoscontratoExists7 = await honorariosdadoscontratoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHonorariosDadosContrato { Cliente = id ?? default }, uri);
-        if (honorariosdadoscontratoExists7 != null && honorariosdadoscontratoExists7.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Honorarios Dados Contrato associados a ele.");
-        var horastrabExists8 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Cliente = id ?? default }, uri);
-        if (horastrabExists8 != null && horastrabExists8.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Horas Trab associados a ele.");
-        var ligacoesExists9 = await ligacoesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterLigacoes { Cliente = id ?? default }, uri);
-        if (ligacoesExists9 != null && ligacoesExists9.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Ligacoes associados a ele.");
-        var operadoresExists10 = await operadoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadores { Cliente = id ?? default }, uri);
-        if (operadoresExists10 != null && operadoresExists10.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Operadores associados a ele.");
-        var preclientesExists11 = await preclientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { IDRep = id ?? default }, uri);
-        if (preclientesExists11 != null && preclientesExists11.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Pre Clientes associados a ele.");
-        var prodespesasExists12 = await prodespesasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProDespesas { Cliente = id ?? default }, uri);
-        if (prodespesasExists12 != null && prodespesasExists12.Any())
+        var prodespesasExists3 = await prodespesasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProDespesas { Cliente = id ?? default }, uri);
+        if (prodespesasExists3 != null && prodespesasExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Pro Despesas associados a ele.");
-        var reuniaoExists13 = await reuniaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterReuniao { Cliente = id ?? default }, uri);
-        if (reuniaoExists13 != null && reuniaoExists13.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Reunião associados a ele.");
         return true;
     }
 
@@ -107,7 +77,7 @@ public class ClientesValidation : IClientesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Clientes reg, IClientesService service, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Clientes reg, IClientesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -175,26 +145,6 @@ public class ClientesValidation : IClientesValidation
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");
-            }
-        }
-
-        // RegimeTributacao
-        if (!reg.RegimeTributacao.IsEmptyIDNumber())
-        {
-            var regRegimeTributacao = await regimetributacaoReader.ReadAsync(reg.RegimeTributacao, oCnn);
-            if (regRegimeTributacao == null || regRegimeTributacao.Id != reg.RegimeTributacao)
-            {
-                throw new SGValidationException($"Regime Tributacao não encontrado ({regRegimeTributacao?.Id}).");
-            }
-        }
-
-        // EnquadramentoEmpresa
-        if (!reg.EnquadramentoEmpresa.IsEmptyIDNumber())
-        {
-            var regEnquadramentoEmpresa = await enquadramentoempresaReader.ReadAsync(reg.EnquadramentoEmpresa, oCnn);
-            if (regEnquadramentoEmpresa == null || regEnquadramentoEmpresa.Id != reg.EnquadramentoEmpresa)
-            {
-                throw new SGValidationException($"Enquadramento Empresa não encontrado ({regEnquadramentoEmpresa?.Id}).");
             }
         }
 

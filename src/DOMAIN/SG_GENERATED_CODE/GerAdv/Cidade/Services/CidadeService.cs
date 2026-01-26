@@ -4,7 +4,7 @@
 // Tabela:Cidade
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFactory cidadeFactory, ICidadeReader reader, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterCidade> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : ICidadeService, IDisposable
+public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFactory cidadeFactory, ICidadeReader reader, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, IAdvogadosService advogadosService, IAgendaService agendaService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEscritoriosService escritoriosService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterCidade> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : ICidadeService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -22,22 +22,14 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
     private readonly IUFReader ufReader = ufReader;
     private readonly IAdvogadosService advogadosService = advogadosService;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IBensMateriaisService bensmateriaisService = bensmateriaisService;
     private readonly IClientesService clientesService = clientesService;
     private readonly IClientesSociosService clientessociosService = clientessociosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
-    private readonly IEnderecosService enderecosService = enderecosService;
     private readonly IEscritoriosService escritoriosService = escritoriosService;
-    private readonly IFornecedoresService fornecedoresService = fornecedoresService;
     private readonly IForoService foroService = foroService;
     private readonly IFuncionariosService funcionariosService = funcionariosService;
     private readonly IOponentesService oponentesService = oponentesService;
-    private readonly IOponentesRepLegalService oponentesreplegalService = oponentesreplegalService;
-    private readonly IOutrasPartesClienteService outraspartesclienteService = outraspartesclienteService;
-    private readonly IPreClientesService preclientesService = preclientesService;
-    private readonly IPrepostosService prepostosService = prepostosService;
-    private readonly ITerceirosService terceirosService = terceirosService;
     public async Task<IEnumerable<CidadeResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterCidade filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -326,7 +318,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         {
             CidadeDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             CidadeDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, advogadosService, agendaService, bensmateriaisService, clientesService, clientessociosService, colaboradoresService, divisaotribunalService, enderecosService, escritoriosService, fornecedoresService, foroService, funcionariosService, oponentesService, oponentesreplegalService, outraspartesclienteService, preclientesService, prepostosService, terceirosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, advogadosService, agendaService, clientesService, clientessociosService, colaboradoresService, divisaotribunalService, escritoriosService, foroService, funcionariosService, oponentesService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

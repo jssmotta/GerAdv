@@ -448,12 +448,6 @@ public partial class ServiceFilter
             parameters.AddRange(operador?.parametros!);
         }
 
-        var prepostos = this.WFiltroPrepostos(filtro.FilterPrepostos);
-        if (prepostos?.parametros != null)
-        {
-            parameters.AddRange(prepostos?.parametros!);
-        }
-
         var cWhere = new StringBuilder();
         cWhere.Append(cidade?.where);
         if (!string.IsNullOrWhiteSpace(advogados?.where))
@@ -524,16 +518,6 @@ public partial class ServiceFilter
             }
 
             cWhere.Append(operador?.where);
-        }
-
-        if (!string.IsNullOrWhiteSpace(prepostos?.where))
-        {
-            if (cWhere.Length > 0)
-            {
-                cWhere.Append(filtro.LogicalOperator);
-            }
-
-            cWhere.Append(prepostos?.where);
         }
 
         if (!(filtro.QuemCad.IsEmptyX()) && filtro.QuemCad_end.IsEmptyX())

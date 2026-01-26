@@ -314,7 +314,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(traces_spanmetrics_calls_total{service=\"[URI].Api\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)",
+          "expr": "sum(increase(traces_spanmetrics_calls_total{service=\"GerAdv.Api\", status_code=\"STATUS_CODE_ERROR\"}[5m])) or vector(0)",
           "legendFormat": "Errors",
           "range": true,
           "refId": "A"
@@ -410,7 +410,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (service) (rate(traces_spanmetrics_calls_total{service=~\"[URI].Api\"}[1m]))",
+          "expr": "sum by (service) (rate(traces_spanmetrics_calls_total{service=~\"GerAdv.Api\"}[1m]))",
           "legendFormat": "{{service}}",
           "range": true,
           "refId": "A"
@@ -589,7 +589,7 @@
           "refId": "C"
         }
       ],
-      "title": "Latency by Percentile - [URI].Api",
+      "title": "Latency by Percentile - GerAdv.Api",
       "type": "timeseries"
     },
     {
@@ -713,7 +713,7 @@
           "refId": "B"
         }
       ],
-      "title": "Top 10 Slowest Endpoints - [URI].Api",
+      "title": "Top 10 Slowest Endpoints - GerAdv.Api",
       "transformations": [
         {
           "id": "merge",
@@ -864,7 +864,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requests by Status Code - [URI].Api",
+      "title": "Requests by Status Code - GerAdv.Api",
       "type": "timeseries"
     },
     {
@@ -881,7 +881,7 @@
       "id": 9,
       "options": {
         "query": "",
-        "serviceName": "[URI].Api",
+        "serviceName": "GerAdv.Api",
         "spanName": "",
         "search": {
           "hide": false
@@ -903,10 +903,10 @@
           "limit": 20,
           "queryType": "search",
           "refId": "A",
-          "serviceName": "[URI].Api"
+          "serviceName": "GerAdv.Api"
         }
       ],
-      "title": "Trace Search - [URI].Api",
+      "title": "Trace Search - GerAdv.Api",
       "type": "traces"
     },
     {
@@ -957,7 +957,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (client, server) (rate(traces_service_graph_request_total{server=~\"[URI].Api\"}[1m]))",
+          "expr": "sum by (client, server) (rate(traces_service_graph_request_total{server=~\"GerAdv.Api\"}[1m]))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -965,7 +965,7 @@
           "refId": "A"
         }
       ],
-      "title": "Service Graph - [URI].Api",
+      "title": "Service Graph - GerAdv.Api",
       "type": "nodeGraph"
     },
     {
@@ -1055,13 +1055,13 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (span_name) (rate(traces_spanmetrics_calls_total{service=\"[URI].Api\", span_kind=\"SPAN_KIND_SERVER\"}[1m]))",
+          "expr": "sum by (span_name) (rate(traces_spanmetrics_calls_total{service=\"GerAdv.Api\", span_kind=\"SPAN_KIND_SERVER\"}[1m]))",
           "legendFormat": "{{span_name}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Top Endpoints by Request Rate - [URI].Api",
+      "title": "Top Endpoints by Request Rate - GerAdv.Api",
       "type": "timeseries"
     }
   ],
@@ -1137,7 +1137,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "GerAdv 1.0 - Tempo Traces Dashboard",
-  "uid": "639046949320534097",
+  "uid": "639050449390806272",
   "version": 1,
   "weekStart": ""
 }

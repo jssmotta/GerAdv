@@ -4,7 +4,7 @@
 // Tabela:Advogados
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAdvogados> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAdvogadosService, IDisposable
+public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAdvogados> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAdvogadosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -23,10 +23,6 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
     private readonly IEscritoriosReader escritoriosReader = escritoriosReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IContratosService contratosService = contratosService;
-    private readonly IHorasTrabService horastrabService = horastrabService;
-    private readonly IParceriaProcService parceriaprocService = parceriaprocService;
-    private readonly IProProcuradoresService proprocuradoresService = proprocuradoresService;
     public async Task<IEnumerable<AdvogadosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -315,7 +311,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         {
             AdvogadosDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
             AdvogadosDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, contratosService, horastrabService, parceriaprocService, proprocuradoresService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

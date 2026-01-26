@@ -4,7 +4,7 @@
 // Tabela:Agenda
 // Fonte:ServiceGenerator
 namespace MenphisSI.GerAdv.Services;
-public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAgenda> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAgendaService, IDisposable
+public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAgenda> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAgendaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -27,7 +27,6 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
     private readonly IAreaReader areaReader = areaReader;
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IOperadorReader operadorReader = operadorReader;
-    private readonly IPrepostosReader prepostosReader = prepostosReader;
     public async Task<IEnumerable<AgendaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -203,7 +202,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         {
             AgendaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
             AgendaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -264,7 +263,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         {
             AgendaDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
             AgendaDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

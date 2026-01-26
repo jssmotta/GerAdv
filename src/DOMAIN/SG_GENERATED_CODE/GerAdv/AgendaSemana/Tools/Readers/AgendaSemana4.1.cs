@@ -39,8 +39,6 @@ LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBAdvogadosDi
 LEFT JOIN {DBEscritoriosDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritoriosDicInfo.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}]
 LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.TipoCompromisso}]
 LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Cliente}]
-LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
-LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
  
                    {cWhere}
                    {orderQuery}
