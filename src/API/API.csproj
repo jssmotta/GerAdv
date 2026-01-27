@@ -33,24 +33,28 @@
 		<Compile Remove="Devourer\**" />
 		<Compile Remove="GerAdv_AngularReact\**" />
 		<Compile Remove="ReactCode\**" />
+		<Compile Remove="wwwRoot\**" />
 		<Content Remove="BaseCommon\Web\**" />
 		<Content Remove="CODIGO_GERADO\GerAdv_TS\**" />
 		<Content Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<Content Remove="Devourer\**" />
 		<Content Remove="GerAdv_AngularReact\**" />
 		<Content Remove="ReactCode\**" />
+		<Content Remove="wwwRoot\**" />
 		<EmbeddedResource Remove="BaseCommon\Web\**" />
 		<EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
 		<EmbeddedResource Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<EmbeddedResource Remove="Devourer\**" />
 		<EmbeddedResource Remove="GerAdv_AngularReact\**" />
 		<EmbeddedResource Remove="ReactCode\**" />
+		<EmbeddedResource Remove="wwwRoot\**" />
 		<None Remove="BaseCommon\Web\**" />
 		<None Remove="CODIGO_GERADO\GerAdv_TS\**" />
 		<None Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<None Remove="Devourer\**" />
 		<None Remove="GerAdv_AngularReact\**" />
 		<None Remove="ReactCode\**" />
+		<None Remove="wwwRoot\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -295,7 +299,6 @@
 
 	<ItemGroup>
 		<Folder Include="CODIGO_GERADO\" />
-		<Folder Include="wwwRoot\" />
 	</ItemGroup>
 
 	<ItemGroup>
