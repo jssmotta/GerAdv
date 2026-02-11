@@ -166,10 +166,15 @@ try
 
     var app = builder.Build();
 
+   // Configurar middlewares específicos do AppSG (geo-blocking)
+    AppSGStartup.ConfigurarMiddlewaresAppSG(app);
+
+    // Configurar aplicação usando a classe StartupAppAdvanced genérica
+    StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);
+
     // Enable Developer Exception Page in development for detailed errors
     if (builder.Environment.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
+    { 
         logger.Info("Developer exception page enabled");
     }
     else
@@ -190,11 +195,7 @@ try
     // Configurar endpoint do Prometheus para métricas OpenTelemetry
     app.UseGenesysPrometheus(builder.Configuration);
 
-    // Configurar middlewares específicos do AppSG (geo-blocking)
-    AppSGStartup.ConfigurarMiddlewaresAppSG(app);
-
-    // Configurar aplicação usando a classe StartupAppAdvanced genérica
-    StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);
+ 
 
     AuditorController.ConfigureAuditorEndpoints(app);
 
