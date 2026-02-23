@@ -10,6 +10,12 @@
 	  <Configurations>Debug;Release;DEBUG_API_URL;Development</Configurations>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="DAMX2025\**" />
+    <EmbeddedResource Remove="DAMX2025\**" />
+    <None Remove="DAMX2025\**" />
+  </ItemGroup>
+
 <ItemGroup>
 <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
@@ -49,18 +55,7 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Crypto\**" />
-    <Compile Remove="DA2024\MMXX_2024MenphisSI.GerFTC.CIDADES\**" />
-    <Compile Remove="DA2024\MMXX_2024MenphisSI.GerFTC.RELATIONS\**" />
-    <EmbeddedResource Remove="Crypto\**" />
-    <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerFTC.CIDADES\**" />
-    <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerFTC.RELATIONS\**" />
-    <None Remove="Crypto\**" />
-    <None Remove="DA2024\MMXX_2024MenphisSI.GerFTC.CIDADES\**" />
-    <None Remove="DA2024\MMXX_2024MenphisSI.GerFTC.RELATIONS\**" />
-  </ItemGroup>
-
+   
 	<ItemGroup>
 
 		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
@@ -72,20 +67,16 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />		
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />		
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		<PackageReference Include="NLog" Version="6.0.7" />
+		<PackageReference Include="NLog" Version="6.1.0" />
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DAMX2025\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 

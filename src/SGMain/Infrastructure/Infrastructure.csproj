@@ -9,16 +9,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.3.0" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-	  <PackageReference Include="NLog" Version="6.0.7" />
+	  <PackageReference Include="NLog" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
-    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

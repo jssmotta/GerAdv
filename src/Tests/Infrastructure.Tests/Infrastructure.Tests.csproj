@@ -34,7 +34,7 @@
         <Folder Include="TestResults\" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+      <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
       <ProjectReference Include="..\..\SGMain\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 </Project>
