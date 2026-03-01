@@ -18,8 +18,8 @@ public class DbConnectionFactoryAdvancedTests : IDisposable
 {
     #region Test Data Constants
     
-    private const string TestConnectionString1 = "Data Source=localhost;TrustServerCertificate=True;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
-    private const string TestConnectionString2 = "Data Source=localhost;TrustServerCertificate=True;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
+    private const string TestConnectionString1 = "Data Source=localhost;TrustServerCertificate=False;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
+    private const string TestConnectionString2 = "Data Source=localhost;TrustServerCertificate=False;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
     
     private readonly List<IDisposable> _disposables = new();
     

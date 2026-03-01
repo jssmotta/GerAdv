@@ -28,7 +28,7 @@ public class DbConnectionFactoryExtensionsTests
     private const string ExistingClientUri = "DEVPB";
     
     // Test connection strings for unit testing
-    private const string ValidConnectionString = "Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;\r\n";
+    private const string ValidConnectionString = "Data Source=localhost;Integrated Security=True;TrustServerCertificate=False;\r\n";
     private const string InvalidConnectionString = "InvalidConnectionString";
     private const string EmptyConnectionString = "";
     

@@ -20,7 +20,7 @@ public class DbConnectionFactoryCleanupTests : IDisposable
 {
     #region Test Data Constants
     
-    private const string TestConnectionString = "Data Source=localhost;Integrated Security=true;TrustServerCertificate=True;";
+    private const string TestConnectionString = "Data Source=localhost;Integrated Security=true;TrustServerCertificate=False;";
     private readonly List<IDisposable> _disposables = new();
     
     #endregion

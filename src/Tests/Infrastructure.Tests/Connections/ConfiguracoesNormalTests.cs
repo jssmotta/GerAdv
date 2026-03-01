@@ -110,7 +110,7 @@ public class ConfiguracoesNormalTests
             result.Should().Contain("Integrated Security=false");
             result.Should().Contain("Connect Timeout=30");
             result.Should().Contain("Persist Security Info=False");
-            result.Should().Contain("TrustServerCertificate=True");
+            result.Should().Contain("TrustServerCertificate=False");
         }
         catch (Exception ex)
         {
@@ -251,7 +251,7 @@ public class ConfiguracoesNormalTests
             result.Should().Contain("Integrated Security=false");
             result.Should().Contain("Connect Timeout=30");
             result.Should().Contain("Persist Security Info=False");
-            result.Should().Contain("TrustServerCertificate=True");
+            result.Should().Contain("TrustServerCertificate=False");
         }
         catch (Exception ex)
         {
@@ -350,7 +350,7 @@ public class ConfiguracoesNormalTests
                 "Integrated Security=false",
                 "Connect Timeout=30",
                 "Persist Security Info=False",
-                "TrustServerCertificate=True"
+                "TrustServerCertificate=False"
             };
 
             foreach (var parameter in commonParameters)

@@ -19,7 +19,7 @@ public class DbConnectionFactoryTests : IDisposable
 {
     #region Test Data Constants
     
-    private const string ValidConnectionString = "Data Source=localhost;TrustServerCertificate=True;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
+    private const string ValidConnectionString = "Data Source=localhost;TrustServerCertificate=False;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
     private const string ValidConnectionString2 = "Data Source=.;Integrated Security=true;Connect Timeout=25;Pooling=true;Min Pool Size=10;Max Pool Size=100;";
     private const string InvalidConnectionString = "Invalid Connection String";
     

@@ -50,10 +50,10 @@
 //            var connectionString =
 //                dbRec.UserID == "SPI" 
 //                ?
-//                   $"{PCmdReadOnly}Server=np:\\\\.\\pipe\\sql\\query;Database={dbRec.InitialCatalog};Integrated Security=True;Packet Size=4096;MultipleActiveResultSets=true;encrypt=true;Max Pool Size=100;Pooling=true;Connect Timeout=90;TrustServerCertificate=True;MultipleActiveResultSets=true;Enlist=false;Application Name=GerAdv"
+//                   $"{PCmdReadOnly}Server=np:\\\\.\\pipe\\sql\\query;Database={dbRec.InitialCatalog};Integrated Security=True;Packet Size=4096;MultipleActiveResultSets=true;encrypt=true;Max Pool Size=100;Pooling=true;Connect Timeout=90;TrustServerCertificate=False;MultipleActiveResultSets=true;Enlist=false;Application Name=GerAdv"
 
 //                :                
-//                   $"{PCmdReadOnly}{PStringExtraPerformance}Packet Size=4096;MultipleActiveResultSets=true;Enlist=false;encrypt=true;Data Source={dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password={dbRec.Pwd256.Decrypt()};Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=90;Persist Security Info=False;TrustServerCertificate=True;Application Name=GerAdv";
+//                   $"{PCmdReadOnly}{PStringExtraPerformance}Packet Size=4096;MultipleActiveResultSets=true;Enlist=false;encrypt=true;Data Source={dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password={dbRec.Pwd256.Decrypt()};Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=90;Persist Security Info=False;TrustServerCertificate=False;Application Name=GerAdv";
 
 //            // Adicionar ao cache
 //            _connectionCache[uri] = connectionString;
@@ -99,10 +99,10 @@
 
 //                 dbRec.UserID == "SPI"
 //                ?
-//                   $"Server=np:\\\\.\\pipe\\sql\\query;Database={dbRec.InitialCatalog};Integrated Security=True;Packet Size=4096;MultipleActiveResultSets=true;encrypt=true;Max Pool Size=100;Pooling=true;Connect Timeout=90;TrustServerCertificate=True;MultipleActiveResultSets=true;Enlist=false;Application Name=GerAdv"
+//                   $"Server=np:\\\\.\\pipe\\sql\\query;Database={dbRec.InitialCatalog};Integrated Security=True;Packet Size=4096;MultipleActiveResultSets=true;encrypt=true;Max Pool Size=100;Pooling=true;Connect Timeout=90;TrustServerCertificate=False;MultipleActiveResultSets=true;Enlist=false;Application Name=GerAdv"
 
 //                :
-//                $"{PStringExtraPerformance}Packet Size=4096;MultipleActiveResultSets=true;Enlist=false;encrypt=true;Data Source=tcp:{dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password={dbRec.Pwd256.Decrypt()};Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=90;Persist Security Info=False;TrustServerCertificate=True;;Application Name=GerAdv";
+//                $"{PStringExtraPerformance}Packet Size=4096;MultipleActiveResultSets=true;Enlist=false;encrypt=true;Data Source=tcp:{dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password={dbRec.Pwd256.Decrypt()};Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=90;Persist Security Info=False;TrustServerCertificate=False;;Application Name=GerAdv";
 
 //            // Adicionar ao cache
 //            _connectionRwCache[uri] = connectionString;
