@@ -45,7 +45,6 @@ public static partial class DBAgendaSemanaDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "AgendaSemana";
 #region PropriedadesDaTabela
     public static DBInfoSystem XxxParaNome => new(0, PTabelaNome, CampoCodigo, ParaNome, 60, "ParaNome", "ParaNome", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
@@ -63,7 +62,6 @@ public static partial class DBAgendaSemanaDicInfo
     public static DBInfoSystem XxxCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "xxx"); // DBI 11 
     public static DBInfoSystem XxxNomeCliente => new(0, PTabelaNome, CampoCodigo, NomeCliente, 80, "NomeCliente", "NomeCliente", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
     public static DBInfoSystem XxxTipo => new(0, PTabelaNome, CampoCodigo, Tipo, 100, "Tipo", "Tipo", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

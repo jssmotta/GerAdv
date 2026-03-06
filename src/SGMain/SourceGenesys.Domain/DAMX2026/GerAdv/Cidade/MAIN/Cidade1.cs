@@ -10,7 +10,6 @@ public partial class DBCidade : VAuditor, ICrud
 #region TableDefinition_Cidade
     [XmlIgnore]
     public string TabelaNome => "Cidade";
-
     public DBCidade()
     {
     }

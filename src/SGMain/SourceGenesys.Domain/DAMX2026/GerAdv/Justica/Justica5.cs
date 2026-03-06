@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBJustica
 {
-    public const string CadastroGuid = "30cab9c6-3b84-4ff5-a320-54fcc6ff8685";
+    public const string CadastroGuid = "0ec902ba-0a07-4bbd-930a-b61a6027ca71";
     public const string PTabelaNome = "Justica";
     public const string CamposSqlX = " Justica.* ";
     public const string CampoCodigo = "jusCodigo";

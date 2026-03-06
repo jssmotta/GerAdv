@@ -31,6 +31,14 @@ public partial class DBAgendaSemanaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBAgendaSemanaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,7 +51,6 @@ public partial class DBAgendaSemanaODicInfo : IODicInfo
     public static string TTablePrefix => DBAgendaSemanaDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ImmutableArray<DBInfoSystem> ListPk() => [];
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

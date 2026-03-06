@@ -31,6 +31,14 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBTipoRecursoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     public static string TTablePrefix => DBTipoRecursoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGuid, DBTipoRecursoDicInfo.TrcQuemCad, DBTipoRecursoDicInfo.TrcDtCad, DBTipoRecursoDicInfo.TrcQuemAtu, DBTipoRecursoDicInfo.TrcDtAtu, DBTipoRecursoDicInfo.TrcVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["trcCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["trcCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTipoRecursoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["trcArea", "trcCodigo", "trcDescricao", "trcJustica"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["trcArea", "trcCodigo", "trcDescricao", "trcJustica"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTipoRecursoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

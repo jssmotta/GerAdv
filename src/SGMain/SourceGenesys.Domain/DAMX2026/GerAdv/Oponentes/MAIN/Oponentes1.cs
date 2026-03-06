@@ -10,7 +10,6 @@ public partial class DBOponentes : VAuditor, ICrud
 #region TableDefinition_Oponentes
     [XmlIgnore]
     public string TabelaNome => "Oponentes";
-
     public DBOponentes()
     {
     }

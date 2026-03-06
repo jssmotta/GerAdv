@@ -10,7 +10,6 @@ public partial class DBInstancia : VAuditor, ICrud
 #region TableDefinition_Instancia
     [XmlIgnore]
     public string TabelaNome => "Instancia";
-
     public DBInstancia()
     {
     }

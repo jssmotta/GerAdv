@@ -31,6 +31,14 @@ public partial class DBClientesODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBClientesDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBClientesODicInfo : IODicInfo
     public static string TTablePrefix => DBClientesDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBClientesDicInfo.CliEmpresa, DBClientesDicInfo.CliIcone, DBClientesDicInfo.CliNomeMae, DBClientesDicInfo.CliRGDataExp, DBClientesDicInfo.CliInativo, DBClientesDicInfo.CliQuemIndicou, DBClientesDicInfo.CliSendEMail, DBClientesDicInfo.CliNome, DBClientesDicInfo.CliAdv, DBClientesDicInfo.CliIDRep, DBClientesDicInfo.CliJuridica, DBClientesDicInfo.CliNomeFantasia, DBClientesDicInfo.CliClass, DBClientesDicInfo.CliTipo, DBClientesDicInfo.CliDtNasc, DBClientesDicInfo.CliInscEst, DBClientesDicInfo.CliQualificacao, DBClientesDicInfo.CliSexo, DBClientesDicInfo.CliIdade, DBClientesDicInfo.CliCNPJ, DBClientesDicInfo.CliCPF, DBClientesDicInfo.CliRG, DBClientesDicInfo.CliTipoCaptacao, DBClientesDicInfo.CliObservacao, DBClientesDicInfo.CliEndereco, DBClientesDicInfo.CliBairro, DBClientesDicInfo.CliCidade, DBClientesDicInfo.CliCEP, DBClientesDicInfo.CliFax, DBClientesDicInfo.CliFone, DBClientesDicInfo.CliData, DBClientesDicInfo.CliHomePage, DBClientesDicInfo.CliEMail, DBClientesDicInfo.CliObito, DBClientesDicInfo.CliNomePai, DBClientesDicInfo.CliRGOExpeditor, DBClientesDicInfo.CliRegimeTributacao, DBClientesDicInfo.CliEnquadramentoEmpresa, DBClientesDicInfo.CliReportECBOnly, DBClientesDicInfo.CliProBono, DBClientesDicInfo.CliCNH, DBClientesDicInfo.CliPessoaContato, DBClientesDicInfo.CliEtiqueta, DBClientesDicInfo.CliAni, DBClientesDicInfo.CliBold, DBClientesDicInfo.CliGuid, DBClientesDicInfo.CliQuemCad, DBClientesDicInfo.CliDtCad, DBClientesDicInfo.CliQuemAtu, DBClientesDicInfo.CliDtAtu, DBClientesDicInfo.CliVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBClientesDicInfo.CliEmpresa, DBClientesDicInfo.CliIcone, DBClientesDicInfo.CliNomeMae, DBClientesDicInfo.CliRGDataExp, DBClientesDicInfo.CliInativo, DBClientesDicInfo.CliQuemIndicou, DBClientesDicInfo.CliSendEMail, DBClientesDicInfo.CliNome, DBClientesDicInfo.CliAdv, DBClientesDicInfo.CliIDRep, DBClientesDicInfo.CliJuridica, DBClientesDicInfo.CliNomeFantasia, DBClientesDicInfo.CliClass, DBClientesDicInfo.CliTipo, DBClientesDicInfo.CliDtNasc, DBClientesDicInfo.CliInscEst, DBClientesDicInfo.CliQualificacao, DBClientesDicInfo.CliSexo, DBClientesDicInfo.CliIdade, DBClientesDicInfo.CliCNPJ, DBClientesDicInfo.CliCPF, DBClientesDicInfo.CliRG, DBClientesDicInfo.CliTipoCaptacao, DBClientesDicInfo.CliObservacao, DBClientesDicInfo.CliEndereco, DBClientesDicInfo.CliBairro, DBClientesDicInfo.CliCidade, DBClientesDicInfo.CliCEP, DBClientesDicInfo.CliFax, DBClientesDicInfo.CliFone, DBClientesDicInfo.CliData, DBClientesDicInfo.CliHomePage, DBClientesDicInfo.CliEMail, DBClientesDicInfo.CliObito, DBClientesDicInfo.CliNomePai, DBClientesDicInfo.CliRGOExpeditor, DBClientesDicInfo.CliRegimeTributacao, DBClientesDicInfo.CliEnquadramentoEmpresa, DBClientesDicInfo.CliReportECBOnly, DBClientesDicInfo.CliProBono, DBClientesDicInfo.CliCNH, DBClientesDicInfo.CliPessoaContato, DBClientesDicInfo.CliEtiqueta, DBClientesDicInfo.CliAni, DBClientesDicInfo.CliBold, DBClientesDicInfo.CliGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["cliCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["cliCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBClientesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["cliCodigo", "cliNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["cliCodigo", "cliNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBClientesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

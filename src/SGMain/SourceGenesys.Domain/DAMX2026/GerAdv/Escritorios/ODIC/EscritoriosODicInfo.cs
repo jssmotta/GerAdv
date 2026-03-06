@@ -31,6 +31,14 @@ public partial class DBEscritoriosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBEscritoriosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBEscritoriosODicInfo : IODicInfo
     public static string TTablePrefix => DBEscritoriosDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop, DBEscritoriosDicInfo.EscEtiqueta, DBEscritoriosDicInfo.EscBold, DBEscritoriosDicInfo.EscGuid, DBEscritoriosDicInfo.EscQuemCad, DBEscritoriosDicInfo.EscDtCad, DBEscritoriosDicInfo.EscQuemAtu, DBEscritoriosDicInfo.EscDtAtu, DBEscritoriosDicInfo.EscVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop, DBEscritoriosDicInfo.EscEtiqueta, DBEscritoriosDicInfo.EscBold, DBEscritoriosDicInfo.EscGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBEscritoriosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo", "escNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo", "escNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBEscritoriosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

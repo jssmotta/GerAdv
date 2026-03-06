@@ -27,7 +27,6 @@ public static partial class DBCargosDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Cargos";
 #region PropriedadesDaTabela
     public static DBInfoSystem CarNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "car");
@@ -36,7 +35,6 @@ public static partial class DBCargosDicInfo
     public static DBInfoSystem CarQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "car"); // DBI 11 
     public static DBInfoSystem CarDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "car");
     public static DBInfoSystem CarVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "car", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

@@ -10,7 +10,6 @@ public partial class DBClientes : VAuditor, ICrud
 #region TableDefinition_Clientes
     [XmlIgnore]
     public string TabelaNome => "Clientes";
-
     public DBClientes()
     {
     }

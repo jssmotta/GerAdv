@@ -10,7 +10,6 @@ public partial class DBTipoProDesposito : VNoAuditor, ICrud
 #region TableDefinition_TipoProDesposito
     [XmlIgnore]
     public string TabelaNome => "TipoProDesposito";
-
     public DBTipoProDesposito()
     {
     }

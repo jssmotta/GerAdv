@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBAgenda
 {
-    public const string CadastroGuid = "c5860ced-cc58-4f59-acf7-a3b8e04a2d8c";
+    public const string CadastroGuid = "b3ec35f5-529c-4ff3-a20f-5e54faa2e496";
     public const string PTabelaNome = "Agenda";
     public const string CamposSqlX = " Agenda.* ";
     public const string CampoCodigo = "ageCodigo";

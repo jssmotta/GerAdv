@@ -50,7 +50,6 @@ public static partial class DBProDespesasDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "ProDespesas";
 #region PropriedadesDaTabela
     public static DBInfoSystem DesLigacaoID => new(0, PTabelaNome, CampoCodigo, LigacaoID, "LigacaoID", "LigacaoID", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "des");
@@ -65,13 +64,12 @@ public static partial class DBProDespesasDicInfo
     public static DBInfoSystem DesTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "des", isRequired: true);
     public static DBInfoSystem DesHistorico => new(0, PTabelaNome, CampoCodigo, Historico, 100, "Historico", "Historico", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "des");
     public static DBInfoSystem DesLivroCaixa => new(0, PTabelaNome, CampoCodigo, LivroCaixa, "LivroCaixa", "LivroCaixa", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "des", isRequired: true);
-    public static DBInfoSystem DesGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "des");
+    public static DBInfoSystem DesGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "des");
     public static DBInfoSystem DesQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "des"); // DBI 11 
     public static DBInfoSystem DesDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "des");
     public static DBInfoSystem DesQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "des"); // DBI 11 
     public static DBInfoSystem DesDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "des");
     public static DBInfoSystem DesVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "des", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

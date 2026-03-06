@@ -34,20 +34,18 @@ public static partial class DBTipoCompromissoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "TipoCompromisso";
 #region PropriedadesDaTabela
     public static DBInfoSystem TipIcone => new(0, PTabelaNome, CampoCodigo, Icone, "Icone", "Icone", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "tip");
     public static DBInfoSystem TipDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tip");
     public static DBInfoSystem TipFinanceiro => new(0, PTabelaNome, CampoCodigo, Financeiro, "Financeiro", "Financeiro", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "tip");
     public static DBInfoSystem TipBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tip", isRequired: true);
-    public static DBInfoSystem TipGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tip");
+    public static DBInfoSystem TipGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tip");
     public static DBInfoSystem TipQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tip"); // DBI 11 
     public static DBInfoSystem TipDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tip");
     public static DBInfoSystem TipQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tip"); // DBI 11 
     public static DBInfoSystem TipDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tip");
     public static DBInfoSystem TipVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tip", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

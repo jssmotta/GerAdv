@@ -36,7 +36,6 @@ public static partial class DBUFDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "UF";
 #region PropriedadesDaTabela
     public static DBInfoSystem UfDDD => new(0, PTabelaNome, CampoCodigo, DDD, 10, "DDD", "DDD", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
@@ -44,13 +43,12 @@ public static partial class DBUFDicInfo
     public static DBInfoSystem UfPais => new(0, PTabelaNome, CampoCodigo, Pais, "Pais", "Pais", EDataTypeSystemInfo.SystemInfoForeingkey, DBPaisesDicInfo.CampoCodigo, DBPaisesDicInfo.TabelaNome, new DBPaisesODicInfo(), false, prefixo: "uf"); // DBI 11 
     public static DBInfoSystem UfTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "uf", isRequired: true);
     public static DBInfoSystem UfDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
-    public static DBInfoSystem UfGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "uf");
     public static DBInfoSystem UfQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "uf"); // DBI 11 
     public static DBInfoSystem UfDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "uf");
     public static DBInfoSystem UfQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "uf"); // DBI 11 
     public static DBInfoSystem UfDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "uf");
     public static DBInfoSystem UfVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "uf", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

@@ -10,7 +10,6 @@ public partial class DBTribunal : VAuditor, ICrud
 #region TableDefinition_Tribunal
     [XmlIgnore]
     public string TabelaNome => "Tribunal";
-
     public DBTribunal()
     {
     }

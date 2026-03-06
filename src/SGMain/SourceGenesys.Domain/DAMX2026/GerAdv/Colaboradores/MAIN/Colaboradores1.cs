@@ -10,7 +10,6 @@ public partial class DBColaboradores : VAuditor, ICrud
 #region TableDefinition_Colaboradores
     [XmlIgnore]
     public string TabelaNome => "Colaboradores";
-
     public DBColaboradores()
     {
     }

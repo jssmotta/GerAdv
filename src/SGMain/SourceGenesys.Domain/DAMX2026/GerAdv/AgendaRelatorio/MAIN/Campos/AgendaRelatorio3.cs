@@ -6,6 +6,7 @@ namespace MenphisSI.SG.GerAdv;
 public partial class DBAgendaRelatorio
 {
     public virtual DateOnly? FvqaData { get; set; }
+
     public virtual int FvqaProcesso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
 
@@ -13,12 +14,15 @@ public partial class DBAgendaRelatorio
     [StringLength(60, ErrorMessage = "A propriedade FxxxParaNome da tabela 'AgendaRelatorio' deve ter no máximo 60 caracteres.")]
     public virtual string? FxxxParaNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim().Length > 60 ? value.trim().Substring(0, 60) : value.trim(); }
+
     // Tracking Code: 20250503
     public virtual string? FxxxParaPessoas {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim(); }
+
     // Tracking Code: 20250503
     public virtual string? FxxxBoxAudiencia {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim(); }
+
     // Tracking Code: 20250503
     public virtual string? FxxxBoxAudienciaMobile {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim(); }
@@ -74,6 +78,14 @@ public partial class DBAgendaRelatorio
     public bool IsStoredProcedureOrView() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => true;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

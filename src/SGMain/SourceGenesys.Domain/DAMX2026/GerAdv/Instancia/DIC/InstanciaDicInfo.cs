@@ -80,7 +80,6 @@ public static partial class DBInstanciaDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Instancia";
 #region PropriedadesDaTabela
     public static DBInfoSystem InsLiminarPedida => new(0, PTabelaNome, CampoCodigo, LiminarPedida, DevourerOne.PMaxSizeCampoMemo, "LiminarPedida", "LiminarPedida", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ins");
@@ -110,13 +109,12 @@ public static partial class DBInstanciaDicInfo
     public static DBInfoSystem InsAccessCode => new(0, PTabelaNome, CampoCodigo, AccessCode, 100, "AccessCode", "AccessCode", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
     public static DBInfoSystem InsJulgador => new(0, PTabelaNome, CampoCodigo, Julgador, "Julgador", "Julgador", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
     public static DBInfoSystem InsZKeyIA => new(0, PTabelaNome, CampoCodigo, ZKeyIA, 25, "ZKeyIA", "ZKeyIA", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
-    public static DBInfoSystem InsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ins");
     public static DBInfoSystem InsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ins"); // DBI 11 
     public static DBInfoSystem InsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ins");
     public static DBInfoSystem InsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ins"); // DBI 11 
     public static DBInfoSystem InsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ins");
     public static DBInfoSystem InsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ins", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

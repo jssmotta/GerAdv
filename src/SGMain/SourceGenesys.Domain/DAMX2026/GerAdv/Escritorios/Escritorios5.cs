@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBEscritorios
 {
-    public const string CadastroGuid = "5f8f8f19-72d5-403a-901f-b613580d2e4f";
+    public const string CadastroGuid = "fed24be5-5c33-4c2c-97bd-aa23bb0dbed8";
     public const string PTabelaNome = "Escritorios";
     public const string CamposSqlX = " Escritorios.* ";
     public const string CampoCodigo = "escCodigo";

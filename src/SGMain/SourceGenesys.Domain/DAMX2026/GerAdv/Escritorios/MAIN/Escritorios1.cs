@@ -10,7 +10,6 @@ public partial class DBEscritorios : VAuditor, ICrud
 #region TableDefinition_Escritorios
     [XmlIgnore]
     public string TabelaNome => "Escritorios";
-
     public DBEscritorios()
     {
     }

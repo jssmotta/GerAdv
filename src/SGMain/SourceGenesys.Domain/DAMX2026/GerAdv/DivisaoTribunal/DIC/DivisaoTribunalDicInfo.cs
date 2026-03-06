@@ -60,7 +60,6 @@ public static partial class DBDivisaoTribunalDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "DivisaoTribunal";
 #region PropriedadesDaTabela
     public static DBInfoSystem DivNumCodigo => new(0, PTabelaNome, CampoCodigo, NumCodigo, "NumCodigo", "NumCodigo", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "div");
@@ -80,13 +79,12 @@ public static partial class DBDivisaoTribunalDicInfo
     public static DBInfoSystem DivAndar => new(0, PTabelaNome, CampoCodigo, Andar, 12, "Andar", "Andar", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "div");
     public static DBInfoSystem DivEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "div", isRequired: true);
     public static DBInfoSystem DivBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "div", isRequired: true);
-    public static DBInfoSystem DivGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "div");
     public static DBInfoSystem DivQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "div"); // DBI 11 
     public static DBInfoSystem DivDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "div");
     public static DBInfoSystem DivQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "div"); // DBI 11 
     public static DBInfoSystem DivDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "div");
     public static DBInfoSystem DivVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "div", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

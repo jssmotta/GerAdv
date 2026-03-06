@@ -11,7 +11,7 @@
   </PropertyGroup>
 
 <ItemGroup>
-<PackageReference Include="KubernetesClient" Version="18.0.13" />
+<PackageReference Include="KubernetesClient" Version="19.0.2" />
 <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
@@ -64,24 +64,26 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />		
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />		
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		<PackageReference Include="NLog" Version="6.1.0" />
+		<PackageReference Include="NLog" Version="6.1.1" />
 	 
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
-    <ProjectReference Include="..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
-    <ProjectReference Include="..\SGMain\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\JsM.AI\JsM.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.KeyStone\MenphisSI.KeyStone.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
     <ProjectReference Include="..\SGMain\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="PERSONALIZADO\Reader\" />
+    <Folder Include="SG_GENERATED_CODE\" />
   </ItemGroup>
 
 </Project>

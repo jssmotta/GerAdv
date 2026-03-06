@@ -84,7 +84,6 @@ public static partial class DBOponentesDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Oponentes";
 #region PropriedadesDaTabela
     public static DBInfoSystem OpoEMPFuncao => new(0, PTabelaNome, CampoCodigo, EMPFuncao, "EMPFuncao", "EMPFuncao", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opo");
@@ -116,13 +115,12 @@ public static partial class DBOponentesDicInfo
     public static DBInfoSystem OpoTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "opo");
     public static DBInfoSystem OpoEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "opo", isRequired: true);
     public static DBInfoSystem OpoBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "opo", isRequired: true);
-    public static DBInfoSystem OpoGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "opo");
     public static DBInfoSystem OpoQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opo"); // DBI 11 
     public static DBInfoSystem OpoDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "opo");
     public static DBInfoSystem OpoQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opo"); // DBI 11 
     public static DBInfoSystem OpoDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "opo");
     public static DBInfoSystem OpoVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "opo", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

@@ -10,7 +10,6 @@ public partial class DBAgendaRelatorio : VNoAuditor
 #region SQLDefinition_AgendaRelatorio
     [XmlIgnore]
     public string TabelaNome => "AgendaRelatorio";
-
     public DBAgendaRelatorio()
     {
     }

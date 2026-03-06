@@ -31,6 +31,14 @@ public partial class DBColaboradoresODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBColaboradoresDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBColaboradoresODicInfo : IODicInfo
     public static string TTablePrefix => DBColaboradoresDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass, DBColaboradoresDicInfo.ColEtiqueta, DBColaboradoresDicInfo.ColAni, DBColaboradoresDicInfo.ColBold, DBColaboradoresDicInfo.ColQuemCad, DBColaboradoresDicInfo.ColDtCad, DBColaboradoresDicInfo.ColQuemAtu, DBColaboradoresDicInfo.ColDtAtu, DBColaboradoresDicInfo.ColVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass, DBColaboradoresDicInfo.ColEtiqueta, DBColaboradoresDicInfo.ColAni, DBColaboradoresDicInfo.ColBold];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBColaboradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCliente", "colCodigo", "colNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCliente", "colCodigo", "colNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBColaboradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

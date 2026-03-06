@@ -10,7 +10,6 @@ public partial class DBTipoCompromisso : VAuditor, ICrud
 #region TableDefinition_TipoCompromisso
     [XmlIgnore]
     public string TabelaNome => "TipoCompromisso";
-
     public DBTipoCompromisso()
     {
     }

@@ -10,7 +10,6 @@ public partial class DBPaises : VAuditor, ICrud
 #region TableDefinition_Paises
     [XmlIgnore]
     public string TabelaNome => "Paises";
-
     public DBPaises()
     {
     }

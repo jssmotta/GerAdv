@@ -10,7 +10,6 @@ public partial class DBForo : VAuditor, ICrud
 #region TableDefinition_Foro
     [XmlIgnore]
     public string TabelaNome => "Foro";
-
     public DBForo()
     {
     }

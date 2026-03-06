@@ -32,7 +32,6 @@ public static partial class DBRitoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Rito";
 #region PropriedadesDaTabela
     public static DBInfoSystem RitDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 20, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "rit");
@@ -44,7 +43,6 @@ public static partial class DBRitoDicInfo
     public static DBInfoSystem RitQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "rit"); // DBI 11 
     public static DBInfoSystem RitDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "rit");
     public static DBInfoSystem RitVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "rit", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

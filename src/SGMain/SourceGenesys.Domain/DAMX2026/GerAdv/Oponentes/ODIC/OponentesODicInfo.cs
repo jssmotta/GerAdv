@@ -31,6 +31,14 @@ public partial class DBOponentesODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBOponentesDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBOponentesODicInfo : IODicInfo
     public static string TTablePrefix => DBOponentesDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGuid, DBOponentesDicInfo.OpoQuemCad, DBOponentesDicInfo.OpoDtCad, DBOponentesDicInfo.OpoQuemAtu, DBOponentesDicInfo.OpoDtAtu, DBOponentesDicInfo.OpoVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBOponentesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo", "opoNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo", "opoNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBOponentesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

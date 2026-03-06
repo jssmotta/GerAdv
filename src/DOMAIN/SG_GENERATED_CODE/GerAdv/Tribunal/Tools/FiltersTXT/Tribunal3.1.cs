@@ -149,7 +149,7 @@ CAMPOS filterTribunal:(Tribunal)
 - nome: _nome ou descrição para Tribunal;
 - area: número ou IDs;
 - justica: número ou IDs;
-- descricao: Descrição;
+- descricao: Descrições;
 - instancia: número ou IDs;
 - sigla: Sigla;
 - web: Web;

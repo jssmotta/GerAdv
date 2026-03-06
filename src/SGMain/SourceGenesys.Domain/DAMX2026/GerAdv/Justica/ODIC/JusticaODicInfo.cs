@@ -31,6 +31,14 @@ public partial class DBJusticaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBJusticaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBJusticaODicInfo : IODicInfo
     public static string TTablePrefix => DBJusticaDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBJusticaDicInfo.JusNome, DBJusticaDicInfo.JusBold, DBJusticaDicInfo.JusGuid, DBJusticaDicInfo.JusQuemCad, DBJusticaDicInfo.JusDtCad, DBJusticaDicInfo.JusQuemAtu, DBJusticaDicInfo.JusDtAtu, DBJusticaDicInfo.JusVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBJusticaDicInfo.JusNome, DBJusticaDicInfo.JusBold, DBJusticaDicInfo.JusGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["jusCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["jusCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBJusticaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["jusCodigo", "jusNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["jusCodigo", "jusNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBJusticaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

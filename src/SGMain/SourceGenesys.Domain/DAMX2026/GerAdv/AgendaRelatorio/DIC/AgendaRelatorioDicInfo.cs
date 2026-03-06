@@ -35,20 +35,18 @@ public static partial class DBAgendaRelatorioDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "AgendaRelatorio";
 #region PropriedadesDaTabela
-    public static DBInfoSystem IVqaData => new(0, PTabelaNome, CampoCodigo, vqaData, "Data", "Data", EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "");
-    public static DBInfoSystem IVqaProcesso => new(0, PTabelaNome, CampoCodigo, vqaProcesso, "Processo", "Processo", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "");
-    public static DBInfoSystem IXxxParaNome => new(0, PTabelaNome, CampoCodigo, xxxParaNome, 60, "ParaNome", "ParaNome", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxParaPessoas => new(0, PTabelaNome, CampoCodigo, xxxParaPessoas, DevourerOne.PMaxSizeCampoMemo, "ParaPessoas", "ParaPessoas", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxBoxAudiencia => new(0, PTabelaNome, CampoCodigo, xxxBoxAudiencia, DevourerOne.PMaxSizeCampoMemo, "BoxAudiencia", "BoxAudiencia", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxBoxAudienciaMobile => new(0, PTabelaNome, CampoCodigo, xxxBoxAudienciaMobile, DevourerOne.PMaxSizeCampoMemo, "BoxAudienciaMobile", "BoxAudienciaMobile", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxNomeAdvogado => new(0, PTabelaNome, CampoCodigo, xxxNomeAdvogado, 50, "NomeAdvogado", "NomeAdvogado", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxNomeForo => new(0, PTabelaNome, CampoCodigo, xxxNomeForo, 40, "NomeForo", "NomeForo", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxNomeJustica => new(0, PTabelaNome, CampoCodigo, xxxNomeJustica, 50, "NomeJustica", "NomeJustica", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
-    public static DBInfoSystem IXxxNomeArea => new(0, PTabelaNome, CampoCodigo, xxxNomeArea, 40, "NomeArea", "NomeArea", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
-
+    public static DBInfoSystem IVqaData => new(0, PTabelaNome, CampoCodigo, vqaData, "vqaData", "vqaData", EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "");
+    public static DBInfoSystem IVqaProcesso => new(0, PTabelaNome, CampoCodigo, vqaProcesso, "vqaProcesso", "vqaProcesso", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "");
+    public static DBInfoSystem IXxxParaNome => new(0, PTabelaNome, CampoCodigo, xxxParaNome, 60, "xxxParaNome", "xxxParaNome", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxParaPessoas => new(0, PTabelaNome, CampoCodigo, xxxParaPessoas, DevourerOne.PMaxSizeCampoMemo, "xxxParaPessoas", "xxxParaPessoas", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxBoxAudiencia => new(0, PTabelaNome, CampoCodigo, xxxBoxAudiencia, DevourerOne.PMaxSizeCampoMemo, "xxxBoxAudiencia", "xxxBoxAudiencia", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxBoxAudienciaMobile => new(0, PTabelaNome, CampoCodigo, xxxBoxAudienciaMobile, DevourerOne.PMaxSizeCampoMemo, "xxxBoxAudienciaMobile", "xxxBoxAudienciaMobile", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxNomeAdvogado => new(0, PTabelaNome, CampoCodigo, xxxNomeAdvogado, 50, "xxxNomeAdvogado", "xxxNomeAdvogado", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxNomeForo => new(0, PTabelaNome, CampoCodigo, xxxNomeForo, 40, "xxxNomeForo", "xxxNomeForo", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxNomeJustica => new(0, PTabelaNome, CampoCodigo, xxxNomeJustica, 50, "xxxNomeJustica", "xxxNomeJustica", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
+    public static DBInfoSystem IXxxNomeArea => new(0, PTabelaNome, CampoCodigo, xxxNomeArea, 40, "xxxNomeArea", "xxxNomeArea", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "");
 #endregion
     [Serializable]
     public enum NomesCamposTabela

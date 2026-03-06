@@ -102,7 +102,6 @@ public static partial class DBAdvogadosDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Advogados";
 #region PropriedadesDaTabela
     public static DBInfoSystem AdvCargo => new(0, PTabelaNome, CampoCodigo, Cargo, "Cargo", "Cargo", EDataTypeSystemInfo.SystemInfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false, prefixo: "adv"); // DBI 11 
@@ -143,13 +142,12 @@ public static partial class DBAdvogadosDicInfo
     public static DBInfoSystem AdvEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "adv", isRequired: true);
     public static DBInfoSystem AdvAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "adv", isRequired: true);
     public static DBInfoSystem AdvBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "adv", isRequired: true);
-    public static DBInfoSystem AdvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "adv");
     public static DBInfoSystem AdvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "adv"); // DBI 11 
     public static DBInfoSystem AdvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "adv");
     public static DBInfoSystem AdvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "adv"); // DBI 11 
     public static DBInfoSystem AdvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "adv");
     public static DBInfoSystem AdvVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "adv", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

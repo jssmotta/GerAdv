@@ -14,3 +14,4 @@ global using MenphisSI.GerAdv.Metrics;
 global using MenphisSI.GerAdv.Services;
 global using MenphisSI.Shared.BaseCommon.VoiceFilter;
 global using MenphisSI.Shared.BaseCommon.CommandVoice;
+global using MenphisSI.Shared.BaseCommon.API.Models;

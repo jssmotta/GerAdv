@@ -10,7 +10,6 @@ public partial class DBTiposAcao : VAuditor, ICrud
 #region TableDefinition_TiposAcao
     [XmlIgnore]
     public string TabelaNome => "TiposAcao";
-
     public DBTiposAcao()
     {
     }

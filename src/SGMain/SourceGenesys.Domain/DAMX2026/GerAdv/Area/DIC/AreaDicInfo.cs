@@ -30,18 +30,16 @@ public static partial class DBAreaDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Area";
 #region PropriedadesDaTabela
     public static DBInfoSystem AreDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "are");
     public static DBInfoSystem AreTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "are");
-    public static DBInfoSystem AreGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "are");
+    public static DBInfoSystem AreGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "are");
     public static DBInfoSystem AreQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "are"); // DBI 11 
     public static DBInfoSystem AreDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "are");
     public static DBInfoSystem AreQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "are"); // DBI 11 
     public static DBInfoSystem AreDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "are");
     public static DBInfoSystem AreVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "are", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

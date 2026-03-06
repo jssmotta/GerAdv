@@ -10,7 +10,6 @@ public partial class DBOperador : VAuditor, ICrud
 #region TableDefinition_Operador
     [XmlIgnore]
     public string TabelaNome => "Operador";
-
     public DBOperador()
     {
     }

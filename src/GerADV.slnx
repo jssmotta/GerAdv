@@ -9,12 +9,45 @@
   </Configurations>
   
   <Folder Name="/SGMain/">
-    <Project Path="SGMain/Infrastructure/Infrastructure.csproj">
+    <Project Path="SGMain/SourceGenesys.Domain/SourceGenesys.Domain.csproj">
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/SHARED/">
+    <Project Path="../../SG/SHARED/MenphisSI.GerEntityTools/MenphisSI.GerEntityTools.csproj">
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/JsM.AI/JsM.OpenAI.csproj" Id="a6efbb8f-1aa7-4b9d-886a-8786367e7c5d">
+      <BuildType Solution="DEBUG_API_URL|*" Project="PIXBOL" />
+      <BuildType Solution="Development|*" Project="PIXBOL" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Crypto/MenphisSI.Crypto.csproj">
+      <BuildType Solution="DEBUG_API_URL|*" Project="LocalHost" />
+      <BuildType Solution="Development|*" Project="APIADMIN" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.KeyStone/MenphisSI.KeyStone.csproj">
+      <BuildType Solution="DEBUG_API_URL|*" Project="Debug" />
+      <BuildType Solution="Development|*" Project="Release" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.AI/MenphisSI.Shared.AI.csproj">
       <BuildType Solution="DEBUG_API_URL|*" Project="Debug" />
       <BuildType Solution="Development|*" Project="Release" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>
-    <Project Path="SGMain/SourceGenesys.Domain/SourceGenesys.Domain.csproj">
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.BaseCommon.csproj">
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.Infrastructure/MenphisSI.Shared.Infrastructure.csproj">
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.SGMain/MenphisSI.Shared.SGMain.csproj">
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.SourgeGenesys.Shared/MenphisSI.Shared.SourgeGenesys.Shared.csproj">
+      <BuildType Solution="DEBUG_API_URL|*" Project="Debug" />
+      <BuildType Solution="Development|*" Project="Release" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>

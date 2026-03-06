@@ -31,6 +31,14 @@ public partial class DBAreaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBAreaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBAreaODicInfo : IODicInfo
     public static string TTablePrefix => DBAreaDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBAreaDicInfo.AreDescricao, DBAreaDicInfo.AreTop, DBAreaDicInfo.AreGuid, DBAreaDicInfo.AreQuemCad, DBAreaDicInfo.AreDtCad, DBAreaDicInfo.AreQuemAtu, DBAreaDicInfo.AreDtAtu, DBAreaDicInfo.AreVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAreaDicInfo.AreDescricao, DBAreaDicInfo.AreTop, DBAreaDicInfo.AreGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["areCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["areCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAreaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["areCodigo", "areDescricao"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["areCodigo", "areDescricao"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAreaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

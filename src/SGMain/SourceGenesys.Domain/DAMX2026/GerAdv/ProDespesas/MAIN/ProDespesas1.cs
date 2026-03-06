@@ -10,51 +10,36 @@ public partial class DBProDespesas : VAuditor, ICrud
 #region TableDefinition_ProDespesas
     [XmlIgnore]
     public string TabelaNome => "ProDespesas";
-
     public DBProDespesas()
     {
     }
 
 #endregion
-    public DBProDespesas(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    // REF. 250325
+    public DBProDespesas(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        // Tracking: 250605-0
+        // Tracking: 250605-3
         if (oCnn is null)
             return;
-        if (string.IsNullOrEmpty(fullSql) && !string.IsNullOrEmpty(cNome))
+        if (string.IsNullOrEmpty(fullSql))
         {
-            if (cNome is null)
+            if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                return;
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                if (ds != null)
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
-
-            sqlWhere = cNome;
-        }
-
-        if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
-        {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
-            if (ds != null)
-                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            else
+            {
+                throw new Exception("Erro de parâmetros sqlWhere: ProDespesas");
+            }
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
-            cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
-            using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
                 LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
-    }
-
-    // ReSharper disable once UnusedParameter.Local
-    public DBProDespesas(in string? sqlWhere, MsiSqlConnection? oCnn)
-    {
-        if (oCnn == null)
-            return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_ProDespesas
@@ -169,7 +154,6 @@ public partial class DBProDespesas : VAuditor, ICrud
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

@@ -65,7 +65,6 @@ public static partial class DBColaboradoresDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Colaboradores";
 #region PropriedadesDaTabela
     public static DBInfoSystem ColCargo => new(0, PTabelaNome, CampoCodigo, Cargo, "Cargo", "Cargo", EDataTypeSystemInfo.SystemInfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false, prefixo: "col"); // DBI 11 
@@ -93,7 +92,6 @@ public static partial class DBColaboradoresDicInfo
     public static DBInfoSystem ColQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "col"); // DBI 11 
     public static DBInfoSystem ColDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "col");
     public static DBInfoSystem ColVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "col", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

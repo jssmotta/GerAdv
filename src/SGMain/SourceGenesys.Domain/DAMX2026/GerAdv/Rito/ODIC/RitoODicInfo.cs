@@ -31,6 +31,14 @@ public partial class DBRitoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBRitoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBRitoODicInfo : IODicInfo
     public static string TTablePrefix => DBRitoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGuid, DBRitoDicInfo.RitQuemCad, DBRitoDicInfo.RitDtCad, DBRitoDicInfo.RitQuemAtu, DBRitoDicInfo.RitDtAtu, DBRitoDicInfo.RitVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ritCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ritCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBRitoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ritCodigo", "ritDescricao"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ritCodigo", "ritDescricao"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBRitoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

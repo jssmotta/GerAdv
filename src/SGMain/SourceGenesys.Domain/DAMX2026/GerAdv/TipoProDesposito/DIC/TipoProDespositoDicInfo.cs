@@ -17,11 +17,9 @@ public static partial class DBTipoProDespositoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "TipoProDesposito";
 #region PropriedadesDaTabela
     public static DBInfoSystem TpdNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tpd", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

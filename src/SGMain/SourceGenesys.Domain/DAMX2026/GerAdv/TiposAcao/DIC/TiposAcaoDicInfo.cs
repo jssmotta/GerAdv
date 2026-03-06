@@ -32,19 +32,17 @@ public static partial class DBTiposAcaoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "TiposAcao";
 #region PropriedadesDaTabela
     public static DBInfoSystem TacNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tac");
     public static DBInfoSystem TacInativo => new(0, PTabelaNome, CampoCodigo, Inativo, "Inativo", "Inativo", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "tac", isRequired: true);
     public static DBInfoSystem TacBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tac", isRequired: true);
-    public static DBInfoSystem TacGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tac");
+    public static DBInfoSystem TacGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tac");
     public static DBInfoSystem TacQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tac"); // DBI 11 
     public static DBInfoSystem TacDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tac");
     public static DBInfoSystem TacQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tac"); // DBI 11 
     public static DBInfoSystem TacDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tac");
     public static DBInfoSystem TacVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tac", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

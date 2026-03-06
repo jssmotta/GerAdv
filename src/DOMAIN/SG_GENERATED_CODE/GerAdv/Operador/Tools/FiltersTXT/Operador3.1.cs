@@ -87,7 +87,7 @@ CAMPOS filterOperador:(Operador)
 - ramal: Ramal;
 - cadid: número ou IDs;
 - excluido: Excluido;
-- situacao: Situação;
+- situacao: Situacao;
 - computador: número ou IDs;
 - minhadescricao: MinhaDescricao;
 - ultimologoff: UltimoLogoff;

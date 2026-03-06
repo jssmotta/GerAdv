@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBTipoRecurso
 {
-    public const string CadastroGuid = "21dc6657-9979-42b9-b6ec-aada56fedf40";
+    public const string CadastroGuid = "d4506452-134e-4b14-a550-768b91c01a15";
     public const string PTabelaNome = "TipoRecurso";
     public const string CamposSqlX = " TipoRecurso.* ";
     public const string CampoCodigo = "trcCodigo";

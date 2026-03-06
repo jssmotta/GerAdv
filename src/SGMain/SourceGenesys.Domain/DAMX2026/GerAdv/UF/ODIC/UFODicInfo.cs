@@ -31,6 +31,14 @@ public partial class DBUFODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBUFDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBUFODicInfo : IODicInfo
     public static string TTablePrefix => DBUFDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBUFDicInfo.UfDDD, DBUFDicInfo.UfID, DBUFDicInfo.UfPais, DBUFDicInfo.UfTop, DBUFDicInfo.UfDescricao, DBUFDicInfo.UfGuid, DBUFDicInfo.UfQuemCad, DBUFDicInfo.UfDtCad, DBUFDicInfo.UfQuemAtu, DBUFDicInfo.UfDtAtu, DBUFDicInfo.UfVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBUFDicInfo.UfDDD, DBUFDicInfo.UfID, DBUFDicInfo.UfPais, DBUFDicInfo.UfTop, DBUFDicInfo.UfDescricao, DBUFDicInfo.UfGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ufCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ufCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBUFDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ufCodigo", "ufID", "ufPais"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ufCodigo", "ufID", "ufPais"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBUFDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

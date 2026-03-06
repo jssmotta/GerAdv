@@ -31,6 +31,14 @@ public partial class DBPaisesODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBPaisesDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBPaisesODicInfo : IODicInfo
     public static string TTablePrefix => DBPaisesDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBPaisesDicInfo.PaiNome, DBPaisesDicInfo.PaiGuid, DBPaisesDicInfo.PaiQuemCad, DBPaisesDicInfo.PaiDtCad, DBPaisesDicInfo.PaiQuemAtu, DBPaisesDicInfo.PaiDtAtu, DBPaisesDicInfo.PaiVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBPaisesDicInfo.PaiNome, DBPaisesDicInfo.PaiGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["paiCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["paiCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBPaisesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["paiCodigo", "paiNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["paiCodigo", "paiNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBPaisesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

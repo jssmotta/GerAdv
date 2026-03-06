@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBClientes
 {
-    public const string CadastroGuid = "68f80361-b762-4d58-8b83-e1a790183858";
+    public const string CadastroGuid = "09c94e6c-b3f4-4856-a446-6d739c79d880";
     public const string PTabelaNome = "Clientes";
     public const string CamposSqlX = " Clientes.* ";
     public const string CampoCodigo = "cliCodigo";

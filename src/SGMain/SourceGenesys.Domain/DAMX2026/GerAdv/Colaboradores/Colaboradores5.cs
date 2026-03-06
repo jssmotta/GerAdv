@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBColaboradores
 {
-    public const string CadastroGuid = "9842827f-6df0-40e6-b3c2-ceca2fbb661f";
+    public const string CadastroGuid = "872a0432-ac36-4331-990c-80f1f8f3d796";
     public const string PTabelaNome = "Colaboradores";
     public const string CamposSqlX = " Colaboradores.* ";
     public const string CampoCodigo = "colCodigo";

@@ -55,7 +55,6 @@ public static partial class DBForoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Foro";
 #region PropriedadesDaTabela
     public static DBInfoSystem ForEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "for");
@@ -78,7 +77,6 @@ public static partial class DBForoDicInfo
     public static DBInfoSystem ForQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "for"); // DBI 11 
     public static DBInfoSystem ForDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "for");
     public static DBInfoSystem ForVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "for", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

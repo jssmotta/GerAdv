@@ -31,6 +31,14 @@ public partial class DBInstanciaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBInstanciaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBInstanciaODicInfo : IODicInfo
     public static string TTablePrefix => DBInstanciaDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGuid, DBInstanciaDicInfo.InsQuemCad, DBInstanciaDicInfo.InsDtCad, DBInstanciaDicInfo.InsQuemAtu, DBInstanciaDicInfo.InsDtAtu, DBInstanciaDicInfo.InsVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo", "insDivisao", "insNroProcesso", "insSubDivisao"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo", "insDivisao", "insNroProcesso", "insSubDivisao"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

@@ -10,7 +10,6 @@ public partial class DBAgendaSemana : VNoAuditor
 #region SQLDefinition_AgendaSemana
     [XmlIgnore]
     public string TabelaNome => "AgendaSemana";
-
     public DBAgendaSemana()
     {
     }

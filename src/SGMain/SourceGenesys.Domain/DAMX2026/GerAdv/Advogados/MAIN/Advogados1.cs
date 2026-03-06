@@ -10,7 +10,6 @@ public partial class DBAdvogados : VAuditor, ICrud
 #region TableDefinition_Advogados
     [XmlIgnore]
     public string TabelaNome => "Advogados";
-
     public DBAdvogados()
     {
     }

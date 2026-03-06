@@ -27,7 +27,6 @@ public static partial class DBFuncaoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Funcao";
 #region PropriedadesDaTabela
     public static DBInfoSystem FunDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
@@ -36,7 +35,6 @@ public static partial class DBFuncaoDicInfo
     public static DBInfoSystem FunQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
     public static DBInfoSystem FunDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "fun");
     public static DBInfoSystem FunVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "fun", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

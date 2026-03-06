@@ -31,6 +31,14 @@ public partial class DBTribunalODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBTribunalDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBTribunalODicInfo : IODicInfo
     public static string TTablePrefix => DBTribunalDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGuid, DBTribunalDicInfo.TriQuemCad, DBTribunalDicInfo.TriDtCad, DBTribunalDicInfo.TriQuemAtu, DBTribunalDicInfo.TriDtAtu, DBTribunalDicInfo.TriVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triArea", "triCodigo", "triDescricao", "triInstancia", "triJustica"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triArea", "triCodigo", "triDescricao", "triInstancia", "triJustica"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

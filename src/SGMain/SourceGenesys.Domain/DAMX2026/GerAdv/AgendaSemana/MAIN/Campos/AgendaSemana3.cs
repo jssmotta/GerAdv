@@ -9,29 +9,40 @@ public partial class DBAgendaSemana
     [StringLength(60, ErrorMessage = "A propriedade FParaNome da tabela 'AgendaSemana' deve ter no máximo 60 caracteres.")]
     public virtual string? FParaNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim().Length > 60 ? value.trim().Substring(0, 60) : value.trim(); }
+
     public virtual DateOnly? FData { get; set; }
+
     public virtual int FFuncionario {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     public virtual int FAdvogado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     public virtual TimeOnly? FHora { get; set; }
+
     public virtual int FTipoCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     // Tracking Code: 20250503
     public virtual string? FCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim(); }
+
     public virtual bool FConcluido {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     public virtual bool FLiberado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     public virtual bool FImportante {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
+
     public virtual TimeOnly? FHoraFinal { get; set; }
 
     // Tracking Code: 20250503
     [StringLength(80, ErrorMessage = "A propriedade FNome da tabela 'AgendaSemana' deve ter no máximo 80 caracteres.")]
     public virtual string? FNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field ?? string.Empty; set => field = value.trim().Length > 80 ? value.trim().Substring(0, 80) : value.trim(); }
+
     public virtual int FCliente {[MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field; set => field = value; }
 
@@ -76,6 +87,14 @@ public partial class DBAgendaSemana
     public bool IsStoredProcedureOrView() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => true;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -10,7 +10,6 @@ public partial class DBFuncao : VAuditor, ICrud
 #region TableDefinition_Funcao
     [XmlIgnore]
     public string TabelaNome => "Funcao";
-
     public DBFuncao()
     {
     }

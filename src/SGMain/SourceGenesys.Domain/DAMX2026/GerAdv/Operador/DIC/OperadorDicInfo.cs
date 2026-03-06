@@ -92,24 +92,23 @@ public static partial class DBOperadorDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Operador";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OperEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "E-mail pessoal do usuário, nunca enviaremos emails para este endereço, ele é apenas para controle interno do sistema, para diferenciar os usuários.", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperPasta => new(0, PTabelaNome, CampoCodigo, Pasta, DevourerOne.PMaxSizeCampoMemo, "Pasta", "Pasta", EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperTelefonista => new(0, PTabelaNome, CampoCodigo, Telefonista, "Telefonista", "Telefonista", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
-    public static DBInfoSystem OperMaster => new(0, PTabelaNome, CampoCodigo, Master, "Master", "Master", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperMaster => new(0, PTabelaNome, CampoCodigo, Master, "Master", "Perfil de acesso master, com permissões completas para acessar todas as funcionalidades do sistema, incluindo configurações avançadas e gerenciamento de usuários.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
     public static DBInfoSystem OperNome => new(0, PTabelaNome, CampoCodigo, Nome, 40, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "oper");
     public static DBInfoSystem OperNick => new(0, PTabelaNome, CampoCodigo, Nick, 50, "Nick", "Nick", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperRamal => new(0, PTabelaNome, CampoCodigo, Ramal, 20, "Ramal", "Ramal", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperCadID => new(0, PTabelaNome, CampoCodigo, CadID, "CadID", "CadID", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
     public static DBInfoSystem OperCadCod => new(0, PTabelaNome, CampoCodigo, CadCod, "CadCod", "CadCod", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
-    public static DBInfoSystem OperExcluido => new(0, PTabelaNome, CampoCodigo, Excluido, "Excluido", "Excluido", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
-    public static DBInfoSystem OperSituacao => new(0, PTabelaNome, CampoCodigo, Situacao, "Situação", "Situação", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperExcluido => new(0, PTabelaNome, CampoCodigo, Excluido, "Excluido", "Marque esta opção para excluir o usuário do sistema, isso irá impedir que o usuário tenha acesso ao sistema e suas funcionalidades. Mas ele ainda permanecerá no cadastro para sempre por motivos da LGPD.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperSituacao => new(0, PTabelaNome, CampoCodigo, Situacao, "Situação", "Situação do usuário no sistema, indicando se ele está ativo ou inativo, isso pode ser usado para controlar o acesso ao sistema, por exemplo, inativando o usuário quando ele está de licença.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
     public static DBInfoSystem OperComputador => new(0, PTabelaNome, CampoCodigo, Computador, "Computador", "Computador", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
     public static DBInfoSystem OperMinhaDescricao => new(0, PTabelaNome, CampoCodigo, MinhaDescricao, 255, "MinhaDescricao", "MinhaDescricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperUltimoLogoff => new(0, PTabelaNome, CampoCodigo, UltimoLogoff, "UltimoLogoff", "UltimoLogoff", EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "oper");
-    public static DBInfoSystem OperEMailNet => new(0, PTabelaNome, CampoCodigo, EMailNet, 100, "EMailNet", "EMailNet", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperEMailNet => new(0, PTabelaNome, CampoCodigo, EMailNet, 100, "EMailNet", "E-mail da conta no sistema, depois de informado em um novo usuário não poderá mais ser alterado, é recomendado usar um e-mail válido para receber notificações do sistema.", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperOnlineIP => new(0, PTabelaNome, CampoCodigo, OnlineIP, 50, "OnlineIP", "OnlineIP", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperOnLine => new(0, PTabelaNome, CampoCodigo, OnLine, "OnLine", "OnLine", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
     public static DBInfoSystem OperSysOp => new(0, PTabelaNome, CampoCodigo, SysOp, "SysOp", "SysOp", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
@@ -118,7 +117,7 @@ public static partial class DBOperadorDicInfo
     public static DBInfoSystem OperIsFinanceiro => new(0, PTabelaNome, CampoCodigo, IsFinanceiro, "IsFinanceiro", "IsFinanceiro", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
     public static DBInfoSystem OperTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
     public static DBInfoSystem OperSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "oper");
-    public static DBInfoSystem OperBasico => new(0, PTabelaNome, CampoCodigo, Basico, "Basico", "Basico", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
+    public static DBInfoSystem OperBasico => new(0, PTabelaNome, CampoCodigo, Basico, "Basico", "Perfil de acesso básico, com permissões limitadas para acessar apenas as funcionalidades essenciais do sistema.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
     public static DBInfoSystem OperExterno => new(0, PTabelaNome, CampoCodigo, Externo, "Externo", "Externo", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
     public static DBInfoSystem OperSenha256 => new(0, PTabelaNome, CampoCodigo, Senha256, 4000, "Senha256", "Senha256", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
     public static DBInfoSystem OperEMailConfirmado => new(0, PTabelaNome, CampoCodigo, EMailConfirmado, "EMailConfirmado", "EMailConfirmado", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper");
@@ -134,7 +133,6 @@ public static partial class DBOperadorDicInfo
     public static DBInfoSystem OperQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
     public static DBInfoSystem OperDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "oper");
     public static DBInfoSystem OperVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "oper");
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

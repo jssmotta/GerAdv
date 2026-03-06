@@ -10,7 +10,6 @@ public partial class DBUF : VAuditor, ICrud
 #region TableDefinition_UF
     [XmlIgnore]
     public string TabelaNome => "UF";
-
     public DBUF()
     {
     }

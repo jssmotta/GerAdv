@@ -10,7 +10,6 @@ public partial class DBArea : VAuditor, ICrud
 #region TableDefinition_Area
     [XmlIgnore]
     public string TabelaNome => "Area";
-
     public DBArea()
     {
     }

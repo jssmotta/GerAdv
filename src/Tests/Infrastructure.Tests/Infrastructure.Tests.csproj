@@ -35,6 +35,5 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-      <ProjectReference Include="..\..\SGMain\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 </Project>

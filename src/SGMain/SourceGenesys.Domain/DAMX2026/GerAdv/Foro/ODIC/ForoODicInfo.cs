@@ -31,6 +31,14 @@ public partial class DBForoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBForoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBForoODicInfo : IODicInfo
     public static string TTablePrefix => DBForoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBForoDicInfo.ForEMail, DBForoDicInfo.ForNome, DBForoDicInfo.ForUnico, DBForoDicInfo.ForCidade, DBForoDicInfo.ForSite, DBForoDicInfo.ForEndereco, DBForoDicInfo.ForBairro, DBForoDicInfo.ForFone, DBForoDicInfo.ForFax, DBForoDicInfo.ForCEP, DBForoDicInfo.ForOBS, DBForoDicInfo.ForUnicoConfirmado, DBForoDicInfo.ForWeb, DBForoDicInfo.ForEtiqueta, DBForoDicInfo.ForBold, DBForoDicInfo.ForQuemCad, DBForoDicInfo.ForDtCad, DBForoDicInfo.ForQuemAtu, DBForoDicInfo.ForDtAtu, DBForoDicInfo.ForVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBForoDicInfo.ForEMail, DBForoDicInfo.ForNome, DBForoDicInfo.ForUnico, DBForoDicInfo.ForCidade, DBForoDicInfo.ForSite, DBForoDicInfo.ForEndereco, DBForoDicInfo.ForBairro, DBForoDicInfo.ForFone, DBForoDicInfo.ForFax, DBForoDicInfo.ForCEP, DBForoDicInfo.ForOBS, DBForoDicInfo.ForUnicoConfirmado, DBForoDicInfo.ForWeb, DBForoDicInfo.ForEtiqueta, DBForoDicInfo.ForBold];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBForoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBForoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

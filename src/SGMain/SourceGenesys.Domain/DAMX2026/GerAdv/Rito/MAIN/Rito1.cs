@@ -10,7 +10,6 @@ public partial class DBRito : VAuditor, ICrud
 #region TableDefinition_Rito
     [XmlIgnore]
     public string TabelaNome => "Rito";
-
     public DBRito()
     {
     }

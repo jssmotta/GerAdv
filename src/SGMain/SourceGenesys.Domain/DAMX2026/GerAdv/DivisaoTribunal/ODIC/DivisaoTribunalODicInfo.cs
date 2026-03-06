@@ -31,6 +31,14 @@ public partial class DBDivisaoTribunalODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBDivisaoTribunalDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBDivisaoTribunalODicInfo : IODicInfo
     public static string TTablePrefix => DBDivisaoTribunalDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGuid, DBDivisaoTribunalDicInfo.DivQuemCad, DBDivisaoTribunalDicInfo.DivDtCad, DBDivisaoTribunalDicInfo.DivQuemAtu, DBDivisaoTribunalDicInfo.DivDtAtu, DBDivisaoTribunalDicInfo.DivVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBDivisaoTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divArea", "divCidade", "divCodigo", "divForo", "divJustica", "divNumCodigo", "divTribunal"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divArea", "divCidade", "divCodigo", "divForo", "divJustica", "divNumCodigo", "divTribunal"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBDivisaoTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

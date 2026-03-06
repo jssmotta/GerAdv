@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBCidade
 {
-    public const string CadastroGuid = "91c4691e-a73c-4ed9-9b6f-4db05b38c736";
+    public const string CadastroGuid = "b19edb23-2097-4efe-9f65-a3ef86ce76db";
     public const string PTabelaNome = "Cidade";
     public const string CamposSqlX = " Cidade.* ";
     public const string CampoCodigo = "cidCodigo";

@@ -10,7 +10,6 @@ public partial class DBJustica : VAuditor, ICrud
 #region TableDefinition_Justica
     [XmlIgnore]
     public string TabelaNome => "Justica";
-
     public DBJustica()
     {
     }

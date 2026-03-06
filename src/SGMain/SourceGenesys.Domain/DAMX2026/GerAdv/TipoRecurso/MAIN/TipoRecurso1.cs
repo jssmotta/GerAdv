@@ -10,7 +10,6 @@ public partial class DBTipoRecurso : VAuditor, ICrud
 #region TableDefinition_TipoRecurso
     [XmlIgnore]
     public string TabelaNome => "TipoRecurso";
-
     public DBTipoRecurso()
     {
     }

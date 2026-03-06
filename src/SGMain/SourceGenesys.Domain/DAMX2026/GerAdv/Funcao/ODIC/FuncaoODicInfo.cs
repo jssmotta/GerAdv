@@ -31,6 +31,14 @@ public partial class DBFuncaoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBFuncaoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBFuncaoODicInfo : IODicInfo
     public static string TTablePrefix => DBFuncaoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBFuncaoDicInfo.FunDescricao, DBFuncaoDicInfo.FunQuemCad, DBFuncaoDicInfo.FunDtCad, DBFuncaoDicInfo.FunQuemAtu, DBFuncaoDicInfo.FunDtAtu, DBFuncaoDicInfo.FunVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFuncaoDicInfo.FunDescricao];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBFuncaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBFuncaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

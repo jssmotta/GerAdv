@@ -31,6 +31,14 @@ public partial class DBFuncionariosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBFuncionariosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBFuncionariosODicInfo : IODicInfo
     public static string TTablePrefix => DBFuncionariosDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBFuncionariosDicInfo.FunEMailPro, DBFuncionariosDicInfo.FunCargo, DBFuncionariosDicInfo.FunNome, DBFuncionariosDicInfo.FunFuncao, DBFuncionariosDicInfo.FunSexo, DBFuncionariosDicInfo.FunRegistro, DBFuncionariosDicInfo.FunCPF, DBFuncionariosDicInfo.FunRG, DBFuncionariosDicInfo.FunTipo, DBFuncionariosDicInfo.FunObservacao, DBFuncionariosDicInfo.FunEndereco, DBFuncionariosDicInfo.FunBairro, DBFuncionariosDicInfo.FunCidade, DBFuncionariosDicInfo.FunCEP, DBFuncionariosDicInfo.FunContato, DBFuncionariosDicInfo.FunFax, DBFuncionariosDicInfo.FunFone, DBFuncionariosDicInfo.FunEMail, DBFuncionariosDicInfo.FunPeriodo_Ini, DBFuncionariosDicInfo.FunPeriodo_Fim, DBFuncionariosDicInfo.FunCTPSNumero, DBFuncionariosDicInfo.FunCTPSSerie, DBFuncionariosDicInfo.FunPIS, DBFuncionariosDicInfo.FunSalario, DBFuncionariosDicInfo.FunCTPSDtEmissao, DBFuncionariosDicInfo.FunDtNasc, DBFuncionariosDicInfo.FunData, DBFuncionariosDicInfo.FunLiberaAgenda, DBFuncionariosDicInfo.FunPasta, DBFuncionariosDicInfo.FunClass, DBFuncionariosDicInfo.FunEtiqueta, DBFuncionariosDicInfo.FunAni, DBFuncionariosDicInfo.FunBold, DBFuncionariosDicInfo.FunGuid, DBFuncionariosDicInfo.FunQuemCad, DBFuncionariosDicInfo.FunDtCad, DBFuncionariosDicInfo.FunQuemAtu, DBFuncionariosDicInfo.FunDtAtu, DBFuncionariosDicInfo.FunVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFuncionariosDicInfo.FunEMailPro, DBFuncionariosDicInfo.FunCargo, DBFuncionariosDicInfo.FunNome, DBFuncionariosDicInfo.FunFuncao, DBFuncionariosDicInfo.FunSexo, DBFuncionariosDicInfo.FunRegistro, DBFuncionariosDicInfo.FunCPF, DBFuncionariosDicInfo.FunRG, DBFuncionariosDicInfo.FunTipo, DBFuncionariosDicInfo.FunObservacao, DBFuncionariosDicInfo.FunEndereco, DBFuncionariosDicInfo.FunBairro, DBFuncionariosDicInfo.FunCidade, DBFuncionariosDicInfo.FunCEP, DBFuncionariosDicInfo.FunContato, DBFuncionariosDicInfo.FunFax, DBFuncionariosDicInfo.FunFone, DBFuncionariosDicInfo.FunEMail, DBFuncionariosDicInfo.FunPeriodo_Ini, DBFuncionariosDicInfo.FunPeriodo_Fim, DBFuncionariosDicInfo.FunCTPSNumero, DBFuncionariosDicInfo.FunCTPSSerie, DBFuncionariosDicInfo.FunPIS, DBFuncionariosDicInfo.FunSalario, DBFuncionariosDicInfo.FunCTPSDtEmissao, DBFuncionariosDicInfo.FunDtNasc, DBFuncionariosDicInfo.FunData, DBFuncionariosDicInfo.FunLiberaAgenda, DBFuncionariosDicInfo.FunPasta, DBFuncionariosDicInfo.FunClass, DBFuncionariosDicInfo.FunEtiqueta, DBFuncionariosDicInfo.FunAni, DBFuncionariosDicInfo.FunBold, DBFuncionariosDicInfo.FunGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBFuncionariosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["funCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBFuncionariosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

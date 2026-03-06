@@ -10,7 +10,6 @@ public partial class DBCargos : VAuditor, ICrud
 #region TableDefinition_Cargos
     [XmlIgnore]
     public string TabelaNome => "Cargos";
-
     public DBCargos()
     {
     }

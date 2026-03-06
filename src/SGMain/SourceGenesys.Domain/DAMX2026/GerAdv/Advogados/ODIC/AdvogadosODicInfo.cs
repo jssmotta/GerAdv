@@ -31,6 +31,14 @@ public partial class DBAdvogadosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBAdvogadosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBAdvogadosODicInfo : IODicInfo
     public static string TTablePrefix => DBAdvogadosDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBAdvogadosDicInfo.AdvCargo, DBAdvogadosDicInfo.AdvEMailPro, DBAdvogadosDicInfo.AdvCPF, DBAdvogadosDicInfo.AdvNome, DBAdvogadosDicInfo.AdvRG, DBAdvogadosDicInfo.AdvCasa, DBAdvogadosDicInfo.AdvNomeMae, DBAdvogadosDicInfo.AdvEscritorio, DBAdvogadosDicInfo.AdvEstagiario, DBAdvogadosDicInfo.AdvOAB, DBAdvogadosDicInfo.AdvNomeCompleto, DBAdvogadosDicInfo.AdvEndereco, DBAdvogadosDicInfo.AdvCidade, DBAdvogadosDicInfo.AdvCEP, DBAdvogadosDicInfo.AdvSexo, DBAdvogadosDicInfo.AdvBairro, DBAdvogadosDicInfo.AdvCTPSSerie, DBAdvogadosDicInfo.AdvCTPS, DBAdvogadosDicInfo.AdvFone, DBAdvogadosDicInfo.AdvFax, DBAdvogadosDicInfo.AdvComissao, DBAdvogadosDicInfo.AdvDtInicio, DBAdvogadosDicInfo.AdvDtFim, DBAdvogadosDicInfo.AdvDtNasc, DBAdvogadosDicInfo.AdvSalario, DBAdvogadosDicInfo.AdvSecretaria, DBAdvogadosDicInfo.AdvTextoProcuracao, DBAdvogadosDicInfo.AdvEMail, DBAdvogadosDicInfo.AdvEspecializacao, DBAdvogadosDicInfo.AdvPasta, DBAdvogadosDicInfo.AdvObservacao, DBAdvogadosDicInfo.AdvContaBancaria, DBAdvogadosDicInfo.AdvParcTop, DBAdvogadosDicInfo.AdvClass, DBAdvogadosDicInfo.AdvTop, DBAdvogadosDicInfo.AdvEtiqueta, DBAdvogadosDicInfo.AdvAni, DBAdvogadosDicInfo.AdvBold, DBAdvogadosDicInfo.AdvGuid, DBAdvogadosDicInfo.AdvQuemCad, DBAdvogadosDicInfo.AdvDtCad, DBAdvogadosDicInfo.AdvQuemAtu, DBAdvogadosDicInfo.AdvDtAtu, DBAdvogadosDicInfo.AdvVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAdvogadosDicInfo.AdvCargo, DBAdvogadosDicInfo.AdvEMailPro, DBAdvogadosDicInfo.AdvCPF, DBAdvogadosDicInfo.AdvNome, DBAdvogadosDicInfo.AdvRG, DBAdvogadosDicInfo.AdvCasa, DBAdvogadosDicInfo.AdvNomeMae, DBAdvogadosDicInfo.AdvEscritorio, DBAdvogadosDicInfo.AdvEstagiario, DBAdvogadosDicInfo.AdvOAB, DBAdvogadosDicInfo.AdvNomeCompleto, DBAdvogadosDicInfo.AdvEndereco, DBAdvogadosDicInfo.AdvCidade, DBAdvogadosDicInfo.AdvCEP, DBAdvogadosDicInfo.AdvSexo, DBAdvogadosDicInfo.AdvBairro, DBAdvogadosDicInfo.AdvCTPSSerie, DBAdvogadosDicInfo.AdvCTPS, DBAdvogadosDicInfo.AdvFone, DBAdvogadosDicInfo.AdvFax, DBAdvogadosDicInfo.AdvComissao, DBAdvogadosDicInfo.AdvDtInicio, DBAdvogadosDicInfo.AdvDtFim, DBAdvogadosDicInfo.AdvDtNasc, DBAdvogadosDicInfo.AdvSalario, DBAdvogadosDicInfo.AdvSecretaria, DBAdvogadosDicInfo.AdvTextoProcuracao, DBAdvogadosDicInfo.AdvEMail, DBAdvogadosDicInfo.AdvEspecializacao, DBAdvogadosDicInfo.AdvPasta, DBAdvogadosDicInfo.AdvObservacao, DBAdvogadosDicInfo.AdvContaBancaria, DBAdvogadosDicInfo.AdvParcTop, DBAdvogadosDicInfo.AdvClass, DBAdvogadosDicInfo.AdvTop, DBAdvogadosDicInfo.AdvEtiqueta, DBAdvogadosDicInfo.AdvAni, DBAdvogadosDicInfo.AdvBold, DBAdvogadosDicInfo.AdvGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["advCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["advCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAdvogadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["advCodigo", "advEscritorio", "advNome"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["advCodigo", "advEscritorio", "advNome"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAdvogadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

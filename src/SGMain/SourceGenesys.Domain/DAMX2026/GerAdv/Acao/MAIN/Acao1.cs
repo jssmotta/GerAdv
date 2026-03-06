@@ -10,7 +10,6 @@ public partial class DBAcao : VAuditor, ICrud
 #region TableDefinition_Acao
     [XmlIgnore]
     public string TabelaNome => "Acao";
-
     public DBAcao()
     {
     }

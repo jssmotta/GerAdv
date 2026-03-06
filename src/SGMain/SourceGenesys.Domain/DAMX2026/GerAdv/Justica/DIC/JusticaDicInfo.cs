@@ -30,7 +30,6 @@ public static partial class DBJusticaDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Justica";
 #region PropriedadesDaTabela
     public static DBInfoSystem JusNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "jus");
@@ -41,7 +40,6 @@ public static partial class DBJusticaDicInfo
     public static DBInfoSystem JusQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "jus"); // DBI 11 
     public static DBInfoSystem JusDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "jus");
     public static DBInfoSystem JusVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "jus", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

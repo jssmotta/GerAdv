@@ -68,7 +68,6 @@ public static partial class DBEscritoriosDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Escritorios";
 #region PropriedadesDaTabela
     public static DBInfoSystem EscCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "esc");
@@ -92,13 +91,12 @@ public static partial class DBEscritoriosDicInfo
     public static DBInfoSystem EscTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc");
     public static DBInfoSystem EscEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "esc", isRequired: true);
     public static DBInfoSystem EscBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "esc", isRequired: true);
-    public static DBInfoSystem EscGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "esc");
     public static DBInfoSystem EscQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "esc"); // DBI 11 
     public static DBInfoSystem EscDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "esc");
     public static DBInfoSystem EscQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "esc"); // DBI 11 
     public static DBInfoSystem EscDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "esc");
     public static DBInfoSystem EscVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "esc", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

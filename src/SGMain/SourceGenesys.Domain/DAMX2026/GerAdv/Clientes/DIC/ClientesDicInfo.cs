@@ -116,14 +116,13 @@ public static partial class DBClientesDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Clientes";
 #region PropriedadesDaTabela
     public static DBInfoSystem CliEmpresa => new(0, PTabelaNome, CampoCodigo, Empresa, "Empresa", "Empresa", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cli");
     public static DBInfoSystem CliIcone => new(0, PTabelaNome, CampoCodigo, Icone, 255, "Icone", "Icone", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliNomeMae => new(0, PTabelaNome, CampoCodigo, NomeMae, 80, "NomeMae", "NomeMae", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliRGDataExp => new(0, PTabelaNome, CampoCodigo, RGDataExp, "RGDataExp", "RGDataExp", EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "cli");
-    public static DBInfoSystem CliInativo => new(0, PTabelaNome, CampoCodigo, Inativo, "Inativo", "Inativo", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli", isRequired: true);
+    public static DBInfoSystem CliInativo => new(0, PTabelaNome, CampoCodigo, Inativo, "Inativo", "Marque esta opção para inativar o cliente, isso irá impedir que sejam agendados compromissos para este cliente.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli", isRequired: true);
     public static DBInfoSystem CliQuemIndicou => new(0, PTabelaNome, CampoCodigo, QuemIndicou, 80, "QuemIndicou", "QuemIndicou", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliSendEMail => new(0, PTabelaNome, CampoCodigo, SendEMail, "SendEMail", "SendEMail", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli", isRequired: true);
     public static DBInfoSystem CliNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "cli", isRequired: true);
@@ -138,21 +137,21 @@ public static partial class DBClientesDicInfo
     public static DBInfoSystem CliQualificacao => new(0, PTabelaNome, CampoCodigo, Qualificacao, 100, "Qualificacao", "Qualificacao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "cli", isRequired: true);
     public static DBInfoSystem CliIdade => new(0, PTabelaNome, CampoCodigo, Idade, "Idade", "Idade", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cli");
-    public static DBInfoSystem CliCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliRG => new(0, PTabelaNome, CampoCodigo, RG, 50, "RG", "RG", EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ no cadastro da receita federal, sem pontos ou traços", EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF no cadastro da receita federal, sem pontos ou traços", EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliRG => new(0, PTabelaNome, CampoCodigo, RG, 50, "RG", "Número do RG", EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliTipoCaptacao => new(0, PTabelaNome, CampoCodigo, TipoCaptacao, "TipoCaptacao", "TipoCaptacao", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli", isRequired: true);
-    public static DBInfoSystem CliObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "cli"); // DBI 11 
-    public static DBInfoSystem CliCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observações adicionais sobre o cliente, como preferências, necessidades especiais ou informações relevantes para o atendimento.", EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço, Rua, Avenida, etc.", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro do endereço", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade do endereço", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "cli"); // DBI 11 
+    public static DBInfoSystem CliCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP do endereço", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Telefone de contato", EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "cli");
     public static DBInfoSystem CliHomePage => new(0, PTabelaNome, CampoCodigo, HomePage, 60, "HomePage", "HomePage", EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, "EMail", "EMail", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "cli");
-    public static DBInfoSystem CliObito => new(0, PTabelaNome, CampoCodigo, Obito, "Obito", "Obito", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli");
+    public static DBInfoSystem CliEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, "EMail", "E-mail do cadastrado", EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliObito => new(0, PTabelaNome, CampoCodigo, Obito, "Obito", "Marque esta opção se o cliente estiver ido a óbito, isso irá impedir que sejam agendados compromissos para este cliente.", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cli");
     public static DBInfoSystem CliNomePai => new(0, PTabelaNome, CampoCodigo, NomePai, 80, "NomePai", "NomePai", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliRGOExpeditor => new(0, PTabelaNome, CampoCodigo, RGOExpeditor, 30, "RGOExpeditor", "RGOExpeditor", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliRegimeTributacao => new(0, PTabelaNome, CampoCodigo, RegimeTributacao, "RegimeTributacao", "RegimeTributacao", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cli");
@@ -164,13 +163,12 @@ public static partial class DBClientesDicInfo
     public static DBInfoSystem CliEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "cli", isRequired: true);
     public static DBInfoSystem CliAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "cli", isRequired: true);
     public static DBInfoSystem CliBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "cli", isRequired: true);
-    public static DBInfoSystem CliGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cli");
+    public static DBInfoSystem CliGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cli");
     public static DBInfoSystem CliQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cli"); // DBI 11 
     public static DBInfoSystem CliDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "cli");
     public static DBInfoSystem CliQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cli"); // DBI 11 
     public static DBInfoSystem CliDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "cli");
     public static DBInfoSystem CliVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "cli", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

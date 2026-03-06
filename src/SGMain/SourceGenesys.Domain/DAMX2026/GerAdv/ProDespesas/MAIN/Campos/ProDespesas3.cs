@@ -224,11 +224,19 @@ public partial class DBProDespesas
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasGuid() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool HasNameId() => true;
+    public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

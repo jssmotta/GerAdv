@@ -25,11 +25,19 @@ public partial class DBProDespesasODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasGuid() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool HasNameId() => true;
+    public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBProDespesasDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -43,18 +51,23 @@ public partial class DBProDespesasODicInfo : IODicInfo
     public static string TTablePrefix => DBProDespesasDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBProDespesasDicInfo.DesLigacaoID, DBProDespesasDicInfo.DesCliente, DBProDespesasDicInfo.DesCorrigido, DBProDespesasDicInfo.DesData, DBProDespesasDicInfo.DesValorOriginal, DBProDespesasDicInfo.DesProcesso, DBProDespesasDicInfo.DesQuitado, DBProDespesasDicInfo.DesDataCorrecao, DBProDespesasDicInfo.DesValor, DBProDespesasDicInfo.DesTipo, DBProDespesasDicInfo.DesHistorico, DBProDespesasDicInfo.DesLivroCaixa, DBProDespesasDicInfo.DesGuid, DBProDespesasDicInfo.DesQuemCad, DBProDespesasDicInfo.DesDtCad, DBProDespesasDicInfo.DesQuemAtu, DBProDespesasDicInfo.DesDtAtu, DBProDespesasDicInfo.DesVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProDespesasDicInfo.DesLigacaoID, DBProDespesasDicInfo.DesCliente, DBProDespesasDicInfo.DesCorrigido, DBProDespesasDicInfo.DesData, DBProDespesasDicInfo.DesValorOriginal, DBProDespesasDicInfo.DesProcesso, DBProDespesasDicInfo.DesQuitado, DBProDespesasDicInfo.DesDataCorrecao, DBProDespesasDicInfo.DesValor, DBProDespesasDicInfo.DesTipo, DBProDespesasDicInfo.DesHistorico, DBProDespesasDicInfo.DesLivroCaixa, DBProDespesasDicInfo.DesGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["desCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["desCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBProDespesasDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["desCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["desCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBProDespesasDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

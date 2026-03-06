@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBOperador
 {
-    public const string CadastroGuid = "410cd94a-fdd6-4598-bc50-e69d770fdb8d";
+    public const string CadastroGuid = "911113d5-1c7b-4c9a-a4cc-30d09809b5a7";
     public const string PTabelaNome = "Operador";
     public const string CamposSqlX = " Operador.* ";
     public const string CampoCodigo = "operCodigo";

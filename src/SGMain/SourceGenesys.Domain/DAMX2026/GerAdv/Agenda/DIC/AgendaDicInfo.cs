@@ -104,7 +104,6 @@ public static partial class DBAgendaDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Agenda";
 #region PropriedadesDaTabela
     public static DBInfoSystem AgeIDCOB => new(0, PTabelaNome, CampoCodigo, IDCOB, "IDCOB", "IDCOB", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
@@ -146,13 +145,12 @@ public static partial class DBAgendaDicInfo
     public static DBInfoSystem AgeProtocoloIntegrado => new(0, PTabelaNome, CampoCodigo, ProtocoloIntegrado, "ProtocoloIntegrado", "ProtocoloIntegrado", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
     public static DBInfoSystem AgeDataInicioPrazo => new(0, PTabelaNome, CampoCodigo, DataInicioPrazo, "DataInicioPrazo", "DataInicioPrazo", EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "age");
     public static DBInfoSystem AgeUsuarioCiente => new(0, PTabelaNome, CampoCodigo, UsuarioCiente, "UsuarioCiente", "UsuarioCiente", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age");
-    public static DBInfoSystem AgeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "age");
+    public static DBInfoSystem AgeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "age");
     public static DBInfoSystem AgeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "age"); // DBI 11 
     public static DBInfoSystem AgeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "age");
     public static DBInfoSystem AgeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "age"); // DBI 11 
     public static DBInfoSystem AgeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "age");
     public static DBInfoSystem AgeVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "age", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

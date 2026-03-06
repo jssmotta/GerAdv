@@ -92,7 +92,6 @@ public static partial class DBFuncionariosDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "Funcionarios";
 #region PropriedadesDaTabela
     public static DBInfoSystem FunEMailPro => new(0, PTabelaNome, CampoCodigo, EMailPro, 255, "EMailPro", "EMailPro", EDataTypeSystemInfo.SystemInfoTextEmailPro, true, false, false, prefixo: "fun");
@@ -128,13 +127,12 @@ public static partial class DBFuncionariosDicInfo
     public static DBInfoSystem FunEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "fun", isRequired: true);
     public static DBInfoSystem FunAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "fun", isRequired: true);
     public static DBInfoSystem FunBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "fun", isRequired: true);
-    public static DBInfoSystem FunGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "fun");
     public static DBInfoSystem FunQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
     public static DBInfoSystem FunDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "fun");
     public static DBInfoSystem FunQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
     public static DBInfoSystem FunDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "fun");
     public static DBInfoSystem FunVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "fun", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

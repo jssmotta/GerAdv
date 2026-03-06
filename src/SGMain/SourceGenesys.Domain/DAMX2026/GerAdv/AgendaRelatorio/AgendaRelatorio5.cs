@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBAgendaRelatorio
 {
-    public const string CadastroGuid = "1c63b021-27ce-46f4-ab4e-e042950a69ad";
+    public const string CadastroGuid = "3b7c5b86-c9db-48fe-8ce5-11bd174560da";
     public const string PTabelaNome = "AgendaRelatorio";
     public const string CamposSqlX = " AgendaRelatorio.* ";
     public const string CampoCodigo = "vqaCodigo";

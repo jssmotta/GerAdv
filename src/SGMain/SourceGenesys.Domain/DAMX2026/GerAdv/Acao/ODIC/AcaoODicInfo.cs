@@ -31,6 +31,14 @@ public partial class DBAcaoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBAcaoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBAcaoODicInfo : IODicInfo
     public static string TTablePrefix => DBAcaoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBAcaoDicInfo.AcaJustica, DBAcaoDicInfo.AcaArea, DBAcaoDicInfo.AcaDescricao, DBAcaoDicInfo.AcaGuid, DBAcaoDicInfo.AcaQuemCad, DBAcaoDicInfo.AcaDtCad, DBAcaoDicInfo.AcaQuemAtu, DBAcaoDicInfo.AcaDtAtu, DBAcaoDicInfo.AcaVisto];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAcaoDicInfo.AcaJustica, DBAcaoDicInfo.AcaArea, DBAcaoDicInfo.AcaDescricao, DBAcaoDicInfo.AcaGuid];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["acaCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["acaCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["acaArea", "acaCodigo", "acaDescricao", "acaJustica"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["acaArea", "acaCodigo", "acaDescricao", "acaJustica"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

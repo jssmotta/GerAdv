@@ -32,19 +32,17 @@ public static partial class DBTipoRecursoDicInfo
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
-
     public const string PTabelaNome = "TipoRecurso";
 #region PropriedadesDaTabela
     public static DBInfoSystem TrcJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "trc"); // DBI 11 
     public static DBInfoSystem TrcArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "trc"); // DBI 11 
     public static DBInfoSystem TrcDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "trc");
-    public static DBInfoSystem TrcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "GUID", "GUID", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "trc");
+    public static DBInfoSystem TrcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "trc");
     public static DBInfoSystem TrcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "trc"); // DBI 11 
     public static DBInfoSystem TrcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "trc");
     public static DBInfoSystem TrcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "trc"); // DBI 11 
     public static DBInfoSystem TrcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "trc");
     public static DBInfoSystem TrcVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "trc", isRequired: true);
-
 #endregion
     [Serializable]
     public enum NomesCamposTabela

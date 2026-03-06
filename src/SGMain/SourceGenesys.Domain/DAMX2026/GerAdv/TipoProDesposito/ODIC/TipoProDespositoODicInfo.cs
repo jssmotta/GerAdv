@@ -31,6 +31,14 @@ public partial class DBTipoProDespositoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBTipoProDespositoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,18 +51,23 @@ public partial class DBTipoProDespositoODicInfo : IODicInfo
     public static string TTablePrefix => DBTipoProDespositoDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBTipoProDespositoDicInfo.TpdNome];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTipoProDespositoDicInfo.TpdNome];
-
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tpdCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tpdCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTipoProDespositoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tpdCodigo"]);
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tpdCodigo"] )
+        ;
         var result = campos.Where(campo => !campo.Equals(DBTipoProDespositoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : [];
+        return result.Count > 0?[..result] : 
+        []
+        ;
     }
 }

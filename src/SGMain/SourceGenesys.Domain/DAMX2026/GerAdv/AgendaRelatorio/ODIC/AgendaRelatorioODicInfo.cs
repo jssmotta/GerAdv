@@ -31,6 +31,14 @@ public partial class DBAgendaRelatorioODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsView() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsExo() => false;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string? ExoUri() => null;
+#pragma warning restore CA1822 // Mark members as static
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IFieldNameDescription() => DBAgendaRelatorioDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
@@ -43,7 +51,6 @@ public partial class DBAgendaRelatorioODicInfo : IODicInfo
     public static string TTablePrefix => DBAgendaRelatorioDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBAgendaRelatorioDicInfo.IVqaData, DBAgendaRelatorioDicInfo.IVqaProcesso, DBAgendaRelatorioDicInfo.IXxxParaNome, DBAgendaRelatorioDicInfo.IXxxParaPessoas, DBAgendaRelatorioDicInfo.IXxxBoxAudiencia, DBAgendaRelatorioDicInfo.IXxxBoxAudienciaMobile, DBAgendaRelatorioDicInfo.IXxxNomeAdvogado, DBAgendaRelatorioDicInfo.IXxxNomeForo, DBAgendaRelatorioDicInfo.IXxxNomeJustica, DBAgendaRelatorioDicInfo.IXxxNomeArea];
     public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAgendaRelatorioDicInfo.IVqaData, DBAgendaRelatorioDicInfo.IVqaProcesso, DBAgendaRelatorioDicInfo.IXxxParaNome, DBAgendaRelatorioDicInfo.IXxxParaPessoas, DBAgendaRelatorioDicInfo.IXxxBoxAudiencia, DBAgendaRelatorioDicInfo.IXxxBoxAudienciaMobile, DBAgendaRelatorioDicInfo.IXxxNomeAdvogado, DBAgendaRelatorioDicInfo.IXxxNomeForo, DBAgendaRelatorioDicInfo.IXxxNomeJustica, DBAgendaRelatorioDicInfo.IXxxNomeArea];
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ImmutableArray<DBInfoSystem> ListPk() => [];
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
