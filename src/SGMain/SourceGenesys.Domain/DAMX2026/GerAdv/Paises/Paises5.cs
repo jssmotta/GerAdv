@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBPaises
 {
-    public const string CadastroGuid = "fa947de3-39b4-4fcc-a32f-6131e23f9374";
+    public const string CadastroGuid = "bc06284c-6967-4e7d-a335-b4334df0c849";
     public const string PTabelaNome = "Paises";
     public const string CamposSqlX = " Paises.* ";
     public const string CampoCodigo = "paiCodigo";

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBOponentes
 {
-    public const string CadastroGuid = "ec6226bb-8df1-4058-a005-fb9ee49d7075";
+    public const string CadastroGuid = "8f581065-cec5-4b9c-9329-2de7ebe15db5";
     public const string PTabelaNome = "Oponentes";
     public const string CamposSqlX = " Oponentes.* ";
     public const string CampoCodigo = "opoCodigo";

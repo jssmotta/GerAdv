@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBForo
 {
-    public const string CadastroGuid = "f768c16c-97f9-457f-a030-4f51f8cb74d1";
+    public const string CadastroGuid = "ca932343-2cc3-473e-be48-9fa92e3f52d3";
     public const string PTabelaNome = "Foro";
     public const string CamposSqlX = " Foro.* ";
     public const string CampoCodigo = "forCodigo";

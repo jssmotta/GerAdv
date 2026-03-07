@@ -70,13 +70,16 @@
 		<PackageReference Include="NLog" Version="6.1.1" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
-    <ProjectReference Include="..\..\..\..\SG\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
-  </ItemGroup>
+   
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.KeyStone\MenphisSI.KeyStone.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourceGenesys.Shared\MenphisSI.Shared.SourceGenesys.Shared.csproj" />
+	</ItemGroup>
 
 </Project>

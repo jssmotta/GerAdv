@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBRito
 {
-    public const string CadastroGuid = "818da180-8bc1-432a-9765-a7465610c482";
+    public const string CadastroGuid = "4ea46e9c-ca0a-4683-a3cb-e91c89e7764f";
     public const string PTabelaNome = "Rito";
     public const string CamposSqlX = " Rito.* ";
     public const string CampoCodigo = "ritCodigo";

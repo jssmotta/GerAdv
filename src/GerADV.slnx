@@ -45,7 +45,7 @@
     <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.SGMain/MenphisSI.Shared.SGMain.csproj">
       <Platform Solution="*|x86" Project="x86" />
     </Project>
-    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.SourgeGenesys.Shared/MenphisSI.Shared.SourgeGenesys.Shared.csproj">
+    <Project Path="../../SG/SHARED/MenphisSI.Shared.BaseCommon/MenphisSI.Shared.SourceGenesys.Shared/MenphisSI.Shared.SourceGenesys.Shared.csproj">
       <BuildType Solution="DEBUG_API_URL|*" Project="Debug" />
       <BuildType Solution="Development|*" Project="Release" />
       <Platform Solution="*|x86" Project="x86" />

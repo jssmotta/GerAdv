@@ -74,10 +74,9 @@
     <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
     <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.KeyStone\MenphisSI.KeyStone.csproj" />
     <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
-    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
     <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
-    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourceGenesys.Shared\MenphisSI.Shared.SourceGenesys.Shared.csproj" />
     <ProjectReference Include="..\SGMain\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
   </ItemGroup>
 

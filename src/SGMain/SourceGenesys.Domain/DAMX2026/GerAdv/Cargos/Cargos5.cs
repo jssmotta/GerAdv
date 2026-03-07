@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBCargos
 {
-    public const string CadastroGuid = "c3240a67-2bee-4d7b-bfea-c57bafd92041";
+    public const string CadastroGuid = "44c54be0-f0c2-4167-bb19-e0ce9962d9a2";
     public const string PTabelaNome = "Cargos";
     public const string CamposSqlX = " Cargos.* ";
     public const string CampoCodigo = "carCodigo";

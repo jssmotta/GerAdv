@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBArea
 {
-    public const string CadastroGuid = "0f7b5bb6-6675-4703-a062-043a7bfc0f5c";
+    public const string CadastroGuid = "1a8c288e-ebbb-4c98-98d5-e09ddafa8226";
     public const string PTabelaNome = "Area";
     public const string CamposSqlX = " Area.* ";
     public const string CampoCodigo = "areCodigo";

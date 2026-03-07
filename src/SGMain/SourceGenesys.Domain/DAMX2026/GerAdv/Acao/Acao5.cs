@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBAcao
 {
-    public const string CadastroGuid = "ce9116c5-11a7-4be9-96c2-129143c8d9d3";
+    public const string CadastroGuid = "a1d872ab-51f9-4a0d-bdf7-f20540c75f13";
     public const string PTabelaNome = "Acao";
     public const string CamposSqlX = " Acao.* ";
     public const string CampoCodigo = "acaCodigo";
