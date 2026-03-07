@@ -1,9 +1,5 @@
 ﻿using MenphisSI.GerAdv.Readers;
 using MenphisSI.GerEntityTools.Entity;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 
@@ -189,7 +185,7 @@ ORDER BY vqaData;";
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
                     :  "";
 
             if (cNome == null || cNome.Equals("")) continue;
@@ -203,12 +199,14 @@ ORDER BY vqaData;";
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.EMailNet,
-                ParaNome = cNome,
+                EmailPara = operador.EMailNet,
+                NomePara = cNome,
                 Assunto = assunto + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = operador.EMailNet
             };
 
 #if (!DEBUG)
@@ -222,12 +220,14 @@ ORDER BY vqaData;";
                 {
                     var email2 = new MenphisSI.Api.Models.SendEmail
                     {
-                        ParaEmail = "motta@menphis.com.br",
-                        ParaNome = "Jefferson S. Motta",
+                        EmailPara = "motta@menphis.com.br",
+                        NomePara = "Jefferson S. Motta",
                         Assunto = assunto + cNome,
                         Mensagem = conteudoHtml,
                         NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24
+                        Time2Live = 24,
+                        Uri = uri,
+                        EmailNet = "motta@menphis.com.br"
                     };
                     _ = _servicoEmail.Send(email2);
                 }

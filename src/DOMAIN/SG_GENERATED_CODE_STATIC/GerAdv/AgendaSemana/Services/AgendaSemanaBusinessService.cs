@@ -53,7 +53,7 @@ public partial class AgendaSemanaService
         await Task.CompletedTask;
     }
 
-    public async Task<AgendaSemanaResponse?> AfterCreateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task<AgendaSemanaResponse> AfterCreateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
     {
         var sw = AgendaSemanaMetrics.StartTimer();
         var result = regAgendaSemana ?? new AgendaSemanaResponse();
@@ -66,7 +66,7 @@ public partial class AgendaSemanaService
         return result;
     }
 
-    public async Task<AgendaSemanaResponse?> AfterUpdateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task<AgendaSemanaResponse> AfterUpdateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
     {
         var sw = AgendaSemanaMetrics.StartTimer();
         var result = regAgendaSemana ?? new AgendaSemanaResponse();

@@ -53,7 +53,7 @@ public partial class ColaboradoresService
         await Task.CompletedTask;
     }
 
-    public async Task<ColaboradoresResponse?> AfterCreateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse> AfterCreateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
     {
         var sw = ColaboradoresMetrics.StartTimer();
         var result = regColaboradores ?? new ColaboradoresResponse();
@@ -66,7 +66,7 @@ public partial class ColaboradoresService
         return result;
     }
 
-    public async Task<ColaboradoresResponse?> AfterUpdateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse> AfterUpdateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
     {
         var sw = ColaboradoresMetrics.StartTimer();
         var result = regColaboradores ?? new ColaboradoresResponse();

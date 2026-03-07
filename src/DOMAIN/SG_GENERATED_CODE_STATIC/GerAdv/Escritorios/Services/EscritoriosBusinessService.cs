@@ -53,7 +53,7 @@ public partial class EscritoriosService
         await Task.CompletedTask;
     }
 
-    public async Task<EscritoriosResponse?> AfterCreateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse> AfterCreateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
     {
         var sw = EscritoriosMetrics.StartTimer();
         var result = regEscritorios ?? new EscritoriosResponse();
@@ -66,7 +66,7 @@ public partial class EscritoriosService
         return result;
     }
 
-    public async Task<EscritoriosResponse?> AfterUpdateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse> AfterUpdateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
     {
         var sw = EscritoriosMetrics.StartTimer();
         var result = regEscritorios ?? new EscritoriosResponse();

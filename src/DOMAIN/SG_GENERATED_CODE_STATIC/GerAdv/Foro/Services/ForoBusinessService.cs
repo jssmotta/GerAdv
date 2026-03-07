@@ -53,7 +53,7 @@ public partial class ForoService
         await Task.CompletedTask;
     }
 
-    public async Task<ForoResponse?> AfterCreateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task<ForoResponse> AfterCreateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
     {
         var sw = ForoMetrics.StartTimer();
         var result = regForo ?? new ForoResponse();
@@ -66,7 +66,7 @@ public partial class ForoService
         return result;
     }
 
-    public async Task<ForoResponse?> AfterUpdateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task<ForoResponse> AfterUpdateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
     {
         var sw = ForoMetrics.StartTimer();
         var result = regForo ?? new ForoResponse();

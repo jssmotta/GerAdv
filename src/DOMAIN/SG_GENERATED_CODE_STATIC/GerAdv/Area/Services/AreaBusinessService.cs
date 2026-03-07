@@ -53,7 +53,7 @@ public partial class AreaService
         await Task.CompletedTask;
     }
 
-    public async Task<AreaResponse?> AfterCreateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task<AreaResponse> AfterCreateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
     {
         var sw = AreaMetrics.StartTimer();
         var result = regArea ?? new AreaResponse();
@@ -66,7 +66,7 @@ public partial class AreaService
         return result;
     }
 
-    public async Task<AreaResponse?> AfterUpdateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task<AreaResponse> AfterUpdateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
     {
         var sw = AreaMetrics.StartTimer();
         var result = regArea ?? new AreaResponse();

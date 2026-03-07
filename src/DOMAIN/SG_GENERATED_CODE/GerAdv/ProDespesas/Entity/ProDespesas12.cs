@@ -31,14 +31,13 @@ public partial class FProDespesas : MenphisSI.SG.GerAdv.DBProDespesas, IDBProDes
     {
     }
 
-    private FProDespesas(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
-    {
-    }
+    
 
     // Factory method for creating instances with parameters
     public static FProDespesas CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        return new FProDespesas(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+        //return new FProDespesas(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+        throw new NotImplementedException();
     }
 
     public static async Task<FProDespesas> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)

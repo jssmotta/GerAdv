@@ -240,7 +240,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         }
 
         var connectionStopwatch = UFDatabaseMetrics.StartTimer();
-        var queryStopwatch = UFDatabaseMetrics.StartTimer();
+        //var queryStopwatch = UFDatabaseMetrics.StartTimer();
         using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)

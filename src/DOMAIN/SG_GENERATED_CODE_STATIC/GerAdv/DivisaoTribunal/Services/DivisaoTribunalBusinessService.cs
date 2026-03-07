@@ -53,7 +53,7 @@ public partial class DivisaoTribunalService
         await Task.CompletedTask;
     }
 
-    public async Task<DivisaoTribunalResponse?> AfterCreateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse> AfterCreateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
     {
         var sw = DivisaoTribunalMetrics.StartTimer();
         var result = regDivisaoTribunal ?? new DivisaoTribunalResponse();
@@ -66,7 +66,7 @@ public partial class DivisaoTribunalService
         return result;
     }
 
-    public async Task<DivisaoTribunalResponse?> AfterUpdateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse> AfterUpdateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
     {
         var sw = DivisaoTribunalMetrics.StartTimer();
         var result = regDivisaoTribunal ?? new DivisaoTribunalResponse();

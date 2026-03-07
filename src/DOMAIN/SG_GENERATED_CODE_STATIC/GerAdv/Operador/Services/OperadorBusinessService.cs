@@ -53,7 +53,7 @@ public partial class OperadorService
         await Task.CompletedTask;
     }
 
-    public async Task<OperadorResponse?> AfterCreateAsync([FromBody] OperadorResponse? regOperador, [FromRoute, Required] string uri)
+    public async Task<OperadorResponse> AfterCreateAsync([FromBody] OperadorResponse? regOperador, [FromRoute, Required] string uri)
     {
         var sw = OperadorMetrics.StartTimer();
         var result = regOperador ?? new OperadorResponse();
@@ -66,7 +66,7 @@ public partial class OperadorService
         return result;
     }
 
-    public async Task<OperadorResponse?> AfterUpdateAsync([FromBody] OperadorResponse? regOperador, [FromRoute, Required] string uri)
+    public async Task<OperadorResponse> AfterUpdateAsync([FromBody] OperadorResponse? regOperador, [FromRoute, Required] string uri)
     {
         var sw = OperadorMetrics.StartTimer();
         var result = regOperador ?? new OperadorResponse();

@@ -16,8 +16,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
-ENV ASPNETCORE_URLS=https://+:7179
-EXPOSE 7179
+ENV ASPNETCORE_URLS=https://+:7174
+EXPOSE 7174
 
 # Start API
 ENTRYPOINT ["dotnet", "API.dll"]

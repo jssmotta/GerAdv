@@ -53,7 +53,7 @@ public partial class TipoCompromissoService
         await Task.CompletedTask;
     }
 
-    public async Task<TipoCompromissoResponse?> AfterCreateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<TipoCompromissoResponse> AfterCreateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
     {
         var sw = TipoCompromissoMetrics.StartTimer();
         var result = regTipoCompromisso ?? new TipoCompromissoResponse();
@@ -66,7 +66,7 @@ public partial class TipoCompromissoService
         return result;
     }
 
-    public async Task<TipoCompromissoResponse?> AfterUpdateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<TipoCompromissoResponse> AfterUpdateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
     {
         var sw = TipoCompromissoMetrics.StartTimer();
         var result = regTipoCompromisso ?? new TipoCompromissoResponse();

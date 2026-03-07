@@ -53,7 +53,7 @@ public partial class JusticaService
         await Task.CompletedTask;
     }
 
-    public async Task<JusticaResponse?> AfterCreateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse> AfterCreateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
     {
         var sw = JusticaMetrics.StartTimer();
         var result = regJustica ?? new JusticaResponse();
@@ -66,7 +66,7 @@ public partial class JusticaService
         return result;
     }
 
-    public async Task<JusticaResponse?> AfterUpdateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse> AfterUpdateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
     {
         var sw = JusticaMetrics.StartTimer();
         var result = regJustica ?? new JusticaResponse();

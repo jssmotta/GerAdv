@@ -53,7 +53,7 @@ public partial class FuncionariosService
         await Task.CompletedTask;
     }
 
-    public async Task<FuncionariosResponse?> AfterCreateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse> AfterCreateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
     {
         var sw = FuncionariosMetrics.StartTimer();
         var result = regFuncionarios ?? new FuncionariosResponse();
@@ -66,7 +66,7 @@ public partial class FuncionariosService
         return result;
     }
 
-    public async Task<FuncionariosResponse?> AfterUpdateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse> AfterUpdateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
     {
         var sw = FuncionariosMetrics.StartTimer();
         var result = regFuncionarios ?? new FuncionariosResponse();

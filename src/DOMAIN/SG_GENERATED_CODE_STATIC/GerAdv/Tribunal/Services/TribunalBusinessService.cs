@@ -53,7 +53,7 @@ public partial class TribunalService
         await Task.CompletedTask;
     }
 
-    public async Task<TribunalResponse?> AfterCreateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse> AfterCreateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
     {
         var sw = TribunalMetrics.StartTimer();
         var result = regTribunal ?? new TribunalResponse();
@@ -66,7 +66,7 @@ public partial class TribunalService
         return result;
     }
 
-    public async Task<TribunalResponse?> AfterUpdateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse> AfterUpdateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
     {
         var sw = TribunalMetrics.StartTimer();
         var result = regTribunal ?? new TribunalResponse();

@@ -17,6 +17,13 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
 		<Optimize>True</Optimize>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="CODIGO_GERADO\**" />
+	  <Content Remove="CODIGO_GERADO\**" />
+	  <EmbeddedResource Remove="CODIGO_GERADO\**" />
+	  <None Remove="CODIGO_GERADO\**" />
+	</ItemGroup>
 <ItemGroup>
 <PackageReference Include="KubernetesClient" Version="19.0.2" />
 <PackageReference Include="Microsoft.Build.Tasks.Core" Version="18.3.3" />
@@ -62,7 +69,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="CODIGO_GERADO\" />
 		<Folder Include="SG_GENERATED_CODE\" />
 	</ItemGroup>
 

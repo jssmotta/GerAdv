@@ -53,7 +53,7 @@ public partial class CidadeService
         await Task.CompletedTask;
     }
 
-    public async Task<CidadeResponse?> AfterCreateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse> AfterCreateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
     {
         var sw = CidadeMetrics.StartTimer();
         var result = regCidade ?? new CidadeResponse();
@@ -66,7 +66,7 @@ public partial class CidadeService
         return result;
     }
 
-    public async Task<CidadeResponse?> AfterUpdateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse> AfterUpdateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
     {
         var sw = CidadeMetrics.StartTimer();
         var result = regCidade ?? new CidadeResponse();

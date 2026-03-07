@@ -53,7 +53,7 @@ public partial class TiposAcaoService
         await Task.CompletedTask;
     }
 
-    public async Task<TiposAcaoResponse?> AfterCreateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task<TiposAcaoResponse> AfterCreateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
     {
         var sw = TiposAcaoMetrics.StartTimer();
         var result = regTiposAcao ?? new TiposAcaoResponse();
@@ -66,7 +66,7 @@ public partial class TiposAcaoService
         return result;
     }
 
-    public async Task<TiposAcaoResponse?> AfterUpdateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task<TiposAcaoResponse> AfterUpdateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
     {
         var sw = TiposAcaoMetrics.StartTimer();
         var result = regTiposAcao ?? new TiposAcaoResponse();

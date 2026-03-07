@@ -9,10 +9,10 @@ services:
         sgshared: C:/github/SG/SHARED
 
     ports:
-      - "7179:7179"
+      - "7174:7174"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:7179
+      - ASPNETCORE_URLS=https://+:7174
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/appsgcert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password1
       - APP_PROFILE=

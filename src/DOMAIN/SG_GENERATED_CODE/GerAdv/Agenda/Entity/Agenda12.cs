@@ -31,14 +31,13 @@ public partial class FAgenda : MenphisSI.SG.GerAdv.DBAgenda, IDBAgenda
     {
     }
 
-    private FAgenda(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
-    {
-    }
+ 
 
     // Factory method for creating instances with parameters
     public static FAgenda CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        return new FAgenda(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+        //return new FAgenda(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+        throw new NotImplementedException();
     }
 
     public static async Task<FAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)

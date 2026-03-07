@@ -53,7 +53,7 @@ public partial class PaisesService
         await Task.CompletedTask;
     }
 
-    public async Task<PaisesResponse?> AfterCreateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task<PaisesResponse> AfterCreateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
     {
         var sw = PaisesMetrics.StartTimer();
         var result = regPaises ?? new PaisesResponse();
@@ -66,7 +66,7 @@ public partial class PaisesService
         return result;
     }
 
-    public async Task<PaisesResponse?> AfterUpdateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task<PaisesResponse> AfterUpdateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
     {
         var sw = PaisesMetrics.StartTimer();
         var result = regPaises ?? new PaisesResponse();

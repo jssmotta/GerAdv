@@ -53,7 +53,7 @@ public partial class UFService
         await Task.CompletedTask;
     }
 
-    public async Task<UFResponse?> AfterCreateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task<UFResponse> AfterCreateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
     {
         var sw = UFMetrics.StartTimer();
         var result = regUF ?? new UFResponse();
@@ -66,7 +66,7 @@ public partial class UFService
         return result;
     }
 
-    public async Task<UFResponse?> AfterUpdateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task<UFResponse> AfterUpdateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
     {
         var sw = UFMetrics.StartTimer();
         var result = regUF ?? new UFResponse();

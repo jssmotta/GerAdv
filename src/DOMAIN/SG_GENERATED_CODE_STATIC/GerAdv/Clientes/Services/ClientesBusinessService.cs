@@ -53,7 +53,7 @@ public partial class ClientesService
         await Task.CompletedTask;
     }
 
-    public async Task<ClientesResponse?> AfterCreateAsync([FromBody] ClientesResponse? regClientes, [FromRoute, Required] string uri)
+    public async Task<ClientesResponse> AfterCreateAsync([FromBody] ClientesResponse? regClientes, [FromRoute, Required] string uri)
     {
         var sw = ClientesMetrics.StartTimer();
         var result = regClientes ?? new ClientesResponse();
@@ -66,7 +66,7 @@ public partial class ClientesService
         return result;
     }
 
-    public async Task<ClientesResponse?> AfterUpdateAsync([FromBody] ClientesResponse? regClientes, [FromRoute, Required] string uri)
+    public async Task<ClientesResponse> AfterUpdateAsync([FromBody] ClientesResponse? regClientes, [FromRoute, Required] string uri)
     {
         var sw = ClientesMetrics.StartTimer();
         var result = regClientes ?? new ClientesResponse();

@@ -53,7 +53,7 @@ public partial class FuncaoService
         await Task.CompletedTask;
     }
 
-    public async Task<FuncaoResponse?> AfterCreateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse> AfterCreateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
     {
         var sw = FuncaoMetrics.StartTimer();
         var result = regFuncao ?? new FuncaoResponse();
@@ -66,7 +66,7 @@ public partial class FuncaoService
         return result;
     }
 
-    public async Task<FuncaoResponse?> AfterUpdateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse> AfterUpdateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
     {
         var sw = FuncaoMetrics.StartTimer();
         var result = regFuncao ?? new FuncaoResponse();

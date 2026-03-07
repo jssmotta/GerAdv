@@ -12,47 +12,36 @@ namespace MenphisSI.AppSG.BaseCommon;
 /// UserService específico
 /// Implementa IUserService com OperadorResponse.
 /// </summary>
-public class UserService : IUserService<OperadorResponse>, IDisposable
+public class UserService(
+    IOptions<AppSettings> appSettings,
+    HybridCache cache,
+    IOperadorReader reader,
+    IOperadorService operService,
+    IFOperadorFactory operadorFactory,
+    IHttpContextAccessor httpContextAccessor,
+    IConnectionService connectionService,
+    IEntityService entityService,
+    IEntityServiceEml entityServiceEml,
+    IHttpClientFactory httpClientFactory) : IUserService<OperadorResponse>, IDisposable
 {
     private const string RESET_KEY = "reset";
     private const string RESET_KEY_ACTION = "action-reset";
 
-    private readonly IOptions<AppSettings> _appSettings;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly HybridCache _cache;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly HybridCache _cache = cache;
     private readonly Stopwatch _stopwatch = new();
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    private readonly IOperadorReader _reader;
-    private readonly IFOperadorFactory _operadorFactory;
-    private readonly IOperadorService _operService;
-    private readonly IConnectionService _connectionService;
-    private readonly IEntityService _entityService;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IOperadorReader _reader = reader;
+    private readonly IFOperadorFactory _operadorFactory = operadorFactory;
+    private readonly IOperadorService _operService = operService;
+    private readonly IConnectionService _connectionService = connectionService;
+    private readonly IEntityService _entityService = entityService;
+    private readonly IEntityServiceEml _entityServiceEml = entityServiceEml;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
     private bool _disposed;
-
-    public UserService(
-        IOptions<AppSettings> appSettings,
-        HybridCache cache,
-        IOperadorReader reader,
-        IOperadorService operService,
-        IFOperadorFactory operadorFactory,
-        IHttpContextAccessor httpContextAccessor,
-        IConnectionService connectionService,
-        IEntityService entityService,
-        IHttpClientFactory httpClientFactory)
-    {
-        _appSettings = appSettings;
-        _cache = cache;
-        _reader = reader;
-        _operadorFactory = operadorFactory;
-        _operService = operService;
-        _httpContextAccessor = httpContextAccessor;
-        _connectionService = connectionService;
-        _entityService = entityService;
-        _httpClientFactory = httpClientFactory;
-    }
 
     #region Helper Methods
 
@@ -371,7 +360,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
 
     private async Task<OperadorResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
     {
-        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
         var oCnn = scope.Connection;
         return oCnn == null ? null :
             await Task.Run(() => _reader.ReadAsync(id, oCnn), token);
@@ -439,7 +428,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 return ResultApi<bool>.Fail("URI inválida", 400);
             }
 
-            using var scope = _connectionService.CreateConnectionScopeRw(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
             var oCnn = scope.Connection;
             if (oCnn == null)
                 return ResultApi<bool>.Fail("Erro de conexão com a base de dados.", 500);
@@ -486,7 +475,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
-            using var scope = _connectionService.CreateConnectionScopeRw(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
             var oCnn = scope.Connection;
             if (oCnn == null)
             {
@@ -520,7 +509,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                     var token = await GenerateJwtToken(resultReset);
                     var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
-                    var send = new SendEmailApi(_httpClientFactory, _entityService, _logger);
+                    var send = new SendEmailApi(_httpClientFactory, _entityServiceEml, _logger);
                     _ = send.Send(new MenphisSI.Api.Models.SendEmail
                     {
                         EmailPara = dbU.FEMailNet!,
@@ -565,7 +554,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
-            using var scope = _connectionService.CreateConnectionScopeRw(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
             var oCnn = scope.Connection;
             if (oCnn == null)
             {

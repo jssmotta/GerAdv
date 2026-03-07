@@ -133,11 +133,11 @@ public partial class AgendaSemanaService
                             string cNome;
                             if (prontuario.Contains("10000"))
                             {
-                                cNome = DBNull.Value == row["xxxNomeCliente"] ? "" : row["xxxNomeCliente"].ToString();
+                                cNome = DBNull.Value == row["xxxNomeCliente"] ? "" : $"{row["xxxNomeCliente"]}";
                             }
                             else
                             {
-                                cNome = DBNull.Value == row["xxxNome"] ? "" : row["xxxNome"].ToString();
+                                cNome = DBNull.Value == row["xxxNome"] ? "" : $"{row["xxxNome"]}";
                             }
                             items.Add(new MenuAgendaSemana
                             {

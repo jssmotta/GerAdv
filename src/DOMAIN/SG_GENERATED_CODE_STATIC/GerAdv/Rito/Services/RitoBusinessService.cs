@@ -53,7 +53,7 @@ public partial class RitoService
         await Task.CompletedTask;
     }
 
-    public async Task<RitoResponse?> AfterCreateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task<RitoResponse> AfterCreateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
     {
         var sw = RitoMetrics.StartTimer();
         var result = regRito ?? new RitoResponse();
@@ -66,7 +66,7 @@ public partial class RitoService
         return result;
     }
 
-    public async Task<RitoResponse?> AfterUpdateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task<RitoResponse> AfterUpdateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
     {
         var sw = RitoMetrics.StartTimer();
         var result = regRito ?? new RitoResponse();

@@ -53,7 +53,7 @@ public partial class CargosService
         await Task.CompletedTask;
     }
 
-    public async Task<CargosResponse?> AfterCreateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task<CargosResponse> AfterCreateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
     {
         var sw = CargosMetrics.StartTimer();
         var result = regCargos ?? new CargosResponse();
@@ -66,7 +66,7 @@ public partial class CargosService
         return result;
     }
 
-    public async Task<CargosResponse?> AfterUpdateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task<CargosResponse> AfterUpdateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
     {
         var sw = CargosMetrics.StartTimer();
         var result = regCargos ?? new CargosResponse();

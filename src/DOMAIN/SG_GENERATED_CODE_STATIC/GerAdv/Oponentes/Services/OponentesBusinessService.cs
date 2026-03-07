@@ -53,7 +53,7 @@ public partial class OponentesService
         await Task.CompletedTask;
     }
 
-    public async Task<OponentesResponse?> AfterCreateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task<OponentesResponse> AfterCreateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
     {
         var sw = OponentesMetrics.StartTimer();
         var result = regOponentes ?? new OponentesResponse();
@@ -66,7 +66,7 @@ public partial class OponentesService
         return result;
     }
 
-    public async Task<OponentesResponse?> AfterUpdateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task<OponentesResponse> AfterUpdateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
     {
         var sw = OponentesMetrics.StartTimer();
         var result = regOponentes ?? new OponentesResponse();

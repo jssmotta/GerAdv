@@ -7,3 +7,4 @@ global using MenphisSI.GerAdv.Writers;
 global using MenphisSI.GerAdv.Readers;
 global using MenphisSI.GerAdv.Metrics;
 global using MenphisSI.Shared.BaseCommon.API.Models;
+global using MenphisSI.GerAdv.Models.Response.All;

@@ -1,8 +1,5 @@
 ﻿using MenphisSI.GerAdv.Readers;
 using MenphisSI.GerEntityTools.Entity;
-using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 public class EnvioNotificacoesAniversariantes
@@ -208,8 +205,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-               (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-              : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+               (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -224,12 +221,14 @@ ORDER BY ageData;
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.EMailNet,
-                ParaNome = cNome,
+                EmailPara = operador.EMailNet,
+                NomePara = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = operador.EMailNet
             };
 
 
@@ -242,12 +241,14 @@ ORDER BY ageData;
                 {
                     var email2 = new MenphisSI.Api.Models.SendEmail
                     {
-                        ParaEmail = "motta@menphis.com.br",
-                        ParaNome = "Jefferson S. Motta",
+                        EmailPara = "motta@menphis.com.br",
+                        NomePara = "Jefferson S. Motta",
                         Assunto = assunto + " - " + cNome,
                         Mensagem = conteudoHtml,
                         NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24
+                        Time2Live = 24,
+                        Uri = uri,
+                        EmailNet = "motta@menphis.com.br"
                     };
                     _ = _servicoEmail.Send(email2);
                 }
@@ -396,7 +397,7 @@ ORDER BY ageData;
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
         var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
-        var assunto = "Aniversariantes próximos 7 dias";
+        //r assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
         foreach (var operador in operadores)
@@ -407,8 +408,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 

@@ -53,7 +53,7 @@ public partial class TipoProDespositoService
         await Task.CompletedTask;
     }
 
-    public async Task<TipoProDespositoResponse?> AfterCreateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<TipoProDespositoResponse> AfterCreateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
     {
         var sw = TipoProDespositoMetrics.StartTimer();
         var result = regTipoProDesposito ?? new TipoProDespositoResponse();
@@ -66,7 +66,7 @@ public partial class TipoProDespositoService
         return result;
     }
 
-    public async Task<TipoProDespositoResponse?> AfterUpdateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<TipoProDespositoResponse> AfterUpdateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
     {
         var sw = TipoProDespositoMetrics.StartTimer();
         var result = regTipoProDesposito ?? new TipoProDespositoResponse();

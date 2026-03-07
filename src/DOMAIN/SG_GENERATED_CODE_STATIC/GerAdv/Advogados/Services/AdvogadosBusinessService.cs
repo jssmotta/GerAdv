@@ -53,7 +53,7 @@ public partial class AdvogadosService
         await Task.CompletedTask;
     }
 
-    public async Task<AdvogadosResponse?> AfterCreateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse> AfterCreateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
     {
         var sw = AdvogadosMetrics.StartTimer();
         var result = regAdvogados ?? new AdvogadosResponse();
@@ -66,7 +66,7 @@ public partial class AdvogadosService
         return result;
     }
 
-    public async Task<AdvogadosResponse?> AfterUpdateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse> AfterUpdateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
     {
         var sw = AdvogadosMetrics.StartTimer();
         var result = regAdvogados ?? new AdvogadosResponse();

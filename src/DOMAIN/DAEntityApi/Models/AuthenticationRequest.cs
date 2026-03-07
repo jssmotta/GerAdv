@@ -3,15 +3,15 @@ public class AuthenticateRequest
 {
 #if (DEBUG)
     
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
     
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
 #else
 
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
 #endif
 }

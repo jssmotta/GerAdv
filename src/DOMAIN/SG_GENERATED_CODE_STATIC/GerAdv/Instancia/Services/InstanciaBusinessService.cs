@@ -53,7 +53,7 @@ public partial class InstanciaService
         await Task.CompletedTask;
     }
 
-    public async Task<InstanciaResponse?> AfterCreateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse> AfterCreateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
     {
         var sw = InstanciaMetrics.StartTimer();
         var result = regInstancia ?? new InstanciaResponse();
@@ -66,7 +66,7 @@ public partial class InstanciaService
         return result;
     }
 
-    public async Task<InstanciaResponse?> AfterUpdateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse> AfterUpdateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
     {
         var sw = InstanciaMetrics.StartTimer();
         var result = regInstancia ?? new InstanciaResponse();

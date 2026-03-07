@@ -13,16 +13,16 @@ public static partial class AgendaSemana
             var agendasemana = new AgendaSemanaResponse
             {
                 Id = dbRec.ID,
-                Data = dbRec.FData.ToString(),
+                Data = dbRec.FData.ToString() ?? string.Empty,
                 Funcionario = dbRec.FFuncionario,
-                Hora = dbRec.FHora.ToString(),
+                Hora = dbRec.FHora.ToString() ?? string.Empty,
                 TipoCompromisso = dbRec.FTipoCompromisso,
-                Compromisso = dbRec.FCompromisso,
+                Compromisso = dbRec.FCompromisso ?? string.Empty,
                 Concluido = dbRec.FConcluido,
                 Liberado = dbRec.FLiberado,
  
                 Importante = dbRec.FImportante,
-                HoraFinal = dbRec.FHoraFinal.ToString(),
+                HoraFinal = dbRec.FHoraFinal.ToString() ?? string.Empty,
                 Nome = dbRec.FNome ?? string.Empty,
             };
             result.Add(agendasemana);
@@ -85,7 +85,7 @@ public static partial class AgendaSemana
             string cNome;
             if (prontuario == "10000")
             {
-                cNome = DBNull.Value == row["xxxNomeCliente"] ? "" : row["xxxNomeCliente"].ToString();
+                cNome = DBNull.Value == row["xxxNomeCliente"] ? "" : $"{row["xxxNomeCliente"]}" ;
                 dbRec.FNome = cNome;
             }
              

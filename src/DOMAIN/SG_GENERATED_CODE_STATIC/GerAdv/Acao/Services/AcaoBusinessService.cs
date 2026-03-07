@@ -53,7 +53,7 @@ public partial class AcaoService
         await Task.CompletedTask;
     }
 
-    public async Task<AcaoResponse?> AfterCreateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse> AfterCreateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
     {
         var sw = AcaoMetrics.StartTimer();
         var result = regAcao ?? new AcaoResponse();
@@ -66,7 +66,7 @@ public partial class AcaoService
         return result;
     }
 
-    public async Task<AcaoResponse?> AfterUpdateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse> AfterUpdateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
     {
         var sw = AcaoMetrics.StartTimer();
         var result = regAcao ?? new AcaoResponse();

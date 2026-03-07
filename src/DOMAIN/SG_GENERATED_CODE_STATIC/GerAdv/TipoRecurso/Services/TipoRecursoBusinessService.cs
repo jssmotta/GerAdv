@@ -53,7 +53,7 @@ public partial class TipoRecursoService
         await Task.CompletedTask;
     }
 
-    public async Task<TipoRecursoResponse?> AfterCreateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse> AfterCreateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
     {
         var sw = TipoRecursoMetrics.StartTimer();
         var result = regTipoRecurso ?? new TipoRecursoResponse();
@@ -66,7 +66,7 @@ public partial class TipoRecursoService
         return result;
     }
 
-    public async Task<TipoRecursoResponse?> AfterUpdateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse> AfterUpdateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
     {
         var sw = TipoRecursoMetrics.StartTimer();
         var result = regTipoRecurso ?? new TipoRecursoResponse();

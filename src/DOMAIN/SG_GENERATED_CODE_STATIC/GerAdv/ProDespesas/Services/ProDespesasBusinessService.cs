@@ -53,7 +53,7 @@ public partial class ProDespesasService
         await Task.CompletedTask;
     }
 
-    public async Task<ProDespesasResponse?> AfterCreateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse> AfterCreateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
     {
         var sw = ProDespesasMetrics.StartTimer();
         var result = regProDespesas ?? new ProDespesasResponse();
@@ -66,7 +66,7 @@ public partial class ProDespesasService
         return result;
     }
 
-    public async Task<ProDespesasResponse?> AfterUpdateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse> AfterUpdateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
     {
         var sw = ProDespesasMetrics.StartTimer();
         var result = regProDespesas ?? new ProDespesasResponse();

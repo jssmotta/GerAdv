@@ -53,7 +53,7 @@ public partial class AgendaRelatorioService
         await Task.CompletedTask;
     }
 
-    public async Task<AgendaRelatorioResponse?> AfterCreateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task<AgendaRelatorioResponse> AfterCreateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
     {
         var sw = AgendaRelatorioMetrics.StartTimer();
         var result = regAgendaRelatorio ?? new AgendaRelatorioResponse();
@@ -66,7 +66,7 @@ public partial class AgendaRelatorioService
         return result;
     }
 
-    public async Task<AgendaRelatorioResponse?> AfterUpdateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task<AgendaRelatorioResponse> AfterUpdateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
     {
         var sw = AgendaRelatorioMetrics.StartTimer();
         var result = regAgendaRelatorio ?? new AgendaRelatorioResponse();
