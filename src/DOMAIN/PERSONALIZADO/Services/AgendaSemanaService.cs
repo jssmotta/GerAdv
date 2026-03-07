@@ -10,10 +10,10 @@ public partial class AgendaSemanaService
 #pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
     public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !(await Uris.ValidaUriAsync(uri, _entityService))
             ? throw new Exception("AgendaSemana: URI inválida")
-            : (IEnumerable<AgendaSemanaResponse?>?)await Task.Run(() =>
+            : (IEnumerable<AgendaSemanaResponse?>?)await Task.Run(async () =>
             {
 
-                using var scope = ConfiguracoesSys.CreateConnectionScope(uri);
+                using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
                 var oCnn = scope.Connection;
                 if (oCnn == null || (data == null))
                 {

@@ -1,5 +1,6 @@
 using MenphisSI.BaseCommon.UserController;
 using MenphisSI.GerEntityTools.Entity;
+using MenphisSI.Shared.BaseCommon.API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -106,7 +107,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
         var claims = new[]
         {
             new Claim("id", user.Id.ToString()),
-            new Claim("tipo", user.CadID == 1 ? "Profissional" : "Funcionario"),
+            new Claim("tipo", "Funcionario"),
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -126,37 +127,38 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
         return tokenHandler.WriteToken(token);
     }
 
-    private static string GetTipo(OperadorResponse user) => user.CadID == 1 ? "Profissional" : "Funcionario";
+    private static string GetTipo(OperadorResponse user) => "Funcionario";
 
     #endregion
 
     #region IUserService Implementation
 
-    public async Task<ValidaUsernameResponse?> ValidaUsername(ValidaUsernameRequest model, string uri)
+    public async Task<ResultApi<ValidaUsernameResponse>> ValidaUsername(ValidaUsernameRequest model, string uri)
     {
-        return await ExecuteWithMetrics("ValidaUsername", async () =>
+        try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<ValidaUsernameResponse>.Fail("URI não pode ser vazia", 400);
 
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
                 _logger.Warn("ValidaUsername: URI não é valida {Uri}", uri);
-                throw new Exception("Domínio não encontrado.");
+                return ResultApi<ValidaUsernameResponse>.Fail("Domínio não encontrado.", 404);
             }
 
             using var oCnn = await _connectionService.GetConnectionByUriAsync(uri);
             if (oCnn == null)
             {
                 _logger.Warn("ValidaUsername: Conexão nula");
-                throw new Exception("Erro de conexão com a base de dados.");
+                return ResultApi<ValidaUsernameResponse>.Fail("Erro de conexão com a base de dados.", 500);
             }
 
             var decodedUsername = model.Username.DecodeBase64();
             if (decodedUsername == null)
             {
                 _logger.Warn("Decoded nulo");
-                return null;
+                return ResultApi<ValidaUsernameResponse>.Fail("Nome de usuário inválido", 400);
             }
 
             var cWhere = $"{DBOperadorDicInfo.EMailNet} = @{DBOperadorDicInfo.EMailNet} {TSql.And} " +
@@ -172,7 +174,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
 
             var result = _reader.Read(cWhere, parameters, oCnn);
 
-            return result?.Id > 0
+            var response = result?.Id > 0
                 ? new ValidaUsernameResponse
                 {
                     Id = result.Id,
@@ -185,31 +187,40 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                     Username = "Usuário desconhecido",
                     Uri = ""
                 };
-        });
+
+            return ResultApi<ValidaUsernameResponse>.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ValidaUsername: Erro ao validar username");
+            return ResultApi<ValidaUsernameResponse>.Fail($"Erro ao validar usuário: {ex.Message}", 500);
+        }
     }
 
-    public async Task<AuthenticateResponse?> Authenticate3(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> Authenticate3(AuthenticateRequest model, string uri)
     {
-        return await ExecuteWithMetrics("Authenticate", async () =>
+        try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
                 _logger.Warn("Authenticate: URI não é valida {Uri}", uri);
-                throw new Exception("User: URI inválida");
+                return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
             using var oCnn = await _connectionService.GetConnectionByUriAsync(uri);
             if (oCnn == null)
             {
                 _logger.Warn("Authenticate: Conexão nula");
-                return null;
+                return ResultApi<AuthenticateResponse>.Fail("Erro de conexão com a base de dados.", 500);
             }
 
             var user = await AuthenticateUserAsync(model, uri, oCnn);
-            if (user == null) return null;
+            if (user == null)
+                return ResultApi<AuthenticateResponse>.Fail("Credenciais inválidas", 401);
 
             try
             {
@@ -217,14 +228,20 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 var token = await GenerateJwtToken(user);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
-                return new AuthenticateResponse(user, token64, tipo, uri);
+                var response = new AuthenticateResponse(user, token64, tipo, uri);
+                return ResultApi<AuthenticateResponse>.Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Authenticate: Erro ao gerar token");
-                return null;
+                return ResultApi<AuthenticateResponse>.Fail("Erro ao gerar token de autenticação", 500);
             }
-        });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Authenticate: Erro geral");
+            return ResultApi<AuthenticateResponse>.Fail($"Erro ao autenticar: {ex.Message}", 500);
+        }
     }
 
     private async Task<OperadorResponse?> AuthenticateUserAsync(AuthenticateRequest model, string uri, MsiSqlConnection oCnn)
@@ -316,14 +333,16 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
         }
     }
 
-    public async Task<OperadorResponse?> GetById(int id, string uri)
+    public async Task<ResultApi<OperadorResponse>> GetById(int id, string uri)
     {
-        return await ExecuteWithMetrics("GetById", async () =>
+        try
         {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<OperadorResponse>.Fail("URI não pode ser vazia", 400);
+
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
-                throw new Exception("User: URI inválida");
+                return ResultApi<OperadorResponse>.Fail("URI inválida", 400);
             }
 
             var cacheKey = $"{uri}-User-GetById-{id}";
@@ -333,11 +352,21 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 LocalCacheExpiration = TimeSpan.FromSeconds(60)
             };
 
-            return await _cache.GetOrCreateAsync(
+            var result = await _cache.GetOrCreateAsync(
                 cacheKey,
                 async cancel => await GetDataByIdAsync(id, uri, cancel),
                 entryOptions);
-        });
+
+            if (result == null)
+                return ResultApi<OperadorResponse>.NotFound("Usuário não encontrado");
+
+            return ResultApi<OperadorResponse>.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GetById: Erro ao buscar usuário");
+            return ResultApi<OperadorResponse>.Fail($"Erro ao buscar usuário: {ex.Message}", 500);
+        }
     }
 
     private async Task<OperadorResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
@@ -349,85 +378,112 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
     }
 
     [Authorize]
-    public async Task<string> Reset(string uri)
+    public async Task<ResultApi<string>> Reset(string uri)
     {
-        if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        try
         {
-            throw new Exception("User: URI inválida");
-        }
-
-        if (_httpContextAccessor?.HttpContext?.User != null)
-        {
-            var user = _httpContextAccessor.HttpContext?.User;
-            if (user == null) return string.Empty;
-
-            var userId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-            using var oCnn = await _connectionService.GetConnectionByUriRwAsync(uri);
-            var dbU = await _operadorFactory.CreateFromIdAsync(userId, oCnn);
-            if (dbU.ID > 0)
-            {
-                if (dbU.ReadCfgC(RESET_KEY_ACTION, oCnn) == GetClientIpAddress().Encrypt())
-                {
-                    if (dbU.ReadCfgC($"{RESET_KEY_ACTION}-T", oCnn) == "")
-                    {
-                        dbU.WriteCfgC($"{RESET_KEY_ACTION}-T", "R", oCnn);
-                        return RESET_KEY;
-                    }
-                    dbU.WriteCfgC($"{RESET_KEY_ACTION}-T", "", oCnn);
-                    dbU.WriteCfgC(RESET_KEY_ACTION, "", oCnn);
-                    return RESET_KEY;
-                }
-            }
-        }
-        return string.Empty;
-    }
-
-    [Authorize]
-    public async Task<bool> SetPassword(int id, string password, string uri)
-    {
-        return await ExecuteWithMetrics("SetPassword", async () =>
-        {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<string>.Fail("URI não pode ser vazia", 400);
 
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
-                throw new Exception("User: URI inválida");
+                return ResultApi<string>.Fail("URI inválida", 400);
+            }
+
+            if (_httpContextAccessor?.HttpContext?.User != null)
+            {
+                var user = _httpContextAccessor.HttpContext?.User;
+                if (user == null)
+                    return ResultApi<string>.Fail("Usuário não autenticado", 401);
+
+                var userId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
+                using var oCnn = await _connectionService.GetConnectionByUriRwAsync(uri);
+                var dbU = await _operadorFactory.CreateFromIdAsync(userId, oCnn);
+                if (dbU.ID > 0)
+                {
+                    if (dbU.ReadCfgC(RESET_KEY_ACTION, oCnn) == GetClientIpAddress().Encrypt())
+                    {
+                        if (dbU.ReadCfgC($"{RESET_KEY_ACTION}-T", oCnn) == "")
+                        {
+                            dbU.WriteCfgC($"{RESET_KEY_ACTION}-T", "R", oCnn);
+                            return ResultApi<string>.Ok(RESET_KEY);
+                        }
+                        dbU.WriteCfgC($"{RESET_KEY_ACTION}-T", "", oCnn);
+                        dbU.WriteCfgC(RESET_KEY_ACTION, "", oCnn);
+                        return ResultApi<string>.Ok(RESET_KEY);
+                    }
+                }
+            }
+            return ResultApi<string>.Fail("Operação não autorizada", 403);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Reset: Erro ao resetar configurações");
+            return ResultApi<string>.Fail($"Erro ao resetar: {ex.Message}", 500);
+        }
+    }
+
+    [Authorize]
+    public async Task<ResultApi<bool>> SetPassword(int id, string password, string uri)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<bool>.Fail("URI não pode ser vazia", 400);
+
+            if (string.IsNullOrEmpty(password))
+                return ResultApi<bool>.Fail("Senha não pode ser vazia", 400);
+
+            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            {
+                return ResultApi<bool>.Fail("URI inválida", 400);
             }
 
             using var scope = _connectionService.CreateConnectionScopeRw(uri);
             var oCnn = scope.Connection;
-            if (oCnn == null) return false;
+            if (oCnn == null)
+                return ResultApi<bool>.Fail("Erro de conexão com a base de dados.", 500);
 
             var dbRec = await _reader.ReadMAsync(id, oCnn);
             if (dbRec == null)
             {
                 _logger.Warn("SetPassword: dbRec é nulo para o ID {Id}", id);
-                return false;
+                return ResultApi<bool>.NotFound("Usuário não encontrado");
             }
 
-            if (dbRec.Id <= 0 || !dbRec.Situacao || dbRec.Excluido) return false;
+            if (dbRec.Id <= 0 || !dbRec.Situacao || dbRec.Excluido)
+                return ResultApi<bool>.Fail("Usuário inativo ou excluído", 400);
 
             dbRec.Senha256 = password.GetHashCode2();
 
             var result = await _operService.AddAndUpdate(dbRec, uri);
 
-            return result != null && result.Id > 0;
-        });
+            if (result != null && result?.Data?.Id > 0)
+                return ResultApi<bool>.Ok(true, "Senha alterada com sucesso");
+
+            return ResultApi<bool>.Fail("Erro ao alterar senha", 500);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "SetPassword: Erro ao definir senha");
+            return ResultApi<bool>.Fail($"Erro ao definir senha: {ex.Message}", 500);
+        }
     }
 
-    public async Task<AuthenticateResponse?> ResetPassword(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> ResetPassword(AuthenticateRequest model, string uri)
     {
-        return await ExecuteWithMetrics("ResetPassword", async () =>
+        try
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (model == null)
+                return ResultApi<AuthenticateResponse>.Fail("Modelo não pode ser nulo", 400);
+
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
                 _logger.Warn("ResetPassword: URI não é valida {Uri}", uri);
-                throw new Exception("User: URI inválida");
+                return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
             using var scope = _connectionService.CreateConnectionScopeRw(uri);
@@ -435,7 +491,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
             if (oCnn == null)
             {
                 _logger.Warn("ResetPassword: Conexão nula");
-                return null;
+                return ResultApi<AuthenticateResponse>.Fail("Erro de conexão com a base de dados.", 500);
             }
 
             var cWhereReset = $@"{DBOperadorDicInfo.EMailNet} = @{DBOperadorDicInfo.EMailNet} {TSql.And} 
@@ -467,36 +523,46 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                     var send = new SendEmailApi(_httpClientFactory, _entityService, _logger);
                     _ = send.Send(new MenphisSI.Api.Models.SendEmail
                     {
-                        ParaEmail = dbU.FEMailNet!,
-                        ParaNome = dbU.FNome!,
+                        EmailPara = dbU.FEMailNet!,
+                        NomePara = dbU.FNome!,
                         Assunto = "RESET DE SENHA",
                         Mensagem = $@"<h1>Reset de Senha</h1>
                         <p style='color: #fff'>Sua senha foi resetada com sucesso. Use este código no lugar da senha ao fazer login:</p>
                         <div class=""code-box""><strong>{guidReset}</strong></div>
                         <p class=""alert"">Se não foi você que solicitou o reset, por favor, ignore este e-mail.</p>",
                         NomeDoMail = "MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 1
+                        Time2Live = 1,
+                        Uri = uri,
+                        EmailNet = dbU.FEMailNet!
+
                     });
 
-                    return new AuthenticateResponse(resultReset, token64, RESET_KEY, uri);
+                    var response = new AuthenticateResponse(resultReset, token64, RESET_KEY, uri);
+                    return ResultApi<AuthenticateResponse>.Ok(response, "Senha resetada com sucesso. Verifique seu e-mail.");
                 }
             }
 
-            return null;
-        });
+            return ResultApi<AuthenticateResponse>.NotFound("Usuário não encontrado");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ResetPassword: Erro ao resetar senha");
+            return ResultApi<AuthenticateResponse>.Fail($"Erro ao resetar senha: {ex.Message}", 500);
+        }
     }
 
-    public async Task<AuthenticateResponse?> ChangePassword(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> ChangePassword(AuthenticateRequest model, string uri)
     {
-        return await ExecuteWithMetrics<AuthenticateResponse?>("ChangePassword", async () =>
+        try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+                return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
             if (!(await Uris.ValidaUriAsync(uri, _entityService)))
             {
                 _logger.Warn("ChangePassword: URI não é valida {Uri}", uri);
-                throw new Exception("User: URI inválida");
+                return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
             using var scope = _connectionService.CreateConnectionScopeRw(uri);
@@ -504,7 +570,7 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
             if (oCnn == null)
             {
                 _logger.Warn("ChangePassword: Conexão nula");
-                return null;
+                return ResultApi<AuthenticateResponse>.Fail("Erro de conexão com a base de dados.", 500);
             }
 
             var cWhereReset = $@"{DBOperadorDicInfo.EMailNet} = @{DBOperadorDicInfo.EMailNet} {TSql.And} 
@@ -526,10 +592,11 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
                 if (dbU == null)
                 {
                     _logger.Warn("ChangePassword: dbU é nulo para o ID {Id}", resultReset.Id);
-                    return null;
+                    return ResultApi<AuthenticateResponse>.NotFound("Usuário não encontrado");
                 }
 
-                if (dbU.Id <= 0 || !dbU.Situacao || dbU.Excluido) return null;
+                if (dbU.Id <= 0 || !dbU.Situacao || dbU.Excluido)
+                    return ResultApi<AuthenticateResponse>.Fail("Usuário inativo ou excluído", 400);
 
                 var parametersPwd = new List<SqlParameter>
                 {
@@ -547,86 +614,58 @@ public class UserService : IUserService<OperadorResponse>, IDisposable
 
                     _ = await _operService.AddAndUpdate(dbU, uri);
 
-                    return new AuthenticateResponse(resultReset, "", "", uri);
+                    var response = new AuthenticateResponse(resultReset, "", "", uri);
+                    return ResultApi<AuthenticateResponse>.Ok(response, "Senha alterada com sucesso");
                 }
                 else
                 {
                     _logger.Warn("ChangePassword: Senha atual não confere");
-                    return null;
+                    return ResultApi<AuthenticateResponse>.Fail("Senha atual incorreta", 400);
                 }
             }
 
-            return null;
-        });
+            return ResultApi<AuthenticateResponse>.NotFound("Usuário não encontrado");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ChangePassword: Erro ao alterar senha");
+            return ResultApi<AuthenticateResponse>.Fail($"Erro ao alterar senha: {ex.Message}", 500);
+        }
     }
 
-    public async Task<AuthenticateResponse?> SelfAuthenticate(AuthenticateRequest model)
+    public Task<ResultApi<AuthenticateResponse>> SelfAuthenticate(AuthenticateRequest model)
     {
-        return await ExecuteWithMetrics("SelfAuthenticate", async () =>
+        // Try to obtain uri from the current HTTP context route values (controller route contains {uri})
+        var httpContext = _httpContextAccessor?.HttpContext;
+        string? uri = null;
+
+        try
         {
-            ArgumentNullException.ThrowIfNull(model);
-            
-            _logger.Info("SelfAuthenticate - Iniciando. Username: {0}", model.Username);
-            
-            // Extrair URI do contexto HTTP
-            var httpContext = _httpContextAccessor?.HttpContext;
-            
-            if (httpContext == null)
+            if (httpContext != null)
             {
-                _logger.Error("SelfAuthenticate: HttpContext é nulo");
-                throw new InvalidOperationException("HttpContext não disponível");
+                if (httpContext.Request.RouteValues.TryGetValue("uri", out var routeUri))
+                {
+                    uri = routeUri?.ToString();
+                }
+                // fallback to querystring if route value not present
+                if (string.IsNullOrEmpty(uri) && httpContext.Request.Query.ContainsKey("uri"))
+                {
+                    uri = httpContext.Request.Query["uri"].FirstOrDefault();
+                }
             }
+        }
+        catch
+        {
+            // ignore and use fallback
+        }
 
-            var uri = httpContext.Request.RouteValues["uri"]?.ToString();
-            
-            _logger.Info("SelfAuthenticate - URI extraída do contexto: {0}", uri ?? "NULL");
-            
-            if (string.IsNullOrEmpty(uri))
-            {
-                _logger.Warn("SelfAuthenticate: URI não encontrada no contexto. RouteValues: {0}", 
-                    string.Join(", ", httpContext.Request.RouteValues.Select(kv => $"{kv.Key}={kv.Value}")));
-                throw new ArgumentException("URI não especificada no contexto da requisição");
-            }
+        // Fallback to demo URI from settings if still null/empty
+        if (string.IsNullOrEmpty(uri))
+        {
+            uri = _appSettings?.Value?.DemoURI ?? string.Empty;
+        }
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
-            {
-                _logger.Warn("SelfAuthenticate: URI não é válida {Uri}", uri);
-                throw new Exception($"URI inválida: {uri}");
-            }
-
-            using var oCnn = await _connectionService.GetConnectionByUriAsync(uri);
-            if (oCnn == null)
-            {
-                _logger.Error("SelfAuthenticate: Conexão nula para URI {Uri}", uri);
-                throw new InvalidOperationException($"Falha ao obter conexão para URI: {uri}");
-            }
-
-            _logger.Info("SelfAuthenticate - Autenticando usuário para URI: {0}", uri);
-            var user = await AuthenticateUserAsync(model, uri, oCnn);
-            
-            if (user == null)
-            {
-                _logger.Warn("SelfAuthenticate - Falha na autenticação do usuário");
-                return null;
-            }
-
-            try
-            {
-                var tipo = GetTipo(user);
-                _logger.Info("SelfAuthenticate - Gerando token para usuário ID: {0}, Tipo: {1}", user.Id, tipo);
-                
-                var token = await GenerateJwtToken(user);
-                var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
-
-                _logger.Info("SelfAuthenticate - Autenticação bem-sucedida para usuário ID: {0}", user.Id);
-                return new AuthenticateResponse(user, token64, tipo, uri);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "SelfAuthenticate: Erro ao gerar token para usuário ID: {0}", user.Id);
-                throw;
-            }
-        });
+        return Authenticate3(model, uri);
     }
 
     #endregion

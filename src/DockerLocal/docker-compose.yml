@@ -1,0 +1,24 @@
+name: geradv-dockerlocal
+
+services:
+  appsg-api:
+    build:
+      context: ..
+      dockerfile: DockerLocal/Dockerfile
+      additional_contexts:    
+        sgshared: C:/github/SG/SHARED
+
+    ports:
+      - "7179:7179"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:7179
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/appsgcert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password1
+      - APP_PROFILE=
+    env_file:
+      - .env.menphis-pwd-key
+    volumes:
+      - ..:/src:ro
+      - ./certs:/https:ro
+    restart: unless-stopped

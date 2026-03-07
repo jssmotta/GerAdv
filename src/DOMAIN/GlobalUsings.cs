@@ -4,7 +4,6 @@ global using MenphisSI;
 global using MenphisSI.BaseCommon;
 global using MenphisSI.BaseCommon.Auditor;
 global using MenphisSI.DB;
-global using MenphisSI.GerEntityTools.Services;
 global using MenphisSI.Models;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;

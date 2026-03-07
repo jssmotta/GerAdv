@@ -1,10 +1,9 @@
-using Domain.Sistemas.Voice.Extensions;
 using MenphisSI.BaseCommon.UserController;
 using MenphisSI.HealthCheck;
 using MenphisSI.Shared.Infrastructure.CheckDb;
-using MenphisSI.Shared.Infrastructure.HealthChecks;
 using MenphisSI.Shared.StartApp;
 using AuditorService = Domain.BaseCommon.Auditor.AuditorService;
+using IConnectionService = MenphisSI.Shared.Infrastructure.Connections.IConnectionService;
 
 namespace MenphisSI.SGSys.StartApp;
 
@@ -34,15 +33,17 @@ public static class AppSGStartup
 
 
         // Register EntityService
-        builder.Services.AddSingleton<MenphisSI.GerEntityTools.Services.IEntityService, MenphisSI.GerEntityTools.Services.EntityServices>();
+        builder.Services.AddSingleton<IEntityService, EntityServices>();
 
         // Register AppSG-specific ConnectionService
-        builder.Services.AddScoped<MenphisSI.IConnectionService, ConnectionService>();
+        builder.Services.AddScoped<IConnectionService, ConnectionService>();
+
+        builder.Services.AddScoped<IConfiguracoesSys, ConfiguracoesSysX>();
 
         // Register MonitorController's IConnectionService adapter
         builder.Services.AddScoped<MenphisSI.Shared.Infrastructure.CheckDb.IConnectionService>(sp => 
         {
-            var realService = sp.GetRequiredService<MenphisSI.IConnectionService>();
+            var realService = sp.GetRequiredService<IConnectionService>();
             return new ConnectionServiceAdapter(realService);
         });
 
@@ -84,7 +85,7 @@ public static class AppSGStartup
     /// </summary>
     public static void ConfigurarVoiceServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddVoiceCommandServices();
+       // builder.Services.AddVoiceCommandServices();
      
     }
 
