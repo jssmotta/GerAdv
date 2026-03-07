@@ -397,7 +397,7 @@ ORDER BY ageData;
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
         var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
-        //r assunto = "Aniversariantes próximos 7 dias";
+        var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
         foreach (var operador in operadores)
@@ -424,12 +424,14 @@ ORDER BY ageData;
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.EMailNet,
-                ParaNome = cNome,
+                EmailPara = operador.EMailNet,
+                NomePara = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = operador.EMailNet
             };
 
             _ = _servicoEmail.Send(email);

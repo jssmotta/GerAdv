@@ -1,5 +1,9 @@
 using MenphisSI.BaseCommon.UserController;
+using MenphisSI.GerAdv.HealthCheck;
 using MenphisSI.HealthCheck;
+using System.Collections.Generic;
+using MenphisSI.GerEntityTools.Entity;
+using Domain.BaseCommon.Helpers;
 using MenphisSI.Shared.Infrastructure.CheckDb;
 using MenphisSI.Shared.StartApp;
 using AuditorService = Domain.BaseCommon.Auditor.AuditorService;
@@ -10,7 +14,7 @@ namespace MenphisSI.SGSys.StartApp;
 /// <summary>
 /// AppSG-specific service configuration
 /// </summary>
-public static class AppSGStartup
+public static class AppSGStartupGerADV
 {
     /// <summary>
     /// Registers all AppSG-specific services
@@ -61,6 +65,32 @@ public static class AppSGStartup
         // Register basic health check services
         AppSettingsHealthCheckDefault.Add(builder);
 
+        // Read notification URIs from configuration and register a health check for each
+        var urisNotificadorAgenda = Microsoft.Extensions.Configuration.ConfigurationBinder.Get<List<string>>(builder.Configuration.GetSection("UrisNotificadorAgenda")) ?? new List<string>();
+        var urisAniversariantes = Microsoft.Extensions.Configuration.ConfigurationBinder.Get<List<string>>(builder.Configuration.GetSection("UrisAniversariantes")) ?? new List<string>();
+
+        var healthBuilder = builder.Services.AddHealthChecks();
+
+        // Build a temporary provider to resolve dependencies required for constructing the health check instances
+        var tempProvider = builder.Services.BuildServiceProvider();
+        var sendEmailApi = tempProvider.GetRequiredService<SendEmailApi>();
+
+        // Register one health check instance per configured URI for the agenda notifier
+        foreach (var uri in urisNotificadorAgenda)
+        {
+            var name = $"Notification-{uri}";
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorService(uri, sendEmailApi), tags: ["notify"]);
+        }
+
+        // Register one health check instance per configured URI for the aniversariantes notifier
+        foreach (var uri in urisAniversariantes)
+        {
+            var name = $"Aniversariantes-{uri}";
+            // EnvioNotificacoesAniversariantes depends on SendEmailApi
+            var envio = new EnvioNotificacoesAniversariantes(sendEmailApi);
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(uri, envio), tags: new[] { "Niver" });
+        }
+
 #if HAS_LCK
         // Add custom health checks
         builder.Services.AddHealthChecks()
@@ -69,7 +99,7 @@ public static class AppSGStartup
             // ConnectionPool health check to monitor database connections
             .AddCheck<HealthCheckConnectionPoolService>("Connections pool", tags: ["database", "connections", "pool"]);
 #endif
-            }
+    }
 
 
     /// <summary>

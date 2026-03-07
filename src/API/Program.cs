@@ -69,8 +69,8 @@ try
 
     // Determinar configuração baseada no ambiente usando a nova estrutura
     ConfiguracaoInicializacao configuracao = builder.Environment.IsDevelopment()
-        ? AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: true)
-        : AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: false);
+        ? AppSGStartupGerADV.CriarConfiguracaoAppSG(isDevelopment: true)
+        : AppSGStartupGerADV.CriarConfiguracaoAppSG(isDevelopment: false);
 
     if (builder.Environment.IsDevelopment())
     {
@@ -156,10 +156,10 @@ try
     });
 
     // Configurar serviços de voz específicos do AppSG
-    AppSGStartup.ConfigurarVoiceServices(builder);
+    AppSGStartupGerADV.ConfigurarVoiceServices(builder);
 
     // Inicializar configurações externas do AppSG
-    AppSGStartup.InicializarConfiguracoes(builder);
+    AppSGStartupGerADV.InicializarConfiguracoes(builder);
 
     // Configurar builder usando a classe StartupAppAdvanced genérica com configuração específica do APPSG
     StartupAppAdvanced.ConfigurarBuilder(builder, configuracao, logger);
@@ -167,7 +167,7 @@ try
     var app = builder.Build();
 
    // Configurar middlewares específicos do AppSG (geo-blocking)
-    AppSGStartup.ConfigurarMiddlewaresAppSG(app);
+    AppSGStartupGerADV.ConfigurarMiddlewaresAppSG(app);
 
     // Configurar aplicação usando a classe StartupAppAdvanced genérica
     StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);

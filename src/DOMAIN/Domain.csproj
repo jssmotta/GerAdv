@@ -81,7 +81,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PERSONALIZADO\Reader\" />
+    <Folder Include="SG_GENERATED_CUSTOM\Reader\" />
     <Folder Include="SG_GENERATED_CODE\" />
     <Folder Include="SG_GENERATED_CODE_STATIC\" />
   </ItemGroup>
