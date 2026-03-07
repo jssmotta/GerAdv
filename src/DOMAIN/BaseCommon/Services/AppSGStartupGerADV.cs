@@ -38,9 +38,11 @@ public static class AppSGStartupGerADV
 
         // Register EntityService
         builder.Services.AddSingleton<IEntityService, EntityServices>();
+        builder.Services.AddSingleton<IEntityServiceEml, EntityServicesEml>();
+        builder.Services.AddSingleton<SendEmailApi>();
 
-        // Register AppSG-specific ConnectionService
-        builder.Services.AddScoped<IConnectionService, ConnectionService>();
+       // Register AppSG-specific ConnectionService
+       builder.Services.AddScoped<IConnectionService, ConnectionService>(); 
 
         builder.Services.AddScoped<IConfiguracoesSys, ConfiguracoesSysX>();
 
