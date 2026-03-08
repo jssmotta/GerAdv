@@ -183,7 +183,7 @@ ORDER BY ageData;
             }
 
 
-#if (!DEBUG)
+ 
             var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
@@ -197,32 +197,11 @@ ORDER BY ageData;
             };
 
           
-           _ = _servicoEmail.Send(email);
-
-
-
-                if (uri.ToUpper().Equals("IBRADV"))
-#endif
-            {
-                var email2 = new SendEmailModel
-                {
-                    EmailPara = "motta@menphis.com.br",
-                    NomePara = "Jefferson S. Motta",
-                    Assunto = assunto + " - " + cNome,
-                    Mensagem = conteudoHtml,
-                    NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                    Time2Live = 24,
-                    Uri = uri,
-                    EmailNet = "motta@menphis.com.br"
-                };
-                _ = _servicoEmail.Send(email2);
-            }
-
+           _ = _servicoEmail.Send(email); 
 
 
             count++;
-
-
+             
         }
 
         return count;
@@ -262,9 +241,9 @@ ORDER BY ageData;
                 continue;
             }
 
-#if (!DEBUG)
+ 
 
-            var email = new MenphisSI.Api.Models.SendEmail
+            var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
                 NomePara = cNome,
@@ -277,7 +256,7 @@ ORDER BY ageData;
             };
 
             _ = _servicoEmail.Send(email);
-#endif 
+ 
             count++;
 
         }

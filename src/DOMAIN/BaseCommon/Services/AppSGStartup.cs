@@ -93,7 +93,7 @@ public static class AppSGStartup
             healthBuilder.AddCheck(name, new HealthCheckNotificadorService(uri, sendEmailApi, horaDia, horaNovos), tags: ["notify"]);
         }
 
-#if !DEBUG
+ 
         // Register one health check instance per configured URI for the aniversariantes notifier
         foreach (var uri in urisAniversariantes)
         {
@@ -103,7 +103,7 @@ public static class AppSGStartup
             healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(uri, envio, horaDia), tags: new[] { "Niver" });
         }
 
-#endif
+ 
 
 #if HAS_LCK
         // Add custom health checks

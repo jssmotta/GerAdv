@@ -167,7 +167,7 @@ ORDER BY vqaData;";
                 continue;
             }
 
-#if (!DEBUG)
+ 
             var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
@@ -182,28 +182,9 @@ ORDER BY vqaData;";
 
 
             _ = _servicoEmail.Send(email);
-#endif
-            //if (count == 0)
-            {
-
-                //if (uri.ToUpper().Equals("SIEBRA"))
-
-                {
-                    var email2 = new SendEmailModel
-                    {
-                        EmailPara = "motta@menphis.com.br",
-                        NomePara = "Jefferson S. Motta",
-                        Assunto = assunto + cNome,
-                        Mensagem = conteudoHtml,
-                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24,
-                        Uri = uri,
-                        EmailNet = "motta@menphis.com.br"
-                    };
-                    _ = _servicoEmail.Send(email2);
-                }
-
-            }
+ 
+            
+           
 
             count++;
         }

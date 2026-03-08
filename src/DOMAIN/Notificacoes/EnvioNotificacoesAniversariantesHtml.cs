@@ -4,159 +4,139 @@ public partial class EnvioNotificacoesAniversariantes
 {
     private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total, string mensagem, string extraHeader)
     {
-        var estiloTabela = ObterEstiloTabelaCss();
-        var builder = new StringBuilder(estiloTabela);
+        var builder = new StringBuilder();
+        builder.AppendLine(HeaderAniversariantes(compromissos, nome, total, extraHeader));
 
-        // Adiciona o cabeçalho da tabela
-        builder.AppendLine("<table class='tabAniversariantes'><thead>");
-        builder.AppendLine("<tr>");
-        builder.AppendLine($"<th width=\"4%\">#</th>");
-        builder.AppendLine($"<th width=\"78%\">Aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias {extraHeader}</h1></th>");
-        builder.AppendLine("<th width=\"18%\">Dia/Mês </th>");
-        builder.AppendLine("</tr>");
-        builder.AppendLine("</thead>");
-
-        // Adiciona os dados da tabela
         int contador = 0;
         foreach (DataRow linha in compromissos.Rows)
         {
             contador++;
+            var nomeAniversariante = linha[0]?.ToString() ?? "";
+            var mes = Convert.ToInt32(linha[1]);
+            var dia = Convert.ToInt32(linha[2]);
+            var isHoje = dia == DateTime.Now.Day && mes == DateTime.Now.Month;
 
-            builder.AppendLine("<tr>");
-            builder.AppendLine($"<td>{contador}</td>");
-            builder.AppendLine($"<td>{linha[0]}</td>");
-            builder.AppendLine($"<td>{linha[2]:D2}/{linha[1]:D2}</td>");
-            builder.AppendLine("</tr>");
+            builder.AppendLine(AddAniversariante(contador, nomeAniversariante, dia, mes, isHoje));
         }
 
-        builder.AppendLine("</table>");
-        if (mensagem.Length > 0) builder.AppendLine($"<span><b>{nome.Split(' ')[0]}, {mensagem}</b></span>");
+        // Mensagem final
+        if (mensagem.Length > 0)
+        {
+            builder.AppendLine($@"
+<tr>
+  <td style=""padding: 24px 0 0 0;"">
+    <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" width=""100%"" style=""background-color: #fff3ed; border-radius: 12px;"">
+      <tr>
+        <td style=""padding: 16px 20px;"">
+          <span style=""font-size: 13px; color: #e8581c; line-height: 1.5;"">{nome.Split(' ')[0]}, {mensagem}</span>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>");
+        }
+
         return builder.ToString();
     }
 
-    private string ObterEstiloTabelaCss()
+    private static string AddAniversariante(int contador, string nomeAniversariante, int dia, int mes, bool isHoje)
     {
-        return @"<style>
-       .tabAniversariantes {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        var corBorda = isHoje ? "#e8581c" : "#e5e5ea";
+        var corFundo = isHoje ? "#fff3ed" : "#f9f9fb";
+        var estrela = isHoje
+            ? @" <span style=""color: #ff3b30; font-size: 16px; vertical-align: middle;"">★</span>"
+            : "";
+        var badgeHoje = isHoje
+            ? @"<td style=""background-color: #e8581c; border-radius: 6px; padding: 3px 10px; margin-bottom: 10px;""><span style=""font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.3px;"">Hoje!</span></td>"
+            : "<td></td>";
 
-.tabAniversariantes thead {
-    background-color: #f8f9fa;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
+        var sb = new StringBuilder();
 
-.tabAniversariantes th {
-    padding: 12px 8px;
-    text-align: left;
-    border: 1px solid #ddd;
-    font-weight: 600;
-    color: #222;
-}
+        sb.AppendLine($@"
+<tr>
+  <td style=""padding: 8px 0;"">
+    <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" width=""100%"" style=""background-color: {corFundo}; border-radius: 14px; border: 1px solid {corBorda};"">
+      <tr>
+        <td style=""padding: 20px;"">
 
-.tabAniversariantes td {
-    padding: 10px 8px;
-    border: 1px solid #ddd;
-    vertical-align: top;
-}
+          <!-- Badge Hoje -->
+          <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" style=""margin-bottom: 10px;"">
+            <tr>
+              {badgeHoje}
+            </tr>
+          </table>
 
-.tabAniversariantes tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
+          <!-- #N + Data -->
+          <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+            <tr>
+              <td><span style=""font-size: 11px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px;"">#{contador} · Aniversário</span>{estrela}</td>
+              <td align=""right""><span style=""font-size: 11px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.3px;"">Data</span></td>
+            </tr>
+            <tr>
+              <td style=""padding-top: 2px;""><span style=""font-size: 16px; font-weight: 600; color: #1c1c1e;"">{nomeAniversariante}</span></td>
+              <td align=""right"" style=""padding-top: 2px;""><span style=""font-size: 16px; font-weight: 600; color: {(isHoje ? "#e8581c" : "#1c1c1e")};"">{dia:D2}/{mes:D2}</span></td>
+            </tr>
+          </table>
 
-.tabAniversariantes tr:hover {
-    background-color: #f1f3f5;
-}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>");
 
-@media only screen and (max-width: 767px) {
-    .tabAniversariantes {
-        font-size: 13px;
-    }
-    
-    .tabAniversariantes th, 
-    .tabAniversariantes td {
-        font-size: 13px;
-        padding: 8px 6px;
-    }    
-    
-    .tabAniversariantes td table {
-        width: 100%;
-    }
-    
-    .tabAniversariantes td table td {
-        padding: 6px 4px;
-        word-break: break-word;
-    }    
-    
-    .tabAniversariantes td a {
-        word-break: break-word;
-    }    
-    
-    @media only screen and (max-width: 375px) {
-        .tabAniversariantes {
-            font-size: 12px;
-        }
-        
-        .tabAniversariantes th, 
-        .tabAniversariantes td {
-            font-size: 12px;
-            padding: 6px 4px;
-        }
-        
-        .tabAniversariantes td table td {
-            padding: 5px 3px;
-        }
-    }
-}
-
-
-.tabAniversariantes tr td:first-child {
-    font-weight: 600;
-    background-color: #f8f9fa;
-}
-
-.tabAniversariantes td table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.tabAniversariantes td table tr:hover {
-    background-color: transparent;
-}
-
-.tabAniversariantes td table td:first-child {
-    font-weight: normal;
-}
-
-.tabAniversariantes a {
-    color: #0066cc;
-    text-decoration: none;
-}
-
-.tabAniversariantes a:hover {
-    text-decoration: underline;
-}
-
-.tabAniversariantes span[style*=""color:red""] {
-    color: #ff3b30 !important;
-    font-weight: bold;
-}
-
-.tabAniversariantes img {
-    vertical-align: middle;
-    margin-right: 4px;
-}
-
-   </style> ";
+        return sb.ToString();
     }
 
+    private string HeaderAniversariantes(DataTable compromissos, string nome, int total, string extraHeader)
+    {
+        var totalHoje = compromissos.AsEnumerable()
+            .Count(r =>
+            {
+                var mes = Convert.ToInt32(r[1]);
+                var dia = Convert.ToInt32(r[2]);
+                return dia == DateTime.Now.Day && mes == DateTime.Now.Month;
+            });
+
+        var sb = new StringBuilder();
+
+        sb.AppendLine($@"
+          <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" style=""margin-bottom: 6px;"">
+            <tr>
+              <td style=""background-color: #fff3ed; border-radius: 6px; padding: 3px 10px;"">
+                <span style=""font-size: 11px; font-weight: 600; color: #e8581c; text-transform: uppercase; letter-spacing: 0.3px;"">ADVOCATI.NET - Mais tempo para melhor advogar.</span>
+              </td>
+            </tr>
+          </table>
+
+          <h1 style=""margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: #1c1c1e; line-height: 1.3;"">
+            {total} aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias {extraHeader}
+          </h1>
+          <p style=""margin: 0 0 4px 0; font-size: 16px; color: #8e8e93;"">
+            {DateTime.Now.ToString("MMMM", new CultureInfo("pt-BR")).ToUpper()} {DateTime.Now.Year}
+          </p>
+
+          <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" width=""100%"" style=""background-color: #f9f9fb; border-radius: 12px; margin-top: 16px;"">
+            <tr>
+              <td style=""padding: 16px 20px;"">
+                <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" width=""100%"">
+                  <tr>
+                    <td>
+                      <span style=""font-size: 13px; color: #8e8e93;"">Total</span><br>
+                      <span style=""font-size: 24px; font-weight: 700; color: #1c1c1e;"">{total}</span>
+                    </td>
+                    {(totalHoje == 0 ? "" : $@"
+                    <td align=""center"">
+                      <span style=""font-size: 13px; color: #8e8e93;"">Hoje</span><br>
+                      <span style=""font-size: 24px; font-weight: 700; color: #e8581c;"">{totalHoje}</span>
+                    </td>")}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <div style=""height: 1px; background-color: #e5e5ea; margin: 24px 0 0 0;""></div>");
+
+        return sb.ToString();
+    }
 }
