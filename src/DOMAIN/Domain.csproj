@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Platforms>AnyCPU;x86</Platforms>
-	  <LangVersion>13.0</LangVersion>
-	  <Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
+	  <LangVersion>14.0</LangVersion>
+	  <Configurations>Debug;Release;DEBUG_API_URL;Development</Configurations>
   </PropertyGroup>
 
 <ItemGroup>
-<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+<PackageReference Include="KubernetesClient" Version="19.0.2" />
+<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
 </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,7 +26,7 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TESTE_PROD|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|AnyCPU'">
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
@@ -37,7 +38,7 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TESTE_PROD|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|x86'">
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
@@ -49,50 +50,40 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <Compile Remove="CODIGO_GERADO\GerMDS_TS\**" />
-    <Compile Remove="Crypto\**" />
-    <Compile Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />
-    <Compile Remove="DA2024\MMXX_2024MenphisSI.GerMDS.RELATIONS\**" />
-    <EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <EmbeddedResource Remove="CODIGO_GERADO\GerMDS_TS\**" />
-    <EmbeddedResource Remove="Crypto\**" />
-    <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />
-    <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerMDS.RELATIONS\**" />
-    <None Remove="CODIGO_GERADO\GerAdv_TS\**" />
-    <None Remove="CODIGO_GERADO\GerMDS_TS\**" />
-    <None Remove="Crypto\**" />
-    <None Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />
-    <None Remove="DA2024\MMXX_2024MenphisSI.GerMDS.RELATIONS\**" />
-  </ItemGroup>
+  
 
 	<ItemGroup>
 
 		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
-		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />		
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.0" />		
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NLog" Version="6.0.2" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />		
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />		
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NLog" Version="6.1.1" />
+	 
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
-    <ProjectReference Include="..\SourgeGenesys.Shared\SourgeGenesys.Shared.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\JsM.AI\JsM.OpenAI.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.KeyStone\MenphisSI.KeyStone.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+    <ProjectReference Include="..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourceGenesys.Shared\MenphisSI.Shared.SourceGenesys.Shared.csproj" />
+    <ProjectReference Include="..\SGMain\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CODIGO_GERADO\" />
-    <Folder Include="PERSONALIZADO\Reader\" />
+    <Folder Include="SG_GENERATED_CUSTOM\Reader\" />
+    <Folder Include="SG_GENERATED_CODE\" />
+    <Folder Include="SG_GENERATED_CODE_STATIC\" />
   </ItemGroup>
 
 </Project>

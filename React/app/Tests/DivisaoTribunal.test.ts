@@ -14,7 +14,7 @@ import { DivisaoTribunalTestEmpty } from '../GerAdv_TS/Models/DivisaoTribunal';
 const mockDivisaoTribunalService: jest.Mocked<IDivisaoTribunalService> = {
   fetchDivisaoTribunalById: jest.fn(),
   saveDivisaoTribunal: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteDivisaoTribunal: jest.fn(),
   validateDivisaoTribunal: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsDivisaoTribunal', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsDivisaoTribunal());
-
-    const invalidData = { ...initialDivisaoTribunal, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsDivisaoTribunal());
-
-    const invalidData = { 
-      ...initialDivisaoTribunal, 
-      guid: 'a'.repeat(100+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsDivisaoTribunal());

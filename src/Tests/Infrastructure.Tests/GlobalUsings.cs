@@ -1,0 +1,14 @@
+﻿global using FluentAssertions;
+global using Moq;
+global using System;
+global using System.Collections.Generic;
+global using System.Data;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using Xunit;
+global using Microsoft.Data.SqlClient;
+global using MenphisSI.Connections;
+global using MenphisSI.Domain.DBT;
+global using MenphisSI.GerEntityTools;
+global using MenphisSI;
+global using System.Reflection;

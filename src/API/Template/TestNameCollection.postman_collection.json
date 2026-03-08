@@ -22,12 +22,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7179/api/v1/formulas/getall",
+					"raw": "https://localhost:7174/api/v1/formulas/getall",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "7179",
+					"port": "7174",
 					"path": [
 						"api",
 						"v1",
@@ -54,12 +54,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7179/api/v1/Formulas/GetListN/listN",
+					"raw": "https://localhost:7174/api/v1/Formulas/GetListN/listN",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "7179",
+					"port": "7174",
 					"path": [
 						"api",
 						"v1",
@@ -96,12 +96,12 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:7179/api/v1/Formulas/Filter/filter",
+					"raw": "https://localhost:7174/api/v1/Formulas/Filter/filter",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "7179",
+					"port": "7174",
 					"path": [
 						"api",
 						"v1",
@@ -129,12 +129,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7179/api/v1/formulas/getbyname?name=VALUE_NAME",
+					"raw": "https://localhost:7174/api/v1/formulas/getbyname?name=VALUE_NAME",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "7179",
+					"port": "7174",
 					"path": [
 						"api",
 						"v1",

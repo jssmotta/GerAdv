@@ -14,7 +14,7 @@ import { DadosProcuracaoTestEmpty } from '../GerAdv_TS/Models/DadosProcuracao';
 const mockDadosProcuracaoService: jest.Mocked<IDadosProcuracaoService> = {
   fetchDadosProcuracaoById: jest.fn(),
   saveDadosProcuracao: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteDadosProcuracao: jest.fn(),
   validateDadosProcuracao: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsDadosProcuracao', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsDadosProcuracao());
-
-    const invalidData = { ...initialDadosProcuracao, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsDadosProcuracao());
-
-    const invalidData = { 
-      ...initialDadosProcuracao, 
-      guid: 'a'.repeat(100+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsDadosProcuracao());

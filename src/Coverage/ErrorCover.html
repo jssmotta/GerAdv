@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Erro durante a geração de resultados</title>
+  <style>
+    body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f7f9fc;color:#222;margin:0;display:flex;align-items:center;justify-content:center;height:100vh}
+    .card{background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(20,30,60,.12);padding:28px;max-width:720px;text-align:left}
+    h1{margin:0 0 8px 0;font-size:22px;color:#c62828}
+    p{margin:0 0 12px 0;line-height:1.45}
+    .actions{margin-top:18px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:#fff}
+    .btn-primary{background:#1976d2}
+    .btn-secondary{background:#6c757d;margin-left:8px}
+    .hint{font-size:13px;color:#666;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Opa — algo deu errado</h1>
+    <p>Encontramos um problema ao gerar os resultados de teste e o relatório de cobertura. Não se preocupe — isso pode ser devido a uma ferramenta em falta, um teste que falhou, ou permissões no sistema.</p>
+    <p class="hint">Sugestões rápidas:</p>
+    <ul>
+      <li>Verifique se o arquivo `Ring01.wav` existe na pasta do script (opcional).</li>
+      <li>Confirme que o `dotnet` e o `reportgenerator` estão instalados e acessíveis no PATH.</li>
+      <li>Revise a saída do script no terminal para ver a mensagem de erro detalhada.</li>
+    </ul>
+    <div class="actions">
+      <a class="btn btn-primary" href="#" onclick="location.reload();">Tentar novamente</a>
+      <a class="btn btn-secondary" href="">Abrir logs</a>
+    </div>
+    <p class="hint">Se precisar de ajuda, copie a saída do terminal e compartilhe com o time responsável.</p>
+  </div>
+</body>
+</html>

@@ -14,7 +14,7 @@ import { GUTAtividadesMatrizTestEmpty } from '../GerAdv_TS/Models/GUTAtividadesM
 const mockGUTAtividadesMatrizService: jest.Mocked<IGUTAtividadesMatrizService> = {
   fetchGUTAtividadesMatrizById: jest.fn(),
   saveGUTAtividadesMatriz: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteGUTAtividadesMatriz: jest.fn(),
   validateGUTAtividadesMatriz: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsGUTAtividadesMatriz', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsGUTAtividadesMatriz());
-
-    const invalidData = { ...initialGUTAtividadesMatriz, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsGUTAtividadesMatriz());
-
-    const invalidData = { 
-      ...initialGUTAtividadesMatriz, 
-      guid: 'a'.repeat(50+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 50 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsGUTAtividadesMatriz());

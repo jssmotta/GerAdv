@@ -1,12 +1,12 @@
 ﻿using MenphisSI.GerAdv.Readers;
 using MenphisSI.GerEntityTools.Entity;
-using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
+using MenphisSI.Shared.BaseCommon.Email.Models;
 
 namespace Domain.BaseCommon.Helpers;
-public class EnvioNotificacoesAniversariantes
+public partial class EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
 {
+    private readonly SendEmailApi _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
+
     private string ConteudoHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterAniversariantes(oCnn, uri, advogado);
@@ -15,12 +15,12 @@ public class EnvioNotificacoesAniversariantes
             return "";
         }
         var sbRet = new StringBuilder();
-        sbRet.Append(ConteudoAgendaHtml(operador, advogado, uri, oCnn));
+        sbRet.Append(ConteudoEmailHtml(operador, advogado, uri, oCnn));
         sbRet.AppendLine(CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count, "você está recebendo aviso de aniversariantes somente de clientes ativos que você tem algum processo ou compromisso em nome deles.", ""));
         return sbRet.ToString();
     }
 
-    private string ConteudoAgendaHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
+    private string ConteudoEmailHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var dsComAgenda = ObterAniversariantesComCompromissos(oCnn, uri, advogado);
         if (dsComAgenda.Rows.Count == 0)
@@ -77,7 +77,7 @@ END;
                     ;";
 
 
-        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        using var conexao = ConfiguracoesSys.GetConnectionByUriRwAsync(uri).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
     private DataTable ObterAniversariantesComCompromissos(
@@ -145,38 +145,7 @@ ORDER BY ageData;
         return $"advCodigo={advogado}";
     }
 
-    private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total, string mensagem, string extraHeader)
-    {
-        var estiloTabela = ObterEstiloTabelaCss();
-        var builder = new StringBuilder(estiloTabela);
-
-        // Adiciona o cabeçalho da tabela
-        builder.AppendLine("<table class='tabAniversariantes'><thead>");
-        builder.AppendLine("<tr>");
-        builder.AppendLine($"<th width=\"4%\">#</th>");
-        builder.AppendLine($"<th width=\"78%\">Aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias {extraHeader}</h1></th>");
-        builder.AppendLine("<th width=\"18%\">Dia/Mês </th>");
-        builder.AppendLine("</tr>");
-        builder.AppendLine("</thead>");
-
-        // Adiciona os dados da tabela
-        int contador = 0;
-        foreach (DataRow linha in compromissos.Rows)
-        {
-            contador++;
-
-            builder.AppendLine("<tr>");
-            builder.AppendLine($"<td>{contador}</td>");
-            builder.AppendLine($"<td>{linha[0]}</td>");
-            builder.AppendLine($"<td>{linha[2]:D2}/{linha[1]:D2}</td>");
-            builder.AppendLine("</tr>");
-        }
-
-        builder.AppendLine("</table>");
-        if (mensagem.Length > 0) builder.AppendLine($"<span><b>{nome.Split(' ')[0]}, {mensagem}</b></span>");
-        return builder.ToString();
-    }
-
+    
 
     public async Task<int> EnviarEmailsParaAdvogados(string uri, MsiSqlConnection oCnn)
     {
@@ -189,8 +158,7 @@ ORDER BY ageData;
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
-        var operadores = await reader.Listar(100, uri, filtroOperadores,[], "operNome",new CancellationToken());
-        var servicoEmail = new SendEmailApi();
+        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores,[], "operNome",new CancellationToken());
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -202,8 +170,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-               (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-              : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+               (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -214,172 +182,32 @@ ORDER BY ageData;
                 continue;
             }
 
- 
 
-            var email = new MenphisSI.Api.Models.SendEmail
+ 
+            var email = new SendEmailModel
             {
-                ParaEmail = operador.EMailNet,
-                ParaNome = cNome,
+                EmailPara = operador.EMailNet,
+                NomePara = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = operador.EMailNet
             };
 
+          
+           _ = _servicoEmail.Send(email); 
 
-           _ = servicoEmail.Send(email);
- 
-             
-#if (!DEBUG)
-                if (uri.ToUpper().Equals("IBRADV"))
-#endif
-                {
-                    var email2 = new MenphisSI.Api.Models.SendEmail
-                    {
-                        ParaEmail = "motta@menphis.com.br",
-                        ParaNome = "Jefferson S. Motta",
-                        Assunto = assunto + " - " + cNome,
-                        Mensagem = conteudoHtml,
-                        NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24
-                    };
-                    _ = servicoEmail.Send(email2);
-                }
-
-            
 
             count++;
-
-
+             
         }
 
         return count;
     }
 
-    private string ObterEstiloTabelaCss()
-    {
-        return @"<style>
-       .tabAniversariantes {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.tabAniversariantes thead {
-    background-color: #f8f9fa;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.tabAniversariantes th {
-    padding: 12px 8px;
-    text-align: left;
-    border: 1px solid #ddd;
-    font-weight: 600;
-    color: #222;
-}
-
-.tabAniversariantes td {
-    padding: 10px 8px;
-    border: 1px solid #ddd;
-    vertical-align: top;
-}
-
-.tabAniversariantes tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.tabAniversariantes tr:hover {
-    background-color: #f1f3f5;
-}
-
-@media only screen and (max-width: 767px) {
-    .tabAniversariantes {
-        font-size: 13px;
-    }
     
-    .tabAniversariantes th, 
-    .tabAniversariantes td {
-        font-size: 13px;
-        padding: 8px 6px;
-    }    
-    
-    .tabAniversariantes td table {
-        width: 100%;
-    }
-    
-    .tabAniversariantes td table td {
-        padding: 6px 4px;
-        word-break: break-word;
-    }    
-    
-    .tabAniversariantes td a {
-        word-break: break-word;
-    }    
-    
-    @media only screen and (max-width: 375px) {
-        .tabAniversariantes {
-            font-size: 12px;
-        }
-        
-        .tabAniversariantes th, 
-        .tabAniversariantes td {
-            font-size: 12px;
-            padding: 6px 4px;
-        }
-        
-        .tabAniversariantes td table td {
-            padding: 5px 3px;
-        }
-    }
-}
-
-
-.tabAniversariantes tr td:first-child {
-    font-weight: 600;
-    background-color: #f8f9fa;
-}
-
-.tabAniversariantes td table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.tabAniversariantes td table tr:hover {
-    background-color: transparent;
-}
-
-.tabAniversariantes td table td:first-child {
-    font-weight: normal;
-}
-
-.tabAniversariantes a {
-    color: #0066cc;
-    text-decoration: none;
-}
-
-.tabAniversariantes a:hover {
-    text-decoration: underline;
-}
-
-.tabAniversariantes span[style*=""color:red""] {
-    color: #ff3b30 !important;
-    font-weight: bold;
-}
-
-.tabAniversariantes img {
-    vertical-align: middle;
-    margin-right: 4px;
-}
-
-   </style> ";
-    }
 
     public async Task<int> EnviarEmailsParaFuncionarios(string uri, MsiSqlConnection oCnn)
     {
@@ -388,9 +216,8 @@ ORDER BY ageData;
         var reader = new OperadorReader( new FOperadorFactory());
         var readerAdv = new AdvogadosReader( new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
-        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
-        var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -402,8 +229,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -414,20 +241,22 @@ ORDER BY ageData;
                 continue;
             }
 
-#if (!DEBUG)
+ 
 
-            var email = new MenphisSI.Api.Models.SendEmail
+            var email = new SendEmailModel
             {
-                ParaEmail = operador.EMailNet,
-                ParaNome = cNome,
+                EmailPara = operador.EMailNet,
+                NomePara = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = operador.EMailNet
             };
 
-            _ = servicoEmail.Send(email);
-#endif 
+            _ = _servicoEmail.Send(email);
+ 
             count++;
 
         }
@@ -492,7 +321,7 @@ END;
                     ;";
 
 
-        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
 

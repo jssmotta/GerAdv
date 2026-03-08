@@ -1,0 +1,11 @@
+﻿global using MenphisSI.GerAdv.Factory;
+global using MenphisSI.GerAdv.Filters;
+global using MenphisSI.GerAdv.Interface;
+global using MenphisSI.GerAdv.Interface.Readers;
+global using MenphisSI.GerAdv.Models.Response;
+global using MenphisSI.GerAdv.Services;
+global using MenphisSI.GerAdv.Validations;
+global using MenphisSI.GerAdv.Writers;
+global using MenphisSI.SG.GerAdv;
+global using MenphisSI.GerAdv.Wheres;
+global using MenphisSI.GerAdv.Models.Response.All;

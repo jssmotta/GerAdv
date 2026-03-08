@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <!-- Microsoft Code Coverage (Visual Studio) -->
+      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+        <Configuration>
+          <CodeCoverage>
+            <ModulePaths>
+              <Exclude>
+                <!-- Excluir todos os contexts de serialização JSON -->
+                <ModulePath>.*JsonSerializerContext.*</ModulePath>
+                <ModulePath>.*\.Serialization\..*</ModulePath>
+                <ModulePath>.*TestAdapter.*</ModulePath>
+              </Exclude>
+            </ModulePaths>
+            <Sources>
+              <Exclude>
+                <!-- Arquivos auto-gerados do .NET -->
+                <Source>.*\.g\.cs$</Source>
+                <Source>.*\.g\.i\.cs$</Source>
+                <Source>.*\.Designer\.cs$</Source>
+                
+                <!-- Arquivos específicos do Source Generator JSON -->
+                <Source>.*System\.Text\.Json\.SourceGeneration.*</Source>
+                <Source>.*JsonSerializerContext.*\.g\.cs$</Source>
+                
+                <!-- Pastas obj e bin -->
+                <Source>.*\\obj\\.*</Source>
+                <Source>.*\\bin\\.*</Source>
+                
+                <!-- Serialization namespace completo -->
+                <Source>.*Serialization.*</Source>
+                <Source>.*Migrations.*\.cs$</Source>
+                
+                <!-- Arquivos em pastas temporárias de build -->
+                <Source>.*\\Debug\\.*\.g\.cs$</Source>
+                <Source>.*\\Release\\.*\.g\.cs$</Source>
+              </Exclude>
+            </Sources>
+            <Functions>
+              <Exclude>
+                <!-- Excluir funções dos contexts de serialização -->
+                <Function>.*JsonSerializerContext.*</Function>
+                <Function>.*\.Serialization\..*</Function>
+              </Exclude>
+            </Functions>
+            <Attributes>
+              <Exclude>
+                <!-- Atributos para exclusão do code coverage -->
+                <Attribute>^System\.Obsolete.*</Attribute>
+                <Attribute>^System\.CodeDom\.Compiler\.GeneratedCode.*</Attribute>
+                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverage.*</Attribute>
+                <Attribute>^System\.Runtime\.CompilerServices\.CompilerGenerated.*</Attribute>
+              </Exclude>
+            </Attributes>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+             
+      <!-- XPlat Code Coverage (Cross-platform) -->
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>opencover</Format>
+          <Exclude>
+            <!-- Pastas padrão -->
+            **/bin/**,
+            **/obj/**,
+            **/*TestAdapter/**,
+            
+            <!-- Serialization específico -->
+            **/*Serialization*/**,
+            **/*JsonSerializerContext*/**,
+            
+            <!-- Source Generation paths -->
+            **/System.Text.Json.SourceGeneration/**,
+            
+            <!-- Debug/Release temporários -->
+            **/Debug/net9.0/System.Text.Json.SourceGeneration/**,
+            **/Release/net9.0/System.Text.Json.SourceGeneration/**
+          </Exclude>
+          <ExcludeByAttribute>
+            Obsolete,
+            System.CodeDom.Compiler.GeneratedCode,
+            System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage,
+            CompilerGenerated,
+            GeneratedCode
+          </ExcludeByAttribute>
+          <ExcludeByFile>
+            <!-- Arquivos gerados -->
+            **/*.g.cs,
+            **/*.g.i.cs,
+            **/*Designer.cs,
+            **/Migrations/**/*.cs,
+            
+            <!-- Source Generator específico -->
+            **/*JsonSerializerContext*.g.cs,
+            **/System.Text.Json.SourceGeneration/**/*.cs,
+            
+            <!-- Pastas de build -->
+            **/obj/**/*.cs,
+            **/bin/**/*.cs
+          </ExcludeByFile>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

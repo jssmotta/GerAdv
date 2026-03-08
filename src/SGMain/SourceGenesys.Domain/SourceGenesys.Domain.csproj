@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x86</Platforms>
+	  <LangVersion>14.0</LangVersion>
+	  <Configurations>Debug;Release;DEBUG_API_URL;Development</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DAMX2025\**" />
+    <EmbeddedResource Remove="DAMX2025\**" />
+    <None Remove="DAMX2025\**" />
+  </ItemGroup>
+
+<ItemGroup>
+<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+</ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|AnyCPU'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x86'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|x86'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
+  </PropertyGroup>
+
+   
+	<ItemGroup>
+
+		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />		
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />		
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NLog" Version="6.1.1" />
+	</ItemGroup>
+
+   
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.KeyStone\MenphisSI.KeyStone.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.AI\MenphisSI.Shared.AI.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+	  <ProjectReference Include="..\..\..\..\SG\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourceGenesys.Shared\MenphisSI.Shared.SourceGenesys.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

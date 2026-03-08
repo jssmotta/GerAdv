@@ -1,0 +1,12 @@
+﻿global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.Caching.Hybrid;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.Options;
+global using Moq;
+global using Xunit;
+global using MenphisSI.BaseCommon;
+global using FluentAssertions;
+global using System.Threading.Tasks;
+global using Microsoft.Data.SqlClient;
+global using System.Diagnostics;
+global using System.Reflection; 

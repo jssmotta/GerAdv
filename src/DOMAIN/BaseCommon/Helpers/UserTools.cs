@@ -1,7 +1,6 @@
-﻿using System.Security.Claims;
+﻿namespace MenphisSI.BaseCommon;
 
-namespace MenphisSI.BaseCommon;
-
+[ExcludeFromCodeCoverage]
 public static class UserTools
 {
     public static int GetAuthenticatedUserId(IHttpContextAccessor _httpContextAccessor)

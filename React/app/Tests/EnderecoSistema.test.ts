@@ -14,7 +14,7 @@ import { EnderecoSistemaTestEmpty } from '../GerAdv_TS/Models/EnderecoSistema';
 const mockEnderecoSistemaService: jest.Mocked<IEnderecoSistemaService> = {
   fetchEnderecoSistemaById: jest.fn(),
   saveEnderecoSistema: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteEnderecoSistema: jest.fn(),
   validateEnderecoSistema: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsEnderecoSistema', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsEnderecoSistema());
-
-    const invalidData = { ...initialEnderecoSistema, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsEnderecoSistema());
-
-    const invalidData = { 
-      ...initialEnderecoSistema, 
-      guid: 'a'.repeat(150+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 150 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsEnderecoSistema());

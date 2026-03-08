@@ -1,297 +1,264 @@
-using MenphisSI.GerAdv.HealthCheck;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using NLog.Web;
-using System.Globalization;
-using System.Security.Authentication;
+﻿/*
+ 
+Ajuda para a IA: Os Health Checks ESTÃO REGISTRADOS corretamente!
+O fluxo completo é:
+1.	Program.cs chama Start upAppAdvanced.ConfigurarBuilder(builder, configuracao, logger)
+2.	ConfigurarBuilder(WebApplicationBuilder, ConfiguracaoInicializacao?, Logger?) chama configuracao.ConfigurarHealthChecksCustomizados?.Invoke(builder, logger)
+3.	ConfigurarHealthChecksAppSG(WebApplicationBuilder, Logger?) chama AppSettingsHealthCheckDefault.Add(builder)
+4.	Add(WebApplicationBuilder) registra os 4 Health Check services no DI com AddHealthChecks().AddCheck<T>()
 
+ */
 
-var logger = MenphisSI.WebApi.BaseCommon.Helpers.ProgramNLog.ConfigureNLog();
+using API.OpenTelemetry;
+using API.Resilience;
+using API.Sistemas.Auditor;
+using MenphisSI.BaseCommon.Controllers;
+using MenphisSI.BaseCommon.Helpers;
+using MenphisSI.BaseCommon.Metrics;
+using MenphisSI.BaseCommon.UserController;
+using MenphisSI.SGSys.StartApp;
+using MenphisSI.Shared.BaseCommon.API.Guardian;
+using MenphisSI.Shared.BaseCommon.API.Prometheus;
+using MenphisSI.Shared.StartApp;
 
+var logger = ProgramNLog.ConfigureNLog();
 
 try
 {
-
     logger.Info("Iniciado WebApi");
 
     var builder = WebApplication.CreateBuilder(args);
 
+    
 
+    // Registrar IUsersMetrics para o controller genérico
+    builder.Services.AddSingleton<IUsersMetrics, UsersMetricsAdapter>();
+
+    // Configurar URLs incluindo porta para métricas Prometheus (apenas se porta separada configurada)
+    var openTelemetrySettings = builder.Configuration
+        .GetSection(OpenTelemetrySettings.SectionName)
+        .Get<OpenTelemetrySettings>() ?? new OpenTelemetrySettings();
+
+    // Apenas configura porta separada se PrometheusPort > 0
+    if (openTelemetrySettings.Enabled && openTelemetrySettings.UseSeparatePort)
+    {
+        var currentUrls = builder.Configuration["urls"] ?? builder.Configuration["ASPNETCORE_URLS"] ?? "http://*:80";
+        var prometheusUrl = $"http://localhost:{openTelemetrySettings.PrometheusPort}";
+
+        // Adicionar porta do Prometheus se não estiver já configurada
+        if (!currentUrls.Contains($":{openTelemetrySettings.PrometheusPort}"))
+        {
+            builder.WebHost.UseUrls(currentUrls, prometheusUrl);
+            logger.Info($"Configurado Prometheus em porta separada: {prometheusUrl}{openTelemetrySettings.PrometheusEndpoint}");
+        }
+    }
+    else if (openTelemetrySettings.Enabled)
+    {
+        logger.Info($"Prometheus configurado no mesmo endpoint da API: {openTelemetrySettings.PrometheusEndpoint}");
+    }
+
+    
+
+    // Adicionar configuração de resiliência (Polly Circuit Breaker)
+    builder.Services.AddResilienceConfiguration(builder.Configuration);
+
+    // Adicionar configuração de Bulkhead (controle de concorrência)
+    builder.Services.AddBulkheadPolicies(builder.Configuration);
+
+    SettingsMetrics.ConfigurarBuilder(builder);
+
+    // Determinar configuração baseada no ambiente usando a nova estrutura
+    ConfiguracaoInicializacao configuracao = builder.Environment.IsDevelopment()
+        ? AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: true)
+        : AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: false);
 
     if (builder.Environment.IsDevelopment())
     {
-        builder.Configuration
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables(); 
+        logger.Info("Ambiente de desenvolvimento detectado");
+
+        // Personalizar configuração para desenvolvimento se necessário
+        configuracao.ConfigurarEndpointsCustomizados = (app) =>
+        {
+            // Endpoints úteis para desenvolvimento
+            app.MapGet("/dev/info", () => new
+            {
+                Environment = "Development",
+                Version = "1.0.0-dev",
+                Timestamp = DateTime.Now,
+                MachineName = Environment.MachineName
+            });
+
+            app.MapGet("/dev/config", () => new
+            {
+                Message = "Usando configuração de desenvolvimento",
+                CORS = configuracao.OrigensCORSDesenvolvimento,
+                JWT_RequireHttps = configuracao.ConfiguracaoJWT.RequireHttpsMetadata
+            });
+        };
+    }
+    else if (builder.Environment.IsProduction())
+    {
+        logger.Info("Ambiente de produção detectado");
     }
     else
     {
-        builder.Configuration
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddEnvironmentVariables(); ;
+        logger.Info("Ambiente não específico detectado - usando configuração padrão");
     }
 
-    builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+    // Obter configurações de resiliência
+    var resilienceSettings = builder.Configuration
+        .GetSection(ResilienceSettings.SectionName)
+        .Get<ResilienceSettings>() ?? new ResilienceSettings();
 
-
-    //var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
-    //if (uris.IsEmpty())
-    //{
-    //    throw new Exception("AppSettings:ValidUris n�o configurado");
-    //}
-
-    builder.Host.UseNLog();
-
-    // Add services to the container.
-    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-    builder.Services.AddOpenApi();
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IUserService, UserService>();
-
-
-
-    //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
-
-    builder.Services.AddResponseCompression(options =>
+#if HAS_LCK
+    // Configurar HttpClient Factory para DevToolsApi com políticas de resiliência
+    builder.Services.AddHttpClient<IDevToolsApiClient, DevToolsApiClient>((sp, client) =>
     {
-        options.EnableForHttps = true;
-        options.Providers.Add<BrotliCompressionProvider>();
-        options.Providers.Add<GzipCompressionProvider>();
-    });
-
-    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-
-    MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
-    MenphisSI.GerEntityTools.Helper.Token.InitializeConfiguration(builder.Configuration);
-
-    MenphisSI.GerAdv.Services.AddServices.Add(builder);
-
-    MenphisSI.GerAdv.Validations.AddServices.Add(builder);
-    MenphisSI.GerAdv.Readers.AddServices.Add(builder);
-    MenphisSI.GerAdv.Writers.AddServices.Add(builder);
-    MenphisSI.GerAdv.Entity.AddServices.Add(builder);
-
-    MenphisSI.GerAdv.Serialization.AddServices.Add(builder);
-
-    // AppSettingsMediator.AddMediatorConfig(builder);
-     
-    AppSettingsHealthCheck.Add(builder); // Add HealthCheck
-    AppSettingsHealthCheck.Add(builder, logger, settings); // Add HealthCheck
-    //AppSettingsHealthCheck.AddHealthCheck(builder);
-
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddApiVersioning(options =>
+        var config = sp.GetRequiredService<IConfiguration>();
+        var baseUrl = config["DevToolsApi:BaseUrl"]!;
+        client.BaseAddress = new Uri(baseUrl);
+        client.Timeout = TimeSpan.FromSeconds(config.GetValue<int>("DevToolsApi:TimeoutSeconds", 30));
+    })
+    .AddResiliencePolicies(resilienceSettings)
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
-        options.ReportApiVersions = true;
-        options.AssumeDefaultVersionWhenUnspecified = true;
-        options.DefaultApiVersion = new ApiVersion(1, 0);
+        MaxConnectionsPerServer = 10,
+        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
     });
-
-    builder.Services.AddAuthorization();
-    builder.Services.AddMemoryCache();
-    builder.Services.AddHybridCache();
-
-
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ConfigureHttpsDefaults(httpsOptions =>
-        {
-            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-        });
-    });
-
-
-    builder.Services.AddControllers()
-       .AddJsonOptions(options =>
-       {
-           options.JsonSerializerOptions.PropertyNamingPolicy = null;
-           options.JsonSerializerOptions.DictionaryKeyPolicy = null;
-       });
-
-    //builder.Services.AddCors(options =>
-    //{
-    //    options.AddPolicy("AllowSpecificOrigins",
-    //        builder =>
-    //        { 
-    //            builder.WithOrigins(
-    //                    Uris.WebClientsUri)
-    //                    .AllowAnyHeader()
-    //                    .AllowAnyMethod();
-    //        });
-    //});
-
-    string[] corsSites = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>() ?? [];
-
-#if (DEBUG)
-    var listCors = new List<string>() { "http://localhost:3000" };   
-#else
-    var listCors = new List<string>();
+    builder.Services.AddScoped<ILoginValidationService, DevToolsLoginValidationService>();
 #endif
 
-    listCors.AddRange(corsSites);
+    // Registrar ILoginValidationService usando DevToolsApiClient
 
-    if (System.Diagnostics.Debugger.IsAttached)
+
+    // Configurar HttpClient para reCAPTCHA com políticas de resiliiência
+    var reCaptchaResilienceSettings = new ResilienceSettings
     {
-        listCors.Add("http://localhost:3000");
-    }
+        MaxRetryAttempts = 3,
+        RetryDelaySeconds = 1,
+        TimeoutSeconds = 10,
+        CircuitBreakerFailureThreshold = 5,
+        CircuitBreakerDurationSeconds = 30
+    };
 
-    builder.Services.AddCors(options =>
+    builder.Services.AddHttpClient("ReCaptcha", client =>
     {
-        options.AddPolicy("AllowSpecificOrigins",
-            builder =>
-            {
-                builder.WithOrigins([.. listCors])
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-            });
-    });
-
-    var swaggerVersion = builder.Configuration["Swagger:Version"]?.ToString() ?? "v1";
-
-    builder.Services.AddSwaggerGen(swagger =>
-    {
-        //This is to generate the Default UI of Swagger Documentation
-        swagger.SwaggerDoc(swaggerVersion, new OpenApiInfo
-        {
-            Version = swaggerVersion,
-            Title = "JWT Token Authentication API",
-            Description = "Medical System.NET 9 Web API"
-        });
-        // To Enable authorization using Swagger (JWT)
-        swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-        {
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-        });
-        swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-    });
-
-
-    var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"] ?? "");
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        client.Timeout = TimeSpan.FromSeconds(15);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
     })
-    .AddJwtBearer(options =>
+    .AddResiliencePolicies(reCaptchaResilienceSettings)
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
+        MaxConnectionsPerServer = 5,
+        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
     });
+
+    // Configurar serviços de voz específicos do AppSG
+    AppSGStartup.ConfigurarVoiceServices(builder);
+
+    // Inicializar configurações externas do AppSG
+    AppSGStartup.InicializarConfiguracoes(builder);
+
+    // Configurar builder usando a classe StartupAppAdvanced genérica com configuração específica do APPSG
+    StartupAppAdvanced.ConfigurarBuilder(builder, configuracao, logger);
 
     var app = builder.Build();
 
-    //EndpointRegistration.AddApiServices(app);
+   // Configurar middlewares específicos do AppSG (geo-blocking)
+    AppSGStartup.ConfigurarMiddlewaresAppSG(app);
 
-    // Configure the HTTP request pipeline.
-    //if (app.Environment.IsDevelopment())
-    //{
-    //    app.MapOpenApi();
-    //    app.UseSwagger();
-    //    app.UseSwaggerUI(c =>
-    //    {
-    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    //        c.DefaultModelsExpandDepth(-1);
-    //    });
-    //}
-    //else
-    //{
-    //    app.UseSwagger();
-    //    app.UseSwaggerUI(c =>
-    //    {
-    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    //        c.DefaultModelsExpandDepth(-1);
-    //    });
-    //}
+    // Configurar aplicação usando a classe StartupAppAdvanced genérica
+    StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);
 
+    // Enable Developer Exception Page in development for detailed errors
+    if (builder.Environment.IsDevelopment())
+    { 
+        logger.Info("Developer exception page enabled");
+    }
+    else
+    {
+        // PROMETHEU E GUARDIAN - Restrições de acesso aos endpoints
+        AddTelemetryService.UsePrometheusEndpointRestriction(app, builder.Configuration);
+        GuardianDashboard.UseGuardianEndpointRestriction(app, builder.Configuration, logger);
+    }
 
+    //// 07-01-2026 - Aplicar rate limiting apenas para endpoints que não sejam /metrics
+    //app.UseWhen(
+    //context => !context.Request.Path.StartsWithSegments("/metrics"),
+    //appBuilder => {
+    //    appBuilder.UseRateLimiter(); // ou seu middleware de rate limit
+    //    }
+    //);
 
-    app.UseHttpsRedirection();
-    app.UseResponseCompression();
-    //app.UseCors("AllowSpecificOrigins");
-    app.UseCors("AllowAllOrigins");
+    // Configurar endpoint do Prometheus para métricas OpenTelemetry
+    app.UseGenesysPrometheus(builder.Configuration);
 
-    app.UseAuthentication();
-    app.UseMiddleware<JwtMiddleware>();
-    app.UseAuthorization();
+ 
 
-    AppSettingsHealthCheck.Use(app);
+    AuditorController.ConfigureAuditorEndpoints(app);
 
-    app.MapControllers();
+    Robots.ConfigureRobotEndpoints(app);
 
-
-    var cultureInfo = new CultureInfo("pt-BR");
-    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-    app.MapGet("/",
-        (context) =>
+    // Endpoint para verificar status do Circuit Breaker
+    app.MapGet("/resilience/status", (IResilienceService resilienceService) =>
+    {
+        return Results.Ok(new
         {
-            var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-#if (!DEBUG)
-            logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
-#endif
-            context.Response.Redirect("https://menphis.com.br/?ur=apiadv");
-            return Task.CompletedTask;
+            Status = "Resilience Service Active",
+            Timestamp = DateTime.UtcNow
+        });
+    }).AllowAnonymous();
+
+    // Servir arquivos estáticos (incluindo monitor.html)
+    app.UseStaticFiles();
+
+    // Configurar endpoints específicos do HealthCheckController diretamente aqui no Program.cs
+    if (configuracao.HabilitarHealthChecks)
+    {
+        try
+        {
+            HealthCheckController.ConfigureHealthCheckEndpoints(app);
+            logger.Info("Endpoints do HealthCheckController configurados com sucesso");
         }
-  ).ShortCircuit(200);
-
-    app.MapGet("/api/v1/",
-          (context) =>
-          {
-              var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-#if (!DEBUG)
-            logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
-#endif
-              context.Response.Redirect("https://menphis.com.br/?urapiadvi");
-              return Task.CompletedTask;
-          }
-  ).ShortCircuit(200);    
-
-
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Erro ao configurar endpoints do HealthCheckController");
+        }
+    }
+    /*
+    // Diagnostic: list mapped endpoints to help debug routing
+    try
+    {
+        var endpoints = app.Services.GetService<EndpointDataSource>();
+        logger.Info("---- MAPPED ENDPOINTS ----");
+        if (endpoints != null)
+        {
+            foreach (var ep in endpoints.Endpoints)
+            {
+                logger.Info(ep.DisplayName ?? ep.ToString());
+            }
+        }
+        else
+        {
+            logger.Warn("EndpointDataSource not available");
+        }
+        logger.Info("--------------------------");
+    }
+    catch (Exception ex)
+    {
+        logger.Warn(ex, "Falha ao listar endpoints");
+    }
+    */
     app.Run();
 }
 catch (Exception exception)
 {
-
     logger.Error(exception, "Stopped program because of exception");
-
     throw;
 }
 finally
 {
     LogManager.Shutdown();
 }
-

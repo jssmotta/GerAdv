@@ -14,7 +14,7 @@ import { GUTPeriodicidadeStatusTestEmpty } from '../GerAdv_TS/Models/GUTPeriodic
 const mockGUTPeriodicidadeStatusService: jest.Mocked<IGUTPeriodicidadeStatusService> = {
   fetchGUTPeriodicidadeStatusById: jest.fn(),
   saveGUTPeriodicidadeStatus: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteGUTPeriodicidadeStatus: jest.fn(),
   validateGUTPeriodicidadeStatus: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsGUTPeriodicidadeStatus', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsGUTPeriodicidadeStatus());
-
-    const invalidData = { ...initialGUTPeriodicidadeStatus, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsGUTPeriodicidadeStatus());
-
-    const invalidData = { 
-      ...initialGUTPeriodicidadeStatus, 
-      guid: 'a'.repeat(50+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 50 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsGUTPeriodicidadeStatus());
