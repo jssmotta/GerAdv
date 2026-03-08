@@ -10,9 +10,9 @@ namespace MenphisSI.GerAdv.Client;
 public static class EntityApi
 {
 #if (DEBUG)
-    public static string BaseUrlApi => "localhost:7179";
+    public static string BaseUrlApi => "localhost:7174";
 #else
-    public static string BaseUrlApi => System.Diagnostics.Debugger.IsAttached ? "localhost:7179" :  "api.ajfanibrahim.com.br";
+    public static string BaseUrlApi => System.Diagnostics.Debugger.IsAttached ? "localhost:7174" :  "api.ajfanibrahim.com.br";
 
 #endif
     private static string APIUrl = $"https://{BaseUrlApi}/api/v1/";
