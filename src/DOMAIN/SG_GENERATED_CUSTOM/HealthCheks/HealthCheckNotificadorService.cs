@@ -3,16 +3,14 @@ using MenphisSI.GerEntityTools.Entity;
 
 namespace MenphisSI.GerAdv.HealthCheck;
 
-public class HealthCheckNotificadorService([Required] string uri, [Required] SendEmailApi sendEmailApi) : IHealthCheck, IDisposable
+public class HealthCheckNotificadorService([Required] string uri, [Required] SendEmailApi sendEmailApi, int horaDia, int horaNovos) : IHealthCheck, IDisposable
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private bool _disposed;
     private readonly string _uri = uri;
     private readonly SendEmailApi _sendEmailApi = sendEmailApi ?? throw new ArgumentNullException(nameof(sendEmailApi));
-
-
-    private const int PHoraParaDia = 8;
-    private const int PHoraParaNovos = 19;
+    private readonly int _horaDia = horaDia;
+    private readonly int _horaNovos = horaNovos;
 
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
@@ -23,12 +21,13 @@ public class HealthCheckNotificadorService([Required] string uri, [Required] Sen
 //#endif
         try
         {
+#if (!DEBUG)
             if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
             {
                 return CreateHealthyResult("Notificador operacional");
             }
-
-            if (DateTime.Now.Hour == PHoraParaDia)
+#endif
+            if (DateTime.Now.Hour == _horaDia)
             {
                 using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
@@ -38,7 +37,7 @@ public class HealthCheckNotificadorService([Required] string uri, [Required] Sen
 
                 _ = await SendNotificationsAndGetResult(E_TIPO_ENVIO.DIA, oCnn);
             }
-            else if (DateTime.Now.Hour == PHoraParaNovos)
+            else if (DateTime.Now.Hour == _horaNovos)
             {
                 using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)

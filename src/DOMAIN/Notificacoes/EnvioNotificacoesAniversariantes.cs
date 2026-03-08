@@ -1,15 +1,11 @@
 ﻿using MenphisSI.GerAdv.Readers;
 using MenphisSI.GerEntityTools.Entity;
+using MenphisSI.Shared.BaseCommon.Email.Models;
 
 namespace Domain.BaseCommon.Helpers;
-public class EnvioNotificacoesAniversariantes
+public class EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
 {
-    private readonly SendEmailApi _servicoEmail;
-
-    public EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
-    {
-        _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
-    }
+    private readonly SendEmailApi _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
 
     private string ConteudoHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
@@ -218,8 +214,8 @@ ORDER BY ageData;
             }
 
  
-
-            var email = new MenphisSI.Api.Models.SendEmail
+         
+            var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
                 NomePara = cNome,
@@ -231,27 +227,27 @@ ORDER BY ageData;
                 EmailNet = operador.EMailNet
             };
 
-
+          
            _ = _servicoEmail.Send(email);
- 
+  
              
-#if (!DEBUG)
-                if (uri.ToUpper().Equals("IBRADV"))
-#endif
-                {
-                    var email2 = new MenphisSI.Api.Models.SendEmail
-                    {
-                        EmailPara = "motta@menphis.com.br",
-                        NomePara = "Jefferson S. Motta",
-                        Assunto = assunto + " - " + cNome,
-                        Mensagem = conteudoHtml,
-                        NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24,
-                        Uri = uri,
-                        EmailNet = "motta@menphis.com.br"
-                    };
-                    _ = _servicoEmail.Send(email2);
-                }
+//#if (!DEBUG)
+//                if (uri.ToUpper().Equals("IBRADV"))
+//#endif
+//                {
+//                    var email2 = new SendEmailModel
+//                    {
+//                        EmailPara = "motta@menphis.com.br",
+//                        NomePara = "Jefferson S. Motta",
+//                        Assunto = assunto + " - " + cNome,
+//                        Mensagem = conteudoHtml,
+//                        NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+//                        Time2Live = 24,
+//                        Uri = uri,
+//                        EmailNet = "motta@menphis.com.br"
+//                    };
+//                    _ = _servicoEmail.Send(email2);
+//                }
 
             
 

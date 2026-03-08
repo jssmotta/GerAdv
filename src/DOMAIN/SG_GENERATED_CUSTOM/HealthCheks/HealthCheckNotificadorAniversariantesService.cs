@@ -8,12 +8,13 @@ public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDispo
     private bool _disposed;
     private readonly string _uri;
     private readonly EnvioNotificacoesAniversariantes _notificationService;
-    private const int PHoraProcessamento = 7;
+    private readonly int _horaDia;
 
-    public HealthCheckNotificadorAniversariantesService([Required] string uri, EnvioNotificacoesAniversariantes notificationService)
+    public HealthCheckNotificadorAniversariantesService([Required] string uri, EnvioNotificacoesAniversariantes notificationService, int horaDia)
     {
         _uri = uri;
         _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+        _horaDia = horaDia;
     }
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
@@ -50,7 +51,7 @@ public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDispo
     }
 
     private bool IsHoraProcessamento() =>
-            DateTime.Now.Hour == PHoraProcessamento;
+            DateTime.Now.Hour == _horaDia;
 
     private bool IsNotDiaOperacional() =>
         DateTime.Now.DayOfWeek != DayOfWeek.Monday &&

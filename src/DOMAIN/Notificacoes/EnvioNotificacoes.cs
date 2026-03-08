@@ -1,5 +1,6 @@
 ﻿using MenphisSI.GerAdv.Readers;
 using MenphisSI.GerEntityTools.Entity;
+using MenphisSI.Shared.BaseCommon.Email.Models;
 
 namespace Domain.BaseCommon.Helpers;
 
@@ -197,7 +198,8 @@ ORDER BY vqaData;";
                 continue;
             }
 
-            var email = new MenphisSI.Api.Models.SendEmail
+#if (!DEBUG)
+            var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
                 NomePara = cNome,
@@ -209,16 +211,16 @@ ORDER BY vqaData;";
                 EmailNet = operador.EMailNet
             };
 
-#if (!DEBUG)
+
             _ = _servicoEmail.Send(email);
 #endif
-            if (count == 0)
+            //if (count == 0)
             {
-#if (!DEBUG)
-                if (uri.ToUpper().Equals("SIEBRA"))
-#endif
+
+                //if (uri.ToUpper().Equals("SIEBRA"))
+
                 {
-                    var email2 = new MenphisSI.Api.Models.SendEmail
+                    var email2 = new SendEmailModel
                     {
                         EmailPara = "motta@menphis.com.br",
                         NomePara = "Jefferson S. Motta",

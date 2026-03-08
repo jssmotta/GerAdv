@@ -2,6 +2,8 @@ using MenphisSI.BaseCommon.UserController;
 using MenphisSI.GerAdv.HealthCheck;
 using MenphisSI.HealthCheck;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 using MenphisSI.GerEntityTools.Entity;
 using Domain.BaseCommon.Helpers;
 using MenphisSI.Shared.Infrastructure.CheckDb;
@@ -14,7 +16,7 @@ namespace MenphisSI.SGSys.StartApp;
 /// <summary>
 /// AppSG-specific service configuration
 /// </summary>
-public static class AppSGStartupGerADV
+public static class AppSGStartup
 {
     /// <summary>
     /// Registers all AppSG-specific services
@@ -68,8 +70,15 @@ public static class AppSGStartupGerADV
         AppSettingsHealthCheckDefault.Add(builder);
 
         // Read notification URIs from configuration and register a health check for each
-        var urisNotificadorAgenda = Microsoft.Extensions.Configuration.ConfigurationBinder.Get<List<string>>(builder.Configuration.GetSection("UrisNotificadorAgenda")) ?? new List<string>();
-        var urisAniversariantes = Microsoft.Extensions.Configuration.ConfigurationBinder.Get<List<string>>(builder.Configuration.GetSection("UrisAniversariantes")) ?? new List<string>();
+        var urisNotificadorAgendaStr = builder.Configuration.GetValue<string>("AppSettings:UrisNotificadorAgenda") ?? "";
+        var urisNotificadorAgenda = urisNotificadorAgendaStr.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(u => u.Trim()).ToList();
+
+        var urisAniversariantesStr = builder.Configuration.GetValue<string>("AppSettings:UrisAniversariantes") ?? "";
+        var urisAniversariantes = urisAniversariantesStr.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(u => u.Trim()).ToList();
+
+        // Read time configuration from settings
+        var horaDia = Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue<int>(builder.Configuration, "AppSettings:HoraDia", 8);
+        var horaNovos = Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue<int>(builder.Configuration, "AppSettings:HoraNovos", 20);
 
         var healthBuilder = builder.Services.AddHealthChecks();
 
@@ -81,17 +90,20 @@ public static class AppSGStartupGerADV
         foreach (var uri in urisNotificadorAgenda)
         {
             var name = $"Notification-{uri}";
-            healthBuilder.AddCheck(name, new HealthCheckNotificadorService(uri, sendEmailApi), tags: ["notify"]);
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorService(uri, sendEmailApi, horaDia, horaNovos), tags: ["notify"]);
         }
 
+#if !DEBUG
         // Register one health check instance per configured URI for the aniversariantes notifier
         foreach (var uri in urisAniversariantes)
         {
             var name = $"Aniversariantes-{uri}";
             // EnvioNotificacoesAniversariantes depends on SendEmailApi
             var envio = new EnvioNotificacoesAniversariantes(sendEmailApi);
-            healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(uri, envio), tags: new[] { "Niver" });
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(uri, envio, horaDia), tags: new[] { "Niver" });
         }
+
+#endif
 
 #if HAS_LCK
         // Add custom health checks

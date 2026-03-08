@@ -1,6 +1,7 @@
 using MenphisSI.BaseCommon.UserController;
 using MenphisSI.GerEntityTools.Entity;
 using MenphisSI.Shared.BaseCommon.API.Models;
+using MenphisSI.Shared.BaseCommon.Email.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -510,7 +511,7 @@ public class UserService(
                     var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
                     var send = new SendEmailApi(_httpClientFactory, _entityServiceEml, _logger);
-                    _ = send.Send(new MenphisSI.Api.Models.SendEmail
+                    _ = send.Send(new SendEmailModel
                     {
                         EmailPara = dbU.FEMailNet!,
                         NomePara = dbU.FNome!,

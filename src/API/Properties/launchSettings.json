@@ -9,7 +9,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AppSettings.Secret": "TnBURktxSmJmbkZ2dHlDWkpweFdYTnNwRnBvak5ibTM=",
-        "AppSettings.ValidUris": "MDS",
+       
         "AppSettings.Version": "v1"
       }
     },
@@ -21,7 +21,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AppSettings.Secret": "TnBURktxSmJmbkZ2dHlDWkpweFdYTnNwRnBvak5ibTM=",
-        "AppSettings.ValidUris": "MDS",
+        
         "AppSettings.Version": "v1"
       }
     }
