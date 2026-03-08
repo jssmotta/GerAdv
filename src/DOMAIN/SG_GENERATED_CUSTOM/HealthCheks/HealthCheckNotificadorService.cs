@@ -21,12 +21,12 @@ public class HealthCheckNotificadorService([Required] string uri, [Required] Sen
 //#endif
         try
         {
-#if (!DEBUG)
+ 
             if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
             {
                 return CreateHealthyResult("Notificador operacional");
             }
-#endif
+ 
             if (DateTime.Now.Hour == _horaDia)
             {
                 using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
