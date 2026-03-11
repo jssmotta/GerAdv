@@ -118,9 +118,8 @@ public partial class EnvioNotificacoes
             var data = (DateTime)linha[0];
             var htmlLegado = linha[1]?.ToString() ?? "";
             var comp = ParseCompromissoHtml(htmlLegado);
-            var isAtrasado = data.Date < DateTime.Now.Date;
 
-            builder.AppendLine(AddCompromisso(contador, data, comp, isAtrasado));
+            builder.AppendLine(AddCompromisso(contador, data, comp));
         }
 
         return builder.ToString();
@@ -131,15 +130,24 @@ public partial class EnvioNotificacoes
         var result = Regex.Replace(html, @"<(?!img\b)[^>]+>", "", RegexOptions.IgnoreCase);
         return result.Replace("&nbsp;", " ").Replace("&#186;", "º").Trim();
     }
-    private static string AddCompromisso(int contador, DateTime data, CompromissoData comp, bool isAtrasado)
+    private static string AddCompromisso(int contador, DateTime data, CompromissoData comp)
     {
-        var corBorda = isAtrasado ? "#ff3b30" : "#e5e5ea";
-        var corFundo = isAtrasado ? "#fff5f5" : "#f9f9fb";
-        var corData = isAtrasado ? "#ff3b30" : "#1c1c1e";
+        var isHoje = data.Date == DateTime.Now.Date;
+        var isAtrasado = data.Date < DateTime.Now.Date;
+
+        var corBorda = isAtrasado ? "#ff3b30" : isHoje ? "#007aff" : "#e5e5ea";
+        var corFundo = isAtrasado ? "#fff5f5" : isHoje ? "#f0f5ff" : "#f9f9fb";
+        var corData = isAtrasado ? "#ff3b30" : isHoje ? "#007aff" : "#1c1c1e";
         var labelData = isAtrasado ? "Atrasado" : "Data";
-        var badgeAtrasado = isAtrasado
+
+        var badgePrimaria = isAtrasado
             ? @"<td style=""background-color: #ff3b30; border-radius: 6px; padding: 3px 10px;""><span style=""font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.3px;"">Atrasado</span></td><td style=""padding-left: 6px;"">"
-            : "<td>";
+            : isHoje
+                ? @"<td style=""background-color: #007aff; border-radius: 6px; padding: 3px 10px;""><span style=""font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.3px;"">Hoje</span></td><td style=""padding-left: 6px;"">"
+                : "<td>";
+
+        var corSeparador = isAtrasado ? "#ffcdd2" : isHoje ? "#b3d4ff" : "#e5e5ea";
+ 
 
         var (corBadgeTipo, corTextoBadge) = comp.TipoCompromisso switch
         {
@@ -169,6 +177,7 @@ public partial class EnvioNotificacoes
             ? $@"<a href=""{comp.LinkProcesso}"" target=""_blank"" style=""color: #e8581c; text-decoration: none; font-weight: 500;"">{comp.NumeroProcesso}</a>"
             : "";
 
+
         var sb = new StringBuilder();
 
         sb.AppendLine($@"
@@ -181,7 +190,7 @@ public partial class EnvioNotificacoes
           <!-- Badges -->
           <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" style=""margin-bottom: 10px;"">
             <tr>
-              {badgeAtrasado}{badgeTipo}</td>
+              {badgePrimaria}{badgeTipo}</td>
             </tr>
           </table>
 
