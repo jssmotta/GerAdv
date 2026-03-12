@@ -167,7 +167,20 @@ ORDER BY vqaData;";
                 continue;
             }
 
- 
+#if (DEBUG)
+            var email = new SendEmailModel
+            {
+                EmailPara = "motta@menphis.com.br",
+                NomePara = cNome,
+                Assunto = assunto + cNome,
+                Mensagem = conteudoHtml,
+                NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                Time2Live = 24,
+                Uri = uri,
+                EmailNet = "motta@menphis.com.br",
+                IsDebug=true
+            };
+#else
             var email = new SendEmailModel
             {
                 EmailPara = operador.EMailNet,
@@ -180,7 +193,7 @@ ORDER BY vqaData;";
                 EmailNet = operador.EMailNet
             };
 
-
+#endif
             _ = _servicoEmail.Send(email);
  
             

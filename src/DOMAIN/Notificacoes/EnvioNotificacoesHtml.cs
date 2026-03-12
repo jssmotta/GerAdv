@@ -73,11 +73,17 @@ public partial class EnvioNotificacoes
             data.TipoAcao = StripHtml(matchAcao.Groups[1].Value).Trim();
 
         // Número do processo e link
-        var matchProcesso = Regex.Match(html, @"Processo/Adm\.\s*n.\s*<a[^>]*href=""([^""]*?)""[^>]*>(.*?)</a>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        //var matchProcesso = Regex.Match(html, @"Processo/Adm\.\s*n.\s*<a[^>]*href=""([^""]*?)""[^>]*>(.*?)</a>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        //if (matchProcesso.Success)
+        //{
+        //    data.LinkProcesso = matchProcesso.Groups[1].Value;
+        //    data.NumeroProcesso = StripHtml(matchProcesso.Groups[2].Value).Trim();
+        //}
+
+        var matchProcesso = Regex.Match(html, @"Processo/Adm\.\s*n[^<]*<a[^>]*>(.*?)</a>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
         if (matchProcesso.Success)
         {
-            data.LinkProcesso = matchProcesso.Groups[1].Value;
-            data.NumeroProcesso = StripHtml(matchProcesso.Groups[2].Value).Trim();
+            data.NumeroProcesso = StripHtml(matchProcesso.Groups[1].Value).Trim();
         }
 
         // Ícones
@@ -165,9 +171,13 @@ public partial class EnvioNotificacoes
     ? $@" <img src=""{comp.IconeCompromisso}"" alt=""{comp.TipoCompromisso}"" width=""14"" height=""14"" style=""vertical-align: middle;"" />"
     : "";
 
+        //var linkProcesso = !string.IsNullOrEmpty(comp.NumeroProcesso)
+        //    ? $@"<a href=""{comp.LinkProcesso}"" target=""_blank"" style=""color: #e8581c; text-decoration: none; font-weight: 500;"">{comp.NumeroProcesso}</a>"
+        //    : "";
+
         var linkProcesso = !string.IsNullOrEmpty(comp.NumeroProcesso)
-            ? $@"<a href=""{comp.LinkProcesso}"" target=""_blank"" style=""color: #e8581c; text-decoration: none; font-weight: 500;"">{comp.NumeroProcesso}</a>"
-            : "";
+        ? $@"<span style=""font-size: 13px; font-weight: 500; color: #1c1c1e;"">{comp.NumeroProcesso}</span>"
+        : "";
 
         var sb = new StringBuilder();
 
