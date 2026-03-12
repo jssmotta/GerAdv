@@ -18,23 +18,23 @@ public class TribunalWriter(IFTribunalFactory tribunalFactory) : ITribunalWriter
         var stopwatch = TribunalDatabaseMetrics.StartTimer();
         try
         {
-            TribunalDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TribunalDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _tribunalFactory.DeleteAsync(operadorId, tribunal.Id, oCnn);
-            TribunalDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            TribunalDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class TribunalWriter(IFTribunalFactory tribunalFactory) : ITribunalWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            TribunalDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TribunalDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _tribunalFactory.CreateAsync() : _tribunalFactory.CreateFromIdAsync(tribunal.Id, oCnn));
             dbRec.FNome = tribunal.Nome;
             dbRec.FArea = tribunal.Area;
@@ -59,22 +59,22 @@ public class TribunalWriter(IFTribunalFactory tribunalFactory) : ITribunalWriter
             dbRec.FGuid = tribunal.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            TribunalDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            TribunalDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

@@ -61,7 +61,7 @@ export const TribunalForm: React.FC<TribunalFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new TribunalApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,17 +70,17 @@ export const TribunalForm: React.FC<TribunalFormProps> = ({
 
   const [_nomeArea, setNomeArea] = useState("");
   const areaApi = new AreaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeJustica, setNomeJustica] = useState("");
   const justicaApi = new JusticaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeInstancia, setNomeInstancia] = useState("");
   const instanciaApi = new InstanciaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

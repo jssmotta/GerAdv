@@ -63,11 +63,11 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
   const clientessociosService = useMemo(() => {
     return new ClientesSociosService(
       new ClientesSociosApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: clientessocios,

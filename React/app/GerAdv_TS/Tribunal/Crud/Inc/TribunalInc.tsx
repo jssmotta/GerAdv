@@ -33,7 +33,7 @@ const TribunalInc: React.FC<ITribunalFormProps> = ({
   const router = useRouter();
 
   const tribunalService = new TribunalService(
-    new TribunalApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new TribunalApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

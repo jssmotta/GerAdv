@@ -45,11 +45,11 @@ const ClientesSociosComboBox: React.FC<DadosSelectProps> = ({
   const clientessociosService = useMemo(() => {
     return new ClientesSociosService(
       new ClientesSociosApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

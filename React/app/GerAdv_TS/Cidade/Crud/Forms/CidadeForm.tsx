@@ -58,7 +58,7 @@ export const CidadeForm: React.FC<CidadeFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new CidadeApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,7 +66,7 @@ export const CidadeForm: React.FC<CidadeFormProps> = ({
   const validationForm = useValidationsCidade();
 
   const [_nomeUF, setNomeUF] = useState("");
-  const ufApi = new UFApi(systemContext?.Uri ?? "", systemContext?.Token ?? "");
+  const ufApi = new UFApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? "");
 
   if (getParamFromUrl("uf") > 0) {
     if (cidadeData.id === 0 && cidadeData.uf == 0) {

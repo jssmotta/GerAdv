@@ -30,7 +30,7 @@ const JusticaInc: React.FC<IJusticaFormProps> = ({
   const router = useRouter();
 
   const justicaService = new JusticaService(
-    new JusticaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new JusticaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

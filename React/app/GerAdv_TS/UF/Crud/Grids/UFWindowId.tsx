@@ -31,9 +31,9 @@ const UFWindowId: React.FC<UFWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const ufService = useMemo(() => {
     return new UFService(
-      new UFApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new UFApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IUF | null>(null);
 

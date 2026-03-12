@@ -57,9 +57,9 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
 
   const foroService = useMemo(() => {
     return new ForoService(
-      new ForoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ForoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: foro,

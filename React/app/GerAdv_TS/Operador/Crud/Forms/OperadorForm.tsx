@@ -57,7 +57,7 @@ export const OperadorForm: React.FC<OperadorFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new OperadorApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);

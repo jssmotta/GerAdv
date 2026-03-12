@@ -58,9 +58,9 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
 
   const instanciaService = useMemo(() => {
     return new InstanciaService(
-      new InstanciaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new InstanciaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: instancia,

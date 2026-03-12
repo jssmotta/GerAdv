@@ -57,9 +57,9 @@ const UFGrid: React.FC<UFGridProps> = ({ selectItem }) => {
 
   const ufService = useMemo(() => {
     return new UFService(
-      new UFApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new UFApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const { data: uf, fetchData, refreshData } = useUFList(ufService, currFilter);
 

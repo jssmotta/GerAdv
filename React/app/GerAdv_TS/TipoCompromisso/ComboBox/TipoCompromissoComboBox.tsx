@@ -37,7 +37,7 @@ const TipoCompromissoComboBox: React.FC<DadosSelectProps> = ({
   const cssDado = "tipocompromissoInput";
   const systemContext = useAppSelector(selectSystemContext);
   const dadoApi = new TipoCompromissoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const tipocompromissoService = new TipoCompromissoService(dadoApi);

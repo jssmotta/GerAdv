@@ -58,9 +58,9 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
 
   const justicaService = useMemo(() => {
     return new JusticaService(
-      new JusticaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new JusticaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: justica,

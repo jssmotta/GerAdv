@@ -44,9 +44,9 @@ const AreaComboBox: React.FC<DadosSelectProps> = ({
 
   const areaService = useMemo(() => {
     return new AreaService(
-      new AreaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AreaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

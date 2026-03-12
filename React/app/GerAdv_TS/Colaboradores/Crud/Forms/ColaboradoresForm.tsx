@@ -64,7 +64,7 @@ export const ColaboradoresForm: React.FC<ColaboradoresFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new ColaboradoresApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,17 +73,17 @@ export const ColaboradoresForm: React.FC<ColaboradoresFormProps> = ({
 
   const [_nomeCargos, setNomeCargos] = useState("");
   const cargosApi = new CargosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeClientes, setNomeClientes] = useState("");
   const clientesApi = new ClientesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeCidade, setNomeCidade] = useState("");
   const cidadeApi = new CidadeApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

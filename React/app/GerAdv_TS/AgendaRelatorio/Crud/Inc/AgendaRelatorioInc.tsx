@@ -34,7 +34,7 @@ const AgendaRelatorioInc: React.FC<IAgendaRelatorioFormProps> = ({
 
   const agendarelatorioService = new AgendaRelatorioService(
     new AgendaRelatorioApi(
-      systemContext?.Uri ?? "",
+      systemContext?.TenantApp ?? "",
       systemContext?.Token ?? "",
     ),
   );

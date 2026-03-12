@@ -44,9 +44,9 @@ const TipoRecursoComboBox: React.FC<DadosSelectProps> = ({
 
   const tiporecursoService = useMemo(() => {
     return new TipoRecursoService(
-      new TipoRecursoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new TipoRecursoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

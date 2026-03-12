@@ -44,9 +44,9 @@ const ForoComboBox: React.FC<DadosSelectProps> = ({
 
   const foroService = useMemo(() => {
     return new ForoService(
-      new ForoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ForoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

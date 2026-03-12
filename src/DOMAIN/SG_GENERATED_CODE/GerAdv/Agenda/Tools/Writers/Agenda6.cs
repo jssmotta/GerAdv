@@ -18,23 +18,23 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         var stopwatch = AgendaDatabaseMetrics.StartTimer();
         try
         {
-            AgendaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AgendaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _agendaFactory.DeleteAsync(operadorId, agenda.Id, oCnn);
-            AgendaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            AgendaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            AgendaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AgendaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _agendaFactory.CreateAsync() : _agendaFactory.CreateFromIdAsync(agenda.Id, oCnn));
             dbRec.FIDCOB = agenda.IDCOB;
             dbRec.FClienteAvisado = agenda.ClienteAvisado;
@@ -109,22 +109,22 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
             dbRec.FGuid = agenda.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            AgendaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            AgendaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

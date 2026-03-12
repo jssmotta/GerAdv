@@ -13,25 +13,25 @@ public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
         var connStopwatch = RitoDatabaseMetrics.StartTimer();
         try
         {
-            RitoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.Uri);
-            RitoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.Uri, connStopwatch);
+            RitoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
+            RitoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
             var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBRito.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-            RitoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count());
+            RitoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
         catch (SqlException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.TenantApp);
         }
     }
 
@@ -70,17 +70,17 @@ public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
                 result.Add(ReadAll(_ritoFactory.CreateFromReader(reader), reader)!);
             }
 
-            RitoDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count);
+            RitoDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count);
             return result;
         }
         catch (SqlException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
     }
@@ -90,20 +90,20 @@ public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
         var stopwatch = RitoDatabaseMetrics.StartTimer();
         try
         {
-            RitoDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.TenantApp);
             using var dbRec = await _ritoFactory.CreateFromIdAsync(id, oCnn);
             var result = dbRec == null || dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
-            RitoDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.Uri, stopwatch, result != null ? 1 : 0);
+            RitoDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.TenantApp, stopwatch, result != null ? 1 : 0);
             return result;
         }
         catch (SqlException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally

@@ -54,7 +54,7 @@ export const FuncaoForm: React.FC<FuncaoFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new FuncaoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);

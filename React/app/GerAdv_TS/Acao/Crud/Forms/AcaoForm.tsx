@@ -58,7 +58,7 @@ export const AcaoForm: React.FC<AcaoFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new AcaoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,12 +67,12 @@ export const AcaoForm: React.FC<AcaoFormProps> = ({
 
   const [_nomeJustica, setNomeJustica] = useState("");
   const justicaApi = new JusticaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeArea, setNomeArea] = useState("");
   const areaApi = new AreaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

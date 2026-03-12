@@ -33,7 +33,7 @@ const TiposAcaoInc: React.FC<ITiposAcaoFormProps> = ({
   const router = useRouter();
 
   const tiposacaoService = new TiposAcaoService(
-    new TiposAcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new TiposAcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

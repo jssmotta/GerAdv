@@ -31,9 +31,9 @@ const AcaoWindowId: React.FC<AcaoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const acaoService = useMemo(() => {
     return new AcaoService(
-      new AcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IAcao | null>(null);
 

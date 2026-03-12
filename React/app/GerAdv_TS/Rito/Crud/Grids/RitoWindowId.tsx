@@ -31,9 +31,9 @@ const RitoWindowId: React.FC<RitoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const ritoService = useMemo(() => {
     return new RitoService(
-      new RitoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new RitoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IRito | null>(null);
 

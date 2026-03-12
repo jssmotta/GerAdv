@@ -18,23 +18,23 @@ public class TipoProDespositoWriter(IFTipoProDespositoFactory tipoprodespositoFa
         var stopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         try
         {
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _tipoprodespositoFactory.DeleteAsync(operadorId, tipoprodesposito.Id, oCnn);
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,27 +45,27 @@ public class TipoProDespositoWriter(IFTipoProDespositoFactory tipoprodespositoFa
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _tipoprodespositoFactory.CreateAsync() : _tipoprodespositoFactory.CreateFromIdAsync(tipoprodesposito.Id, oCnn));
             dbRec.FNome = tipoprodesposito.Nome;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

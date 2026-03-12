@@ -13,25 +13,25 @@ public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodes
         var connStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         try
         {
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.Uri);
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.Uri, connStopwatch);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
             var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBTipoProDesposito.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count());
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
         catch (SqlException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.TenantApp);
         }
     }
 
@@ -70,17 +70,17 @@ public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodes
                 result.Add(ReadAll(_tipoprodespositoFactory.CreateFromReader(reader), reader)!);
             }
 
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count);
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count);
             return result;
         }
         catch (SqlException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
     }
@@ -90,20 +90,20 @@ public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodes
         var stopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         try
         {
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.TenantApp);
             using var dbRec = await _tipoprodespositoFactory.CreateFromIdAsync(id, oCnn);
             var result = dbRec == null || dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.Uri, stopwatch, result != null ? 1 : 0);
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.TenantApp, stopwatch, result != null ? 1 : 0);
             return result;
         }
         catch (SqlException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.Uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally

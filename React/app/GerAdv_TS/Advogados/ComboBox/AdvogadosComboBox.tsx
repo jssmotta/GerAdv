@@ -44,9 +44,9 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({
 
   const advogadosService = useMemo(() => {
     return new AdvogadosService(
-      new AdvogadosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AdvogadosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

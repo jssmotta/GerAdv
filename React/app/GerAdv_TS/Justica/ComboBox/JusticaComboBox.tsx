@@ -44,9 +44,9 @@ const JusticaComboBox: React.FC<DadosSelectProps> = ({
 
   const justicaService = useMemo(() => {
     return new JusticaService(
-      new JusticaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new JusticaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

@@ -31,9 +31,9 @@ const ForoWindowId: React.FC<ForoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const foroService = useMemo(() => {
     return new ForoService(
-      new ForoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ForoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IForo | null>(null);
 

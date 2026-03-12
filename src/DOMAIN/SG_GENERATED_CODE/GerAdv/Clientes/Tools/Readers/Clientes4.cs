@@ -13,25 +13,25 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         var connStopwatch = ClientesDatabaseMetrics.StartTimer();
         try
         {
-            ClientesDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.Uri);
-            ClientesDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.Uri, connStopwatch);
+            ClientesDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
+            ClientesDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
             var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-            ClientesDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count());
+            ClientesDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
         catch (SqlException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.TenantApp);
         }
     }
 
@@ -70,17 +70,17 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
                 result.Add(ReadAll(_clientesFactory.CreateFromReader(reader), reader)!);
             }
 
-            ClientesDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count);
+            ClientesDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count);
             return result;
         }
         catch (SqlException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
     }
@@ -90,20 +90,20 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         var stopwatch = ClientesDatabaseMetrics.StartTimer();
         try
         {
-            ClientesDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.TenantApp);
             using var dbRec = await _clientesFactory.CreateFromIdAsync(id, oCnn);
             var result = dbRec == null || dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
-            ClientesDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.Uri, stopwatch, result != null ? 1 : 0);
+            ClientesDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.TenantApp, stopwatch, result != null ? 1 : 0);
             return result;
         }
         catch (SqlException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally

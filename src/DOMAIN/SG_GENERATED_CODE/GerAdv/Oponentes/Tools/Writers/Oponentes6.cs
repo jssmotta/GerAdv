@@ -18,23 +18,23 @@ public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWr
         var stopwatch = OponentesDatabaseMetrics.StartTimer();
         try
         {
-            OponentesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            OponentesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _oponentesFactory.DeleteAsync(operadorId, oponentes.Id, oCnn);
-            OponentesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            OponentesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWr
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            OponentesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            OponentesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _oponentesFactory.CreateAsync() : _oponentesFactory.CreateFromIdAsync(oponentes.Id, oCnn));
             dbRec.FEMPFuncao = oponentes.EMPFuncao;
             dbRec.FCTPSNumero = oponentes.CTPSNumero;
@@ -79,22 +79,22 @@ public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWr
             dbRec.FGuid = oponentes.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            OponentesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            OponentesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

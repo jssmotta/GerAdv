@@ -33,7 +33,7 @@ const OperadorInc: React.FC<IOperadorFormProps> = ({
   const router = useRouter();
 
   const operadorService = new OperadorService(
-    new OperadorApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new OperadorApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

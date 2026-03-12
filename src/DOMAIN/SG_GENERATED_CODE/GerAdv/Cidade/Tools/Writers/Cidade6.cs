@@ -18,23 +18,23 @@ public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
         var stopwatch = CidadeDatabaseMetrics.StartTimer();
         try
         {
-            CidadeDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            CidadeDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _cidadeFactory.DeleteAsync(operadorId, cidade.Id, oCnn);
-            CidadeDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            CidadeDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            CidadeDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            CidadeDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            CidadeDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            CidadeDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            CidadeDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            CidadeDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            CidadeDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            CidadeDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _cidadeFactory.CreateAsync() : _cidadeFactory.CreateFromIdAsync(cidade.Id, oCnn));
             dbRec.FDDD = cidade.DDD;
             dbRec.FTop = cidade.Top;
@@ -57,22 +57,22 @@ public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
             dbRec.FGuid = cidade.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            CidadeDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            CidadeDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            CidadeDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            CidadeDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            CidadeDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            CidadeDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            CidadeDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            CidadeDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

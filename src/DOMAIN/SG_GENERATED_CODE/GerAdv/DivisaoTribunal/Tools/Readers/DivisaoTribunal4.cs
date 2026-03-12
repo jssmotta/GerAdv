@@ -12,25 +12,25 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var connStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
         try
         {
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.Uri);
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.Uri, connStopwatch);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
             var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBDivisaoTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count());
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
         catch (SqlException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.TenantApp);
         }
     }
 
@@ -69,17 +69,17 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
                 result.Add(ReadAll(_divisaotribunalFactory.CreateFromReader(reader), reader)!);
             }
 
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count);
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count);
             return result;
         }
         catch (SqlException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
     }
@@ -89,20 +89,20 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var stopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
         try
         {
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("ReadAsync", oCnn?.TenantApp);
             using var dbRec = await _divisaotribunalFactory.CreateFromIdAsync(id, oCnn);
             var result = dbRec == null || dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.Uri, stopwatch, result != null ? 1 : 0);
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("ReadAsync", "SELECT", oCnn?.TenantApp, stopwatch, result != null ? 1 : 0);
             return result;
         }
         catch (SqlException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ReadAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("ReadAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally

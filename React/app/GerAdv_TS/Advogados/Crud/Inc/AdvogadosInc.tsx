@@ -33,7 +33,7 @@ const AdvogadosInc: React.FC<IAdvogadosFormProps> = ({
   const router = useRouter();
 
   const advogadosService = new AdvogadosService(
-    new AdvogadosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new AdvogadosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

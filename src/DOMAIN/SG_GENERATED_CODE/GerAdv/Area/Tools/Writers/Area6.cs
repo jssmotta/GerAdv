@@ -18,23 +18,23 @@ public class AreaWriter(IFAreaFactory areaFactory) : IAreaWriter
         var stopwatch = AreaDatabaseMetrics.StartTimer();
         try
         {
-            AreaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AreaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _areaFactory.DeleteAsync(operadorId, area.Id, oCnn);
-            AreaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            AreaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            AreaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            AreaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,29 +45,29 @@ public class AreaWriter(IFAreaFactory areaFactory) : IAreaWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            AreaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AreaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _areaFactory.CreateAsync() : _areaFactory.CreateFromIdAsync(area.Id, oCnn));
             dbRec.FDescricao = area.Descricao;
             dbRec.FTop = area.Top;
             dbRec.FGuid = area.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            AreaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            AreaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            AreaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            AreaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

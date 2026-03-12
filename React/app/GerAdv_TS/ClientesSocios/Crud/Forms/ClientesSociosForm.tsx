@@ -63,7 +63,7 @@ export const ClientesSociosForm: React.FC<ClientesSociosFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new ClientesSociosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,12 +72,12 @@ export const ClientesSociosForm: React.FC<ClientesSociosFormProps> = ({
 
   const [_nomeClientes, setNomeClientes] = useState("");
   const clientesApi = new ClientesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeCidade, setNomeCidade] = useState("");
   const cidadeApi = new CidadeApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

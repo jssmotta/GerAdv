@@ -57,9 +57,9 @@ const CargosGrid: React.FC<CargosGridProps> = ({ selectItem }) => {
 
   const cargosService = useMemo(() => {
     return new CargosService(
-      new CargosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new CargosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: cargos,

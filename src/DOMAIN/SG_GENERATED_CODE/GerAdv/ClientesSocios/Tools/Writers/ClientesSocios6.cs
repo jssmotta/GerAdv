@@ -18,23 +18,23 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
         var stopwatch = ClientesSociosDatabaseMetrics.StartTimer();
         try
         {
-            ClientesSociosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _clientessociosFactory.DeleteAsync(operadorId, clientessocios.Id, oCnn);
-            ClientesSociosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            ClientesSociosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            ClientesSociosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesSociosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ClientesSociosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            ClientesSociosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _clientessociosFactory.CreateAsync() : _clientessociosFactory.CreateFromIdAsync(clientessocios.Id, oCnn));
             dbRec.FSomenteRepresentante = clientessocios.SomenteRepresentante;
             dbRec.FIdade = clientessocios.Idade;
@@ -100,22 +100,22 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
             dbRec.FGuid = clientessocios.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            ClientesSociosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            ClientesSociosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            ClientesSociosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesSociosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ClientesSociosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ClientesSociosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

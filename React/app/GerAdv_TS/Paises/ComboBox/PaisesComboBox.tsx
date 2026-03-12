@@ -44,9 +44,9 @@ const PaisesComboBox: React.FC<DadosSelectProps> = ({
 
   const paisesService = useMemo(() => {
     return new PaisesService(
-      new PaisesApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new PaisesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

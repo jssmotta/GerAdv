@@ -34,7 +34,7 @@ const DivisaoTribunalInc: React.FC<IDivisaoTribunalFormProps> = ({
 
   const divisaotribunalService = new DivisaoTribunalService(
     new DivisaoTribunalApi(
-      systemContext?.Uri ?? "",
+      systemContext?.TenantApp ?? "",
       systemContext?.Token ?? "",
     ),
   );

@@ -18,23 +18,23 @@ public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFacto
         var stopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
         try
         {
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _tipocompromissoFactory.DeleteAsync(operadorId, tipocompromisso.Id, oCnn);
-            TipoCompromissoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            TipoCompromissoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFacto
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _tipocompromissoFactory.CreateAsync() : _tipocompromissoFactory.CreateFromIdAsync(tipocompromisso.Id, oCnn));
             dbRec.FIcone = tipocompromisso.Icone;
             dbRec.FDescricao = tipocompromisso.Descricao;
@@ -54,22 +54,22 @@ public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFacto
             dbRec.FGuid = tipocompromisso.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            TipoCompromissoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            TipoCompromissoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

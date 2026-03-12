@@ -58,9 +58,9 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
 
   const funcionariosService = useMemo(() => {
     return new FuncionariosService(
-      new FuncionariosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new FuncionariosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: funcionarios,

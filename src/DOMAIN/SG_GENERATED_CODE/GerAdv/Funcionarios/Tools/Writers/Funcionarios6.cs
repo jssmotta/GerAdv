@@ -18,23 +18,23 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
         var stopwatch = FuncionariosDatabaseMetrics.StartTimer();
         try
         {
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _funcionariosFactory.DeleteAsync(operadorId, funcionarios.Id, oCnn);
-            FuncionariosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            FuncionariosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _funcionariosFactory.CreateAsync() : _funcionariosFactory.CreateFromIdAsync(funcionarios.Id, oCnn));
             dbRec.FEMailPro = funcionarios.EMailPro;
             dbRec.FCargo = funcionarios.Cargo;
@@ -103,22 +103,22 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
             dbRec.FGuid = funcionarios.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            FuncionariosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            FuncionariosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

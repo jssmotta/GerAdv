@@ -31,9 +31,9 @@ const FuncaoWindowId: React.FC<FuncaoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const funcaoService = useMemo(() => {
     return new FuncaoService(
-      new FuncaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new FuncaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IFuncao | null>(null);
 

@@ -32,11 +32,11 @@ const TipoProDespositoWindowId: React.FC<TipoProDespositoWindowIdProps> = ({
   const tipoprodespositoService = useMemo(() => {
     return new TipoProDespositoService(
       new TipoProDespositoApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<ITipoProDesposito | null>(null);
 

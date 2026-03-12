@@ -33,7 +33,7 @@ const AgendaSemanaInc: React.FC<IAgendaSemanaFormProps> = ({
   const router = useRouter();
 
   const agendasemanaService = new AgendaSemanaService(
-    new AgendaSemanaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new AgendaSemanaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

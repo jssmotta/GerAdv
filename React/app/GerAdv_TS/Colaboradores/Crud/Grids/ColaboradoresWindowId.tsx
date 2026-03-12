@@ -32,11 +32,11 @@ const ColaboradoresWindowId: React.FC<ColaboradoresWindowIdProps> = ({
   const colaboradoresService = useMemo(() => {
     return new ColaboradoresService(
       new ColaboradoresApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IColaboradores | null>(null);
 

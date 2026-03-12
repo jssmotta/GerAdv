@@ -32,11 +32,11 @@ const DivisaoTribunalWindowId: React.FC<DivisaoTribunalWindowIdProps> = ({
   const divisaotribunalService = useMemo(() => {
     return new DivisaoTribunalService(
       new DivisaoTribunalApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IDivisaoTribunal | null>(null);
 

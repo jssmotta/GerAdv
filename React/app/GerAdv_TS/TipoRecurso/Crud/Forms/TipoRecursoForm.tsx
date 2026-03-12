@@ -58,7 +58,7 @@ export const TipoRecursoForm: React.FC<TipoRecursoFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new TipoRecursoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,12 +67,12 @@ export const TipoRecursoForm: React.FC<TipoRecursoFormProps> = ({
 
   const [_nomeJustica, setNomeJustica] = useState("");
   const justicaApi = new JusticaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeArea, setNomeArea] = useState("");
   const areaApi = new AreaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

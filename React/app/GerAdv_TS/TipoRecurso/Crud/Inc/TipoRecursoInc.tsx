@@ -33,7 +33,7 @@ const TipoRecursoInc: React.FC<ITipoRecursoFormProps> = ({
   const router = useRouter();
 
   const tiporecursoService = new TipoRecursoService(
-    new TipoRecursoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new TipoRecursoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

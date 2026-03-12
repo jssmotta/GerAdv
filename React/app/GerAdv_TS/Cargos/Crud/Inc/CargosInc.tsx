@@ -30,7 +30,7 @@ const CargosInc: React.FC<ICargosFormProps> = ({
   const router = useRouter();
 
   const cargosService = new CargosService(
-    new CargosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new CargosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

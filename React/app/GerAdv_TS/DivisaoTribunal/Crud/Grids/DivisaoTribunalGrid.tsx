@@ -63,11 +63,11 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
   const divisaotribunalService = useMemo(() => {
     return new DivisaoTribunalService(
       new DivisaoTribunalApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: divisaotribunal,

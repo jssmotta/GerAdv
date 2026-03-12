@@ -57,9 +57,9 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
 
   const agendaService = useMemo(() => {
     return new AgendaService(
-      new AgendaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AgendaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: agenda,

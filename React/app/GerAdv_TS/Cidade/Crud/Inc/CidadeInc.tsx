@@ -30,7 +30,7 @@ const CidadeInc: React.FC<ICidadeFormProps> = ({
   const router = useRouter();
 
   const cidadeService = new CidadeService(
-    new CidadeApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new CidadeApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

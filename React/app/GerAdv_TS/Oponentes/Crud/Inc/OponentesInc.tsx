@@ -33,7 +33,7 @@ const OponentesInc: React.FC<IOponentesFormProps> = ({
   const router = useRouter();
 
   const oponentesService = new OponentesService(
-    new OponentesApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new OponentesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

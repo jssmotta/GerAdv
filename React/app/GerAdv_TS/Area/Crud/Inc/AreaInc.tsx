@@ -30,7 +30,7 @@ const AreaInc: React.FC<IAreaFormProps> = ({
   const router = useRouter();
 
   const areaService = new AreaService(
-    new AreaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new AreaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

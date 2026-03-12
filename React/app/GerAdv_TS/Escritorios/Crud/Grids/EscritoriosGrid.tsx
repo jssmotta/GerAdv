@@ -58,9 +58,9 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
 
   const escritoriosService = useMemo(() => {
     return new EscritoriosService(
-      new EscritoriosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new EscritoriosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: escritorios,

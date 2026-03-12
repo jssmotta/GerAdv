@@ -18,23 +18,23 @@ public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
         var stopwatch = ForoDatabaseMetrics.StartTimer();
         try
         {
-            ForoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ForoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _foroFactory.DeleteAsync(operadorId, foro.Id, oCnn);
-            ForoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            ForoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            ForoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            ForoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            ForoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ForoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _foroFactory.CreateAsync() : _foroFactory.CreateFromIdAsync(foro.Id, oCnn));
             dbRec.FEMail = foro.EMail;
             dbRec.FNome = foro.Nome;
@@ -64,22 +64,22 @@ public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
             dbRec.FBold = foro.Bold;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            ForoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            ForoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            ForoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            ForoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

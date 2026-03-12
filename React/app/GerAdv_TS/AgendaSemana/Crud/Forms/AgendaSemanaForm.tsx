@@ -64,7 +64,7 @@ export const AgendaSemanaForm: React.FC<AgendaSemanaFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new AgendaSemanaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,22 +73,22 @@ export const AgendaSemanaForm: React.FC<AgendaSemanaFormProps> = ({
 
   const [_nomeFuncionarios, setNomeFuncionarios] = useState("");
   const funcionariosApi = new FuncionariosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeAdvogados, setNomeAdvogados] = useState("");
   const advogadosApi = new AdvogadosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeTipoCompromisso, setNomeTipoCompromisso] = useState("");
   const tipocompromissoApi = new TipoCompromissoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeClientes, setNomeClientes] = useState("");
   const clientesApi = new ClientesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

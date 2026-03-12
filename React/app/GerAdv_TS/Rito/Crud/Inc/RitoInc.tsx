@@ -30,7 +30,7 @@ const RitoInc: React.FC<IRitoFormProps> = ({
   const router = useRouter();
 
   const ritoService = new RitoService(
-    new RitoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new RitoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

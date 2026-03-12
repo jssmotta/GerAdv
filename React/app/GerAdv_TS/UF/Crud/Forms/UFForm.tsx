@@ -58,7 +58,7 @@ export const UFForm: React.FC<UFFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new UFApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,7 +67,7 @@ export const UFForm: React.FC<UFFormProps> = ({
 
   const [_nomePaises, setNomePaises] = useState("");
   const paisesApi = new PaisesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

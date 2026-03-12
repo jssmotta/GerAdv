@@ -44,9 +44,9 @@ const TribunalComboBox: React.FC<DadosSelectProps> = ({
 
   const tribunalService = useMemo(() => {
     return new TribunalService(
-      new TribunalApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new TribunalApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

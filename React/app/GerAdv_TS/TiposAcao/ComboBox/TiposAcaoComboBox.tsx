@@ -44,9 +44,9 @@ const TiposAcaoComboBox: React.FC<DadosSelectProps> = ({
 
   const tiposacaoService = useMemo(() => {
     return new TiposAcaoService(
-      new TiposAcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new TiposAcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

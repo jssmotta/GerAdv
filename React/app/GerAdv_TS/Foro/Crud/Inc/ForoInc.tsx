@@ -30,7 +30,7 @@ const ForoInc: React.FC<IForoFormProps> = ({
   const router = useRouter();
 
   const foroService = new ForoService(
-    new ForoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new ForoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

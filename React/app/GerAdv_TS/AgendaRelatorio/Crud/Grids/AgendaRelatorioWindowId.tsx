@@ -32,11 +32,11 @@ const AgendaRelatorioWindowId: React.FC<AgendaRelatorioWindowIdProps> = ({
   const agendarelatorioService = useMemo(() => {
     return new AgendaRelatorioService(
       new AgendaRelatorioApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IAgendaRelatorio | null>(null);
 

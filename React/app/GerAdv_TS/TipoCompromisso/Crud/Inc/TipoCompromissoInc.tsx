@@ -34,7 +34,7 @@ const TipoCompromissoInc: React.FC<ITipoCompromissoFormProps> = ({
 
   const tipocompromissoService = new TipoCompromissoService(
     new TipoCompromissoApi(
-      systemContext?.Uri ?? "",
+      systemContext?.TenantApp ?? "",
       systemContext?.Token ?? "",
     ),
   );

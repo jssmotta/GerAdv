@@ -18,23 +18,23 @@ public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWr
         var stopwatch = TiposAcaoDatabaseMetrics.StartTimer();
         try
         {
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _tiposacaoFactory.DeleteAsync(operadorId, tiposacao.Id, oCnn);
-            TiposAcaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            TiposAcaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWr
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _tiposacaoFactory.CreateAsync() : _tiposacaoFactory.CreateFromIdAsync(tiposacao.Id, oCnn));
             dbRec.FNome = tiposacao.Nome;
             dbRec.FInativo = tiposacao.Inativo;
@@ -53,22 +53,22 @@ public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWr
             dbRec.FGuid = tiposacao.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            TiposAcaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            TiposAcaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

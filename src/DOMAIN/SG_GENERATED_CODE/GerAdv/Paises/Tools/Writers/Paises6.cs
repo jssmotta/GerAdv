@@ -18,23 +18,23 @@ public class PaisesWriter(IFPaisesFactory paisesFactory) : IPaisesWriter
         var stopwatch = PaisesDatabaseMetrics.StartTimer();
         try
         {
-            PaisesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            PaisesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _paisesFactory.DeleteAsync(operadorId, paises.Id, oCnn);
-            PaisesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            PaisesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,28 +45,28 @@ public class PaisesWriter(IFPaisesFactory paisesFactory) : IPaisesWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            PaisesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            PaisesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _paisesFactory.CreateAsync() : _paisesFactory.CreateFromIdAsync(paises.Id, oCnn));
             dbRec.FNome = paises.Nome;
             dbRec.FGuid = paises.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            PaisesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            PaisesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

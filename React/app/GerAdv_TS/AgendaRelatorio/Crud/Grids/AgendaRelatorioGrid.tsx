@@ -63,11 +63,11 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
   const agendarelatorioService = useMemo(() => {
     return new AgendaRelatorioService(
       new AgendaRelatorioApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: agendarelatorio,

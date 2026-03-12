@@ -72,7 +72,7 @@ export const AgendaForm: React.FC<AgendaFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new AgendaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,42 +81,42 @@ export const AgendaForm: React.FC<AgendaFormProps> = ({
 
   const [_nomeCidade, setNomeCidade] = useState("");
   const cidadeApi = new CidadeApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeAdvogados, setNomeAdvogados] = useState("");
   const advogadosApi = new AdvogadosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeFuncionarios, setNomeFuncionarios] = useState("");
   const funcionariosApi = new FuncionariosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeTipoCompromisso, setNomeTipoCompromisso] = useState("");
   const tipocompromissoApi = new TipoCompromissoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeClientes, setNomeClientes] = useState("");
   const clientesApi = new ClientesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeArea, setNomeArea] = useState("");
   const areaApi = new AreaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeJustica, setNomeJustica] = useState("");
   const justicaApi = new JusticaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeOperador, setNomeOperador] = useState("");
   const operadorApi = new OperadorApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

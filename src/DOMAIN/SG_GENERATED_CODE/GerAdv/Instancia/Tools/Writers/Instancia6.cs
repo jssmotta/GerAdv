@@ -18,23 +18,23 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         var stopwatch = InstanciaDatabaseMetrics.StartTimer();
         try
         {
-            InstanciaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _instanciaFactory.DeleteAsync(operadorId, instancia.Id, oCnn);
-            InstanciaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            InstanciaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            InstanciaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _instanciaFactory.CreateAsync() : _instanciaFactory.CreateFromIdAsync(instancia.Id, oCnn));
             dbRec.FLiminarPedida = instancia.LiminarPedida;
             dbRec.FObjeto = instancia.Objeto;
@@ -85,22 +85,22 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
             dbRec.FGuid = instancia.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            InstanciaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            InstanciaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

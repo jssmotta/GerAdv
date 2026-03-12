@@ -58,7 +58,7 @@ export const ProDespesasForm: React.FC<ProDespesasFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new ProDespesasApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,7 +67,7 @@ export const ProDespesasForm: React.FC<ProDespesasFormProps> = ({
 
   const [_nomeClientes, setNomeClientes] = useState("");
   const clientesApi = new ClientesApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

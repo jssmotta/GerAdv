@@ -31,9 +31,9 @@ const AgendaWindowId: React.FC<AgendaWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const agendaService = useMemo(() => {
     return new AgendaService(
-      new AgendaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AgendaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IAgenda | null>(null);
 

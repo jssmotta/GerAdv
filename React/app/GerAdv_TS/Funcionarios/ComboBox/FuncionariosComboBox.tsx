@@ -44,9 +44,9 @@ const FuncionariosComboBox: React.FC<DadosSelectProps> = ({
 
   const funcionariosService = useMemo(() => {
     return new FuncionariosService(
-      new FuncionariosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new FuncionariosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

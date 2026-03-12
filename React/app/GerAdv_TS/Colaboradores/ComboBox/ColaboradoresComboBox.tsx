@@ -45,11 +45,11 @@ const ColaboradoresComboBox: React.FC<DadosSelectProps> = ({
   const colaboradoresService = useMemo(() => {
     return new ColaboradoresService(
       new ColaboradoresApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

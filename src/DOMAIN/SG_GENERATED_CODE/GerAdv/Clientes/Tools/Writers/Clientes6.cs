@@ -18,23 +18,23 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         var stopwatch = ClientesDatabaseMetrics.StartTimer();
         try
         {
-            ClientesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _clientesFactory.DeleteAsync(operadorId, clientes.Id, oCnn);
-            ClientesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            ClientesDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            ClientesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _clientesFactory.CreateAsync() : _clientesFactory.CreateFromIdAsync(clientes.Id, oCnn));
             dbRec.FEmpresa = clientes.Empresa;
             dbRec.FIcone = clientes.Icone;
@@ -107,22 +107,22 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
             dbRec.FGuid = clientes.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            ClientesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            ClientesDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

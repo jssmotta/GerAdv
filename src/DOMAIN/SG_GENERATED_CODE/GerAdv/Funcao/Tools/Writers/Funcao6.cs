@@ -18,23 +18,23 @@ public class FuncaoWriter(IFFuncaoFactory funcaoFactory) : IFuncaoWriter
         var stopwatch = FuncaoDatabaseMetrics.StartTimer();
         try
         {
-            FuncaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            FuncaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _funcaoFactory.DeleteAsync(operadorId, funcao.Id, oCnn);
-            FuncaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            FuncaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            FuncaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            FuncaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            FuncaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            FuncaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            FuncaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            FuncaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,27 +45,27 @@ public class FuncaoWriter(IFFuncaoFactory funcaoFactory) : IFuncaoWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            FuncaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            FuncaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _funcaoFactory.CreateAsync() : _funcaoFactory.CreateFromIdAsync(funcao.Id, oCnn));
             dbRec.FDescricao = funcao.Descricao;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            FuncaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            FuncaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            FuncaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            FuncaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            FuncaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            FuncaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            FuncaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            FuncaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

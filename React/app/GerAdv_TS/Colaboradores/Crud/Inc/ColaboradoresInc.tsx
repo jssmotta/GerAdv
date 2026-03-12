@@ -33,7 +33,7 @@ const ColaboradoresInc: React.FC<IColaboradoresFormProps> = ({
   const router = useRouter();
 
   const colaboradoresService = new ColaboradoresService(
-    new ColaboradoresApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new ColaboradoresApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

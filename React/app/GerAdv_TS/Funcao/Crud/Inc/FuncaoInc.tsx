@@ -30,7 +30,7 @@ const FuncaoInc: React.FC<IFuncaoFormProps> = ({
   const router = useRouter();
 
   const funcaoService = new FuncaoService(
-    new FuncaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new FuncaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

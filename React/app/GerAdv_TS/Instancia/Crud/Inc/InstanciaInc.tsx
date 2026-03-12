@@ -33,7 +33,7 @@ const InstanciaInc: React.FC<IInstanciaFormProps> = ({
   const router = useRouter();
 
   const instanciaService = new InstanciaService(
-    new InstanciaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new InstanciaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

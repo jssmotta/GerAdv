@@ -58,9 +58,9 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
 
   const oponentesService = useMemo(() => {
     return new OponentesService(
-      new OponentesApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new OponentesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: oponentes,

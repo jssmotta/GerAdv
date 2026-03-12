@@ -31,9 +31,9 @@ const AdvogadosWindowId: React.FC<AdvogadosWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const advogadosService = useMemo(() => {
     return new AdvogadosService(
-      new AdvogadosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AdvogadosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IAdvogados | null>(null);
 

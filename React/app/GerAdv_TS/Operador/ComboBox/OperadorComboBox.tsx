@@ -44,9 +44,9 @@ const OperadorComboBox: React.FC<DadosSelectProps> = ({
 
   const operadorService = useMemo(() => {
     return new OperadorService(
-      new OperadorApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new OperadorApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

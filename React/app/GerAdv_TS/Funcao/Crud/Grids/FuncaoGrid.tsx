@@ -57,9 +57,9 @@ const FuncaoGrid: React.FC<FuncaoGridProps> = ({ selectItem }) => {
 
   const funcaoService = useMemo(() => {
     return new FuncaoService(
-      new FuncaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new FuncaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: funcao,

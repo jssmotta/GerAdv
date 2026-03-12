@@ -33,7 +33,7 @@ const ClientesSociosInc: React.FC<IClientesSociosFormProps> = ({
   const router = useRouter();
 
   const clientessociosService = new ClientesSociosService(
-    new ClientesSociosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new ClientesSociosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

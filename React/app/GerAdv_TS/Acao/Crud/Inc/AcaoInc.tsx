@@ -30,7 +30,7 @@ const AcaoInc: React.FC<IAcaoFormProps> = ({
   const router = useRouter();
 
   const acaoService = new AcaoService(
-    new AcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new AcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

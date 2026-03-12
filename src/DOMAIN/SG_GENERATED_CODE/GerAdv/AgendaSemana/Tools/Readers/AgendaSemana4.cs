@@ -12,25 +12,25 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         var connStopwatch = AgendaSemanaDatabaseMetrics.StartTimer();
         try
         {
-            AgendaSemanaDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.Uri);
-            AgendaSemanaDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.Uri, connStopwatch);
+            AgendaSemanaDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
+            AgendaSemanaDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
             var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAgendaSemana.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-            AgendaSemanaDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count());
+            AgendaSemanaDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
         catch (SqlException)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.Uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.Uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AgendaSemanaDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.Uri);
+            AgendaSemanaDatabaseMetrics.DecrementActiveConnections("ListarAsync", oCnn?.TenantApp);
         }
     }
 
@@ -69,17 +69,17 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
                 result.Add(ReadAll(_agendasemanaFactory.CreateFromReader(reader), reader)!);
             }
 
-            AgendaSemanaDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.Uri, stopwatch, result.Count);
+            AgendaSemanaDatabaseMetrics.RecordSqlQuery("ListarTabelaAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count);
             return result;
         }
         catch (SqlException)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.Uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.Uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("ListarTabelaAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
     }

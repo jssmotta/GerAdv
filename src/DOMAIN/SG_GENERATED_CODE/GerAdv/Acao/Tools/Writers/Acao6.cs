@@ -18,23 +18,23 @@ public class AcaoWriter(IFAcaoFactory acaoFactory) : IAcaoWriter
         var stopwatch = AcaoDatabaseMetrics.StartTimer();
         try
         {
-            AcaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AcaoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _acaoFactory.DeleteAsync(operadorId, acao.Id, oCnn);
-            AcaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            AcaoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class AcaoWriter(IFAcaoFactory acaoFactory) : IAcaoWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            AcaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AcaoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _acaoFactory.CreateAsync() : _acaoFactory.CreateFromIdAsync(acao.Id, oCnn));
             dbRec.FJustica = acao.Justica;
             dbRec.FArea = acao.Area;
@@ -53,22 +53,22 @@ public class AcaoWriter(IFAcaoFactory acaoFactory) : IAcaoWriter
             dbRec.FGuid = acao.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            AcaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            AcaoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

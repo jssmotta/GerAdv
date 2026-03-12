@@ -18,23 +18,23 @@ public class UFWriter(IFUFFactory ufFactory) : IUFWriter
         var stopwatch = UFDatabaseMetrics.StartTimer();
         try
         {
-            UFDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            UFDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _ufFactory.DeleteAsync(operadorId, uf.Id, oCnn);
-            UFDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            UFDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            UFDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            UFDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            UFDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            UFDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            UFDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            UFDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class UFWriter(IFUFFactory ufFactory) : IUFWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            UFDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            UFDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _ufFactory.CreateAsync() : _ufFactory.CreateFromIdAsync(uf.Id, oCnn));
             dbRec.FDDD = uf.DDD;
             dbRec.FID = uf.IdUF;
@@ -55,22 +55,22 @@ public class UFWriter(IFUFFactory ufFactory) : IUFWriter
             dbRec.FGuid = uf.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            UFDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            UFDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            UFDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            UFDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            UFDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            UFDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            UFDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            UFDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

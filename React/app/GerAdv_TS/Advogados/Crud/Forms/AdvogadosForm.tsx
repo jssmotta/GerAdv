@@ -64,7 +64,7 @@ export const AdvogadosForm: React.FC<AdvogadosFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new AdvogadosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,17 +73,17 @@ export const AdvogadosForm: React.FC<AdvogadosFormProps> = ({
 
   const [_nomeCargos, setNomeCargos] = useState("");
   const cargosApi = new CargosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeEscritorios, setNomeEscritorios] = useState("");
   const escritoriosApi = new EscritoriosApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeCidade, setNomeCidade] = useState("");
   const cidadeApi = new CidadeApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 

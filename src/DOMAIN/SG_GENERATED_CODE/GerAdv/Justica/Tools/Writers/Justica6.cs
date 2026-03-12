@@ -18,23 +18,23 @@ public class JusticaWriter(IFJusticaFactory justicaFactory) : IJusticaWriter
         var stopwatch = JusticaDatabaseMetrics.StartTimer();
         try
         {
-            JusticaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            JusticaDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _justicaFactory.DeleteAsync(operadorId, justica.Id, oCnn);
-            JusticaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            JusticaDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,29 +45,29 @@ public class JusticaWriter(IFJusticaFactory justicaFactory) : IJusticaWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            JusticaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            JusticaDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _justicaFactory.CreateAsync() : _justicaFactory.CreateFromIdAsync(justica.Id, oCnn));
             dbRec.FNome = justica.Nome;
             dbRec.FBold = justica.Bold;
             dbRec.FGuid = justica.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            JusticaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            JusticaDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

@@ -18,23 +18,23 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
         var stopwatch = ProDespesasDatabaseMetrics.StartTimer();
         try
         {
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _prodespesasFactory.DeleteAsync(operadorId, prodespesas.Id, oCnn);
-            ProDespesasDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            ProDespesasDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _prodespesasFactory.CreateAsync() : _prodespesasFactory.CreateFromIdAsync(prodespesas.Id, oCnn));
             dbRec.FLigacaoID = prodespesas.LigacaoID;
             dbRec.FCliente = prodespesas.Cliente;
@@ -70,22 +70,22 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
             dbRec.FGuid = prodespesas.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            ProDespesasDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            ProDespesasDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

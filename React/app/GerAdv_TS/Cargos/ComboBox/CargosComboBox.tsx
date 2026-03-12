@@ -44,9 +44,9 @@ const CargosComboBox: React.FC<DadosSelectProps> = ({
 
   const cargosService = useMemo(() => {
     return new CargosService(
-      new CargosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new CargosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

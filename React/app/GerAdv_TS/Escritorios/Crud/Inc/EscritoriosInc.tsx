@@ -33,7 +33,7 @@ const EscritoriosInc: React.FC<IEscritoriosFormProps> = ({
   const router = useRouter();
 
   const escritoriosService = new EscritoriosService(
-    new EscritoriosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new EscritoriosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

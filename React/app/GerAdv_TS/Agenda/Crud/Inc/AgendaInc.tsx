@@ -30,7 +30,7 @@ const AgendaInc: React.FC<IAgendaFormProps> = ({
   const router = useRouter();
 
   const agendaService = new AgendaService(
-    new AgendaApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new AgendaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

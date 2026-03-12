@@ -18,23 +18,23 @@ public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : 
         var stopwatch = ColaboradoresDatabaseMetrics.StartTimer();
         try
         {
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _colaboradoresFactory.DeleteAsync(operadorId, colaboradores.Id, oCnn);
-            ColaboradoresDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            ColaboradoresDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : 
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _colaboradoresFactory.CreateAsync() : _colaboradoresFactory.CreateFromIdAsync(colaboradores.Id, oCnn));
             dbRec.FCargo = colaboradores.Cargo;
             dbRec.FCliente = colaboradores.Cliente;
@@ -73,22 +73,22 @@ public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : 
             dbRec.FBold = colaboradores.Bold;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            ColaboradoresDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            ColaboradoresDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

@@ -25,7 +25,7 @@ const UFInc: React.FC<IUFFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const router = useRouter();
 
   const ufService = new UFService(
-    new UFApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new UFApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

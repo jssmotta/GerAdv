@@ -33,7 +33,7 @@ const ProDespesasInc: React.FC<IProDespesasFormProps> = ({
   const router = useRouter();
 
   const prodespesasService = new ProDespesasService(
-    new ProDespesasApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new ProDespesasApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

@@ -18,23 +18,23 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         var stopwatch = AdvogadosDatabaseMetrics.StartTimer();
         try
         {
-            AdvogadosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _advogadosFactory.DeleteAsync(operadorId, advogados.Id, oCnn);
-            AdvogadosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            AdvogadosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            AdvogadosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AdvogadosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AdvogadosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            AdvogadosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _advogadosFactory.CreateAsync() : _advogadosFactory.CreateFromIdAsync(advogados.Id, oCnn));
             dbRec.FCargo = advogados.Cargo;
             dbRec.FEMailPro = advogados.EMailPro;
@@ -100,22 +100,22 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
             dbRec.FGuid = advogados.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            AdvogadosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            AdvogadosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            AdvogadosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            AdvogadosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            AdvogadosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            AdvogadosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

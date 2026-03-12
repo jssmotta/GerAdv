@@ -31,9 +31,9 @@ const ProDespesasWindowId: React.FC<ProDespesasWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const prodespesasService = useMemo(() => {
     return new ProDespesasService(
-      new ProDespesasApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ProDespesasApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<IProDespesas | null>(null);
 

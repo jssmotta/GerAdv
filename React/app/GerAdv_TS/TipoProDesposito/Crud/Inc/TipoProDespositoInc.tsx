@@ -34,7 +34,7 @@ const TipoProDespositoInc: React.FC<ITipoProDespositoFormProps> = ({
 
   const tipoprodespositoService = new TipoProDespositoService(
     new TipoProDespositoApi(
-      systemContext?.Uri ?? "",
+      systemContext?.TenantApp ?? "",
       systemContext?.Token ?? "",
     ),
   );

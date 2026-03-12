@@ -18,23 +18,23 @@ public class DivisaoTribunalWriter(IFDivisaoTribunalFactory divisaotribunalFacto
         var stopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
         try
         {
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _divisaotribunalFactory.DeleteAsync(operadorId, divisaotribunal.Id, oCnn);
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class DivisaoTribunalWriter(IFDivisaoTribunalFactory divisaotribunalFacto
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _divisaotribunalFactory.CreateAsync() : _divisaotribunalFactory.CreateFromIdAsync(divisaotribunal.Id, oCnn));
             dbRec.FNumCodigo = divisaotribunal.NumCodigo;
             dbRec.FJustica = divisaotribunal.Justica;
@@ -67,22 +67,22 @@ public class DivisaoTribunalWriter(IFDivisaoTribunalFactory divisaotribunalFacto
             dbRec.FGuid = divisaotribunal.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

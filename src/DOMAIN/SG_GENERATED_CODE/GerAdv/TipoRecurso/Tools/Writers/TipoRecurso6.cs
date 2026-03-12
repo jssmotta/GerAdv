@@ -18,23 +18,23 @@ public class TipoRecursoWriter(IFTipoRecursoFactory tiporecursoFactory) : ITipoR
         var stopwatch = TipoRecursoDatabaseMetrics.StartTimer();
         try
         {
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _tiporecursoFactory.DeleteAsync(operadorId, tiporecurso.Id, oCnn);
-            TipoRecursoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            TipoRecursoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class TipoRecursoWriter(IFTipoRecursoFactory tiporecursoFactory) : ITipoR
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _tiporecursoFactory.CreateAsync() : _tiporecursoFactory.CreateFromIdAsync(tiporecurso.Id, oCnn));
             dbRec.FJustica = tiporecurso.Justica;
             dbRec.FArea = tiporecurso.Area;
@@ -53,22 +53,22 @@ public class TipoRecursoWriter(IFTipoRecursoFactory tiporecursoFactory) : ITipoR
             dbRec.FGuid = tiporecurso.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            TipoRecursoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            TipoRecursoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

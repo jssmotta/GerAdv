@@ -63,11 +63,11 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
   const tipocompromissoService = useMemo(() => {
     return new TipoCompromissoService(
       new TipoCompromissoApi(
-        systemContext?.Uri ?? "",
+        systemContext?.TenantApp ?? "",
         systemContext?.Token ?? "",
       ),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: tipocompromisso,

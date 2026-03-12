@@ -31,9 +31,9 @@ const CidadeWindowId: React.FC<CidadeWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const cidadeService = useMemo(() => {
     return new CidadeService(
-      new CidadeApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new CidadeApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const [data, setData] = React.useState<ICidade | null>(null);
 

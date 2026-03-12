@@ -44,9 +44,9 @@ const ClientesComboBox: React.FC<DadosSelectProps> = ({
 
   const clientesService = useMemo(() => {
     return new ClientesService(
-      new ClientesApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ClientesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

@@ -57,9 +57,9 @@ const AcaoGrid: React.FC<AcaoGridProps> = ({ selectItem }) => {
 
   const acaoService = useMemo(() => {
     return new AcaoService(
-      new AcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: acao,

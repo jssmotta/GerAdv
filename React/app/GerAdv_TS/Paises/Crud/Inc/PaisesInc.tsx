@@ -30,7 +30,7 @@ const PaisesInc: React.FC<IPaisesFormProps> = ({
   const router = useRouter();
 
   const paisesService = new PaisesService(
-    new PaisesApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new PaisesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

@@ -18,23 +18,23 @@ public class CargosWriter(IFCargosFactory cargosFactory) : ICargosWriter
         var stopwatch = CargosDatabaseMetrics.StartTimer();
         try
         {
-            CargosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            CargosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _cargosFactory.DeleteAsync(operadorId, cargos.Id, oCnn);
-            CargosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            CargosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            CargosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            CargosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,27 +45,27 @@ public class CargosWriter(IFCargosFactory cargosFactory) : ICargosWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            CargosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            CargosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _cargosFactory.CreateAsync() : _cargosFactory.CreateFromIdAsync(cargos.Id, oCnn));
             dbRec.FNome = cargos.Nome;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            CargosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            CargosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            CargosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            CargosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

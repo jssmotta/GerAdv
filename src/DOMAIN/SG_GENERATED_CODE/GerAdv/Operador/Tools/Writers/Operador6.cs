@@ -18,23 +18,23 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         var stopwatch = OperadorDatabaseMetrics.StartTimer();
         try
         {
-            OperadorDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            OperadorDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _operadorFactory.DeleteAsync(operadorId, operador.Id, oCnn);
-            OperadorDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            OperadorDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            OperadorDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            OperadorDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _operadorFactory.CreateAsync() : _operadorFactory.CreateFromIdAsync(operador.Id, oCnn));
             dbRec.FEMail = operador.EMail;
             dbRec.FPasta = operador.Pasta;
@@ -101,22 +101,22 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
             dbRec.FGuid = operador.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            OperadorDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            OperadorDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

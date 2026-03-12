@@ -44,9 +44,9 @@ const AcaoComboBox: React.FC<DadosSelectProps> = ({
 
   const acaoService = useMemo(() => {
     return new AcaoService(
-      new AcaoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new AcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     options: filteredOptions,

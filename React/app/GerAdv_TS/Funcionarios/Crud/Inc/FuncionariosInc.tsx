@@ -33,7 +33,7 @@ const FuncionariosInc: React.FC<IFuncionariosFormProps> = ({
   const router = useRouter();
 
   const funcionariosService = new FuncionariosService(
-    new FuncionariosApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+    new FuncionariosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
   );
   const notificationService = new NotificationService();
 

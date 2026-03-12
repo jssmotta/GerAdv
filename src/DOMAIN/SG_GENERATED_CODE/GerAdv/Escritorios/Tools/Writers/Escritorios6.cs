@@ -18,23 +18,23 @@ public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscri
         var stopwatch = EscritoriosDatabaseMetrics.StartTimer();
         try
         {
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _escritoriosFactory.DeleteAsync(operadorId, escritorios.Id, oCnn);
-            EscritoriosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            EscritoriosDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscri
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _escritoriosFactory.CreateAsync() : _escritoriosFactory.CreateFromIdAsync(escritorios.Id, oCnn));
             dbRec.FCNPJ = escritorios.CNPJ.ClearInputCnpj();
             dbRec.FCasa = escritorios.Casa;
@@ -71,22 +71,22 @@ public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscri
             dbRec.FGuid = escritorios.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            EscritoriosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            EscritoriosDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

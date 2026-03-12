@@ -18,23 +18,23 @@ public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
         var stopwatch = RitoDatabaseMetrics.StartTimer();
         try
         {
-            RitoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.IncrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
             await _ritoFactory.DeleteAsync(operadorId, rito.Id, oCnn);
-            RitoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.Uri, stopwatch, 0);
+            RitoDatabaseMetrics.RecordSqlQuery("DeleteAsync", "DELETE", oCnn?.TenantApp, stopwatch, 0);
         }
         catch (SqlException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("DeleteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("DeleteAsync", oCnn?.TenantApp);
         }
     }
 
@@ -45,7 +45,7 @@ public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
         var tipoComando = isInsert ? "INSERT" : "UPDATE";
         try
         {
-            RitoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.IncrementActiveConnections("WriteAsync", oCnn?.TenantApp);
             using var dbRec = await (isInsert ? _ritoFactory.CreateAsync() : _ritoFactory.CreateFromIdAsync(rito.Id, oCnn));
             dbRec.FDescricao = rito.Descricao;
             dbRec.FTop = rito.Top;
@@ -53,22 +53,22 @@ public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
             dbRec.FGuid = rito.Guid;
             dbRec.AuditorQuem = auditorQuem;
             await dbRec.UpdateAsync(oCnn);
-            RitoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.Uri, stopwatch, 0);
+            RitoDatabaseMetrics.RecordSqlQuery("WriteAsync", tipoComando, oCnn?.TenantApp, stopwatch, 0);
             return dbRec;
         }
         catch (SqlException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("WriteAsync", "SqlException", oCnn?.TenantApp);
             throw;
         }
         catch (TimeoutException)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.Uri);
+            RitoDatabaseMetrics.RecordDatabaseError("WriteAsync", "Timeout", oCnn?.TenantApp);
             throw;
         }
         finally
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.Uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("WriteAsync", oCnn?.TenantApp);
         }
     }
 }

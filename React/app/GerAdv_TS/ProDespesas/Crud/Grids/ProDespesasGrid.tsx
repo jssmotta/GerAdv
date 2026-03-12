@@ -58,9 +58,9 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
 
   const prodespesasService = useMemo(() => {
     return new ProDespesasService(
-      new ProDespesasApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new ProDespesasApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: prodespesas,

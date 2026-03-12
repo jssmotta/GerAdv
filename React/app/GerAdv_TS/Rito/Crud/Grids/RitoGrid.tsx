@@ -57,9 +57,9 @@ const RitoGrid: React.FC<RitoGridProps> = ({ selectItem }) => {
 
   const ritoService = useMemo(() => {
     return new RitoService(
-      new RitoApi(systemContext?.Uri ?? "", systemContext?.Token ?? ""),
+      new RitoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
     );
-  }, [systemContext?.Uri, systemContext?.Token]);
+  }, [systemContext?.TenantApp, systemContext?.Token]);
 
   const {
     data: rito,

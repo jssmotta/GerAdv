@@ -62,7 +62,7 @@ export const InstanciaForm: React.FC<InstanciaFormProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const isMobile = useIsMobile();
   const dadoApi = new InstanciaApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,17 +71,17 @@ export const InstanciaForm: React.FC<InstanciaFormProps> = ({
 
   const [_nomeAcao, setNomeAcao] = useState("");
   const acaoApi = new AcaoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeForo, setNomeForo] = useState("");
   const foroApi = new ForoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
   const [_nomeTipoRecurso, setNomeTipoRecurso] = useState("");
   const tiporecursoApi = new TipoRecursoApi(
-    systemContext?.Uri ?? "",
+    systemContext?.TenantApp ?? "",
     systemContext?.Token ?? "",
   );
 
