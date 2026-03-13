@@ -1,0 +1,67 @@
+.k-floating-label {
+  display: block;
+  margin-bottom: 0;
+}
+
+.inputCheckBox {
+  width: 350px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.inputCheckBox label {
+  margin-left: 8px;  
+}
+
+.inputMemo {
+  width: 360px;
+  margin-top: 0px;
+  min-height: 96px;
+  display: block;
+}
+
+.input-msi-combobox {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+}
+
+.comboboxLabel {
+  width: 100%;
+  margin-bottom: 1px;
+}
+
+.k-floating-label {
+  display: block;
+  width: 360px;
+  text-align: left;
+}
+
+ 
+
+.checkBoxRed {
+  color: red;
+}
+
+.input-checkbox-container {
+  padding-top: 10px;
+}
+
+.k-checkbox {
+  max-width: 22px !important;
+}
+
+ 
+@media (max-width: 768px) {
+
+  .input-container, .input-container-icon {
+    max-width: calc(100% - 20px) !important;       
+  }
+}
+
+.input-msi-combobox, .input-container, .input-container-date {
+    position: relative !important;
+    border-bottom: 1px solid var(--input-border) !important;
+    background: transparent !important;
+}

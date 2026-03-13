@@ -4,7 +4,7 @@
 // Entity:Funcionarios
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class FuncionariosController(IFuncionariosService funcionariosService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<FuncionariosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<FuncionariosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.GetAll(max, uri);
+                return await _funcionariosService.GetAll(max, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: GetAll failed with exception for uri = {0}", uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<FuncionariosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterFuncionarios filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<FuncionariosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterFuncionarios filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            FuncionariosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.Filter(max, filter, uri);
+                return await _funcionariosService.Filter(max, filter, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: Filter failed with exception for uri = {0}", uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.GetById(id, uri, token);
+                return await _funcionariosService.GetById(id, tenantKey, token);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            FuncionariosMetrics.RecordReadByHour(uri);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            FuncionariosMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<FuncionariosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: GetById failed with exception for id = {0}, {1}", id, uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<FuncionariosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.GetAuditor(id, uri, token);
+                return await _funcionariosService.GetAuditor(id, tenantKey, token);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterFuncionarios? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterFuncionarios? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            FuncionariosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.GetListN(max, filtro, uri);
+                return await _funcionariosService.GetListN(max, filtro, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            FuncionariosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: GetListN failed with exception for uri = {0}", uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<FuncionariosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> AddAndUpdate([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> AddAndUpdate([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         var isNew = regFuncionarios.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            FuncionariosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.AddAndUpdate(regFuncionarios, uri);
+                return await _funcionariosService.AddAndUpdate(regFuncionarios, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                FuncionariosMetrics.RecordCreated(uri);
-                FuncionariosMetrics.RecordCreatedByHour(uri);
+                FuncionariosMetrics.RecordCreated(tenantKey);
+                FuncionariosMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                FuncionariosMetrics.RecordUpdated(uri);
-                FuncionariosMetrics.RecordUpdatedByHour(uri);
+                FuncionariosMetrics.RecordUpdated(tenantKey);
+                FuncionariosMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<FuncionariosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: AddAndUpdate failed with exception for uri = {0}", uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<FuncionariosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<FuncionariosResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<FuncionariosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.Delete(id, uri);
+                return await _funcionariosService.Delete(id, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                FuncionariosMetrics.RecordDeleted(uri);
-                FuncionariosMetrics.RecordDeletedByHour(uri);
+                FuncionariosMetrics.RecordDeleted(tenantKey);
+                FuncionariosMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<FuncionariosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            FuncionariosMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Funcionarios: {0} conflito de FK para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Funcionarios: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<FuncionariosResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: Delete failed with exception for id = {0}, {1}", id, uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<FuncionariosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> Validation([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<FuncionariosResponse>>> Validation([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = FuncionariosMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            FuncionariosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class FuncionariosController(IFuncionariosService funcionariosSer
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _funcionariosService.Validation(regFuncionarios, uri);
+                return await _funcionariosService.Validation(regFuncionarios, tenantKey);
             });
-            FuncionariosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            FuncionariosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            FuncionariosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            FuncionariosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Funcionarios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<FuncionariosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            FuncionariosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Funcionarios: Validation failed with exception for uri = {0}", uri);
+            FuncionariosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Funcionarios: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<FuncionariosResponse>.Fail(ex.Message, 500));
         }
     }

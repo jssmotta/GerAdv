@@ -6,20 +6,20 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IPaisesValidation
 {
-    Task<bool> ValidateReg(Models.Paises reg, IPaisesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Paises reg, IPaisesService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class PaisesValidation : IPaisesValidation
 {
-    public async Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id ?? default }, uri);
+        var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id ?? default }, tenantKey);
         if (ufExists0?.Data != null && ufExists0.Data.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da UF associados a ele.");
         return true;
@@ -32,7 +32,7 @@ public class PaisesValidation : IPaisesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Paises reg, IPaisesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Paises reg, IPaisesService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

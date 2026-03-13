@@ -4,7 +4,7 @@
 // Entity:ProDespesas
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class ProDespesasController(IProDespesasService prodespesasService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ProDespesasResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ProDespesasResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.GetAll(max, uri);
+                return await _prodespesasService.GetAll(max, tenantKey);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ProDespesasMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ProDespesasMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: GetAll failed with exception for uri = {0}", uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ProDespesasResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterProDespesas filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ProDespesasResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterProDespesas filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            ProDespesasMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.Filter(max, filter, uri);
+                return await _prodespesasService.Filter(max, filter, tenantKey);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ProDespesasMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ProDespesasMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: Filter failed with exception for uri = {0}", uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.GetById(id, uri, token);
+                return await _prodespesasService.GetById(id, tenantKey, token);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ProDespesasMetrics.RecordReadByHour(uri);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ProDespesasMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ProDespesasResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: GetById failed with exception for id = {0}, {1}", id, uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ProDespesasResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.GetAuditor(id, uri, token);
+                return await _prodespesasService.GetAuditor(id, tenantKey, token);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -154,14 +154,14 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<ProDespesasResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> AddAndUpdate([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> AddAndUpdate([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         var isNew = regProDespesas.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            ProDespesasMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -169,32 +169,32 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.AddAndUpdate(regProDespesas, uri);
+                return await _prodespesasService.AddAndUpdate(regProDespesas, tenantKey);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                ProDespesasMetrics.RecordCreated(uri);
-                ProDespesasMetrics.RecordCreatedByHour(uri);
+                ProDespesasMetrics.RecordCreated(tenantKey);
+                ProDespesasMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                ProDespesasMetrics.RecordUpdated(uri);
-                ProDespesasMetrics.RecordUpdatedByHour(uri);
+                ProDespesasMetrics.RecordUpdated(tenantKey);
+                ProDespesasMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ProDespesasResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: AddAndUpdate failed with exception for uri = {0}", uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ProDespesasResponse>.Fail(ex.Message, 500));
         }
     }
@@ -204,7 +204,7 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<ProDespesasResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<ProDespesasResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "Delete";
@@ -212,33 +212,33 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.Delete(id, uri);
+                return await _prodespesasService.Delete(id, tenantKey);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                ProDespesasMetrics.RecordDeleted(uri);
-                ProDespesasMetrics.RecordDeletedByHour(uri);
+                ProDespesasMetrics.RecordDeleted(tenantKey);
+                ProDespesasMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ProDespesasResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            ProDespesasMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "ProDespesas: {0} conflito de FK para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "ProDespesas: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<ProDespesasResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: Delete failed with exception for id = {0}, {1}", id, uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ProDespesasResponse>.Fail(ex.Message, 500));
         }
     }
@@ -246,13 +246,13 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ProDespesasResponse>>> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ProDespesasMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            ProDespesasMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -260,21 +260,21 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _prodespesasService.Validation(regProDespesas, uri);
+                return await _prodespesasService.Validation(regProDespesas, tenantKey);
             });
-            ProDespesasMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ProDespesasMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ProDespesasMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ProDespesasMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ProDespesas: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ProDespesasResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ProDespesasMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ProDespesas: Validation failed with exception for uri = {0}", uri);
+            ProDespesasMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ProDespesas: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ProDespesasResponse>.Fail(ex.Message, 500));
         }
     }

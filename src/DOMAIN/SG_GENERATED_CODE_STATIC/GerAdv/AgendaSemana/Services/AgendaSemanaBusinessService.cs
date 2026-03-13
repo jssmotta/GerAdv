@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AgendaSemanaService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         if (regAgendaSemana == null)
         {
-            _logger.Warn("AgendaSemana: BeforeDeleteAsync - regAgendaSemana is null for uri = {0}", uri);
+            _logger.Warn("AgendaSemana: BeforeDeleteAsync - regAgendaSemana is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            AgendaSemanaMetrics.RecordNotFound("BeforeDelete", uri, AgendaSemanaMetrics.StartTimer());
+            AgendaSemanaMetrics.RecordNotFound("BeforeDelete", tenantKey, AgendaSemanaMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = AgendaSemanaMetrics.StartTimer();
-        _logger.Debug("AgendaSemana: BeforeDeleteAsync success for Id={0}, uri={1}", regAgendaSemana.Id, uri);
+        _logger.Debug("AgendaSemana: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regAgendaSemana.Id, tenantKey);
         // record successful business layer pre-delete
-        AgendaSemanaMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        AgendaSemanaMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaSemanaMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("AgendaSemana: AfterDeleteAsync - Id={0}, uri={1}", regAgendaSemana?.Id ?? 0, uri);
+        _logger.Info("AgendaSemana: AfterDeleteAsync - Id={0}, tenantKey={1}", regAgendaSemana?.Id ?? 0, tenantKey);
         // record delete metrics
-        AgendaSemanaMetrics.RecordDeleted(uri);
-        AgendaSemanaMetrics.RecordDeletedByHour(uri);
-        AgendaSemanaMetrics.RecordSuccess("AfterDelete", uri, sw);
+        AgendaSemanaMetrics.RecordDeleted(tenantKey);
+        AgendaSemanaMetrics.RecordDeletedByHour(tenantKey);
+        AgendaSemanaMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("AgendaSemana: DeleteErrorAsync - Id={0}, uri={1}", regAgendaSemana?.Id ?? 0, uri);
+        _logger.Error("AgendaSemana: DeleteErrorAsync - Id={0}, tenantKey={1}", regAgendaSemana?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        AgendaSemanaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AgendaSemanaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AgendaSemanaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AgendaSemanaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<AgendaSemanaResponse> AfterCreateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task<AgendaSemanaResponse> AfterCreateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaSemanaMetrics.StartTimer();
         var result = regAgendaSemana ?? new AgendaSemanaResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("AgendaSemana: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("AgendaSemana: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        AgendaSemanaMetrics.RecordCreated(uri);
-        AgendaSemanaMetrics.RecordCreatedByHour(uri);
-        AgendaSemanaMetrics.RecordSuccess("AfterCreate", uri, sw);
+        AgendaSemanaMetrics.RecordCreated(tenantKey);
+        AgendaSemanaMetrics.RecordCreatedByHour(tenantKey);
+        AgendaSemanaMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<AgendaSemanaResponse> AfterUpdateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task<AgendaSemanaResponse> AfterUpdateAsync([FromBody] AgendaSemanaResponse? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaSemanaMetrics.StartTimer();
         var result = regAgendaSemana ?? new AgendaSemanaResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("AgendaSemana: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        AgendaSemanaMetrics.RecordUpdated(uri);
-        AgendaSemanaMetrics.RecordUpdatedByHour(uri);
-        AgendaSemanaMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("AgendaSemana: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        AgendaSemanaMetrics.RecordUpdated(tenantKey);
+        AgendaSemanaMetrics.RecordUpdatedByHour(tenantKey);
+        AgendaSemanaMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.AgendaSemana? regAgendaSemana, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.AgendaSemana? regAgendaSemana, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("AgendaSemana: AddAndUpdateErrorAsync - Id={0}, uri={1}", regAgendaSemana?.Id ?? 0, uri);
+        _logger.Error("AgendaSemana: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regAgendaSemana?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        AgendaSemanaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AgendaSemanaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AgendaSemanaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AgendaSemanaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

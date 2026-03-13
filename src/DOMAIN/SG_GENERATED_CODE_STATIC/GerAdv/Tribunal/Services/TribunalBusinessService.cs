@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TribunalService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string tenantKey)
     {
         if (regTribunal == null)
         {
-            _logger.Warn("Tribunal: BeforeDeleteAsync - regTribunal is null for uri = {0}", uri);
+            _logger.Warn("Tribunal: BeforeDeleteAsync - regTribunal is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            TribunalMetrics.RecordNotFound("BeforeDelete", uri, TribunalMetrics.StartTimer());
+            TribunalMetrics.RecordNotFound("BeforeDelete", tenantKey, TribunalMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = TribunalMetrics.StartTimer();
-        _logger.Debug("Tribunal: BeforeDeleteAsync success for Id={0}, uri={1}", regTribunal.Id, uri);
+        _logger.Debug("Tribunal: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regTribunal.Id, tenantKey);
         // record successful business layer pre-delete
-        TribunalMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        TribunalMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = TribunalMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Tribunal: AfterDeleteAsync - Id={0}, uri={1}", regTribunal?.Id ?? 0, uri);
+        _logger.Info("Tribunal: AfterDeleteAsync - Id={0}, tenantKey={1}", regTribunal?.Id ?? 0, tenantKey);
         // record delete metrics
-        TribunalMetrics.RecordDeleted(uri);
-        TribunalMetrics.RecordDeletedByHour(uri);
-        TribunalMetrics.RecordSuccess("AfterDelete", uri, sw);
+        TribunalMetrics.RecordDeleted(tenantKey);
+        TribunalMetrics.RecordDeletedByHour(tenantKey);
+        TribunalMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Tribunal: DeleteErrorAsync - Id={0}, uri={1}", regTribunal?.Id ?? 0, uri);
+        _logger.Error("Tribunal: DeleteErrorAsync - Id={0}, tenantKey={1}", regTribunal?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        TribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<TribunalResponse> AfterCreateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse> AfterCreateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = TribunalMetrics.StartTimer();
         var result = regTribunal ?? new TribunalResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Tribunal: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Tribunal: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        TribunalMetrics.RecordCreated(uri);
-        TribunalMetrics.RecordCreatedByHour(uri);
-        TribunalMetrics.RecordSuccess("AfterCreate", uri, sw);
+        TribunalMetrics.RecordCreated(tenantKey);
+        TribunalMetrics.RecordCreatedByHour(tenantKey);
+        TribunalMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<TribunalResponse> AfterUpdateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse> AfterUpdateAsync([FromBody] TribunalResponse? regTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = TribunalMetrics.StartTimer();
         var result = regTribunal ?? new TribunalResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Tribunal: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        TribunalMetrics.RecordUpdated(uri);
-        TribunalMetrics.RecordUpdatedByHour(uri);
-        TribunalMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Tribunal: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        TribunalMetrics.RecordUpdated(tenantKey);
+        TribunalMetrics.RecordUpdatedByHour(tenantKey);
+        TribunalMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Tribunal? regTribunal, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Tribunal? regTribunal, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Tribunal: AddAndUpdateErrorAsync - Id={0}, uri={1}", regTribunal?.Id ?? 0, uri);
+        _logger.Error("Tribunal: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regTribunal?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        TribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

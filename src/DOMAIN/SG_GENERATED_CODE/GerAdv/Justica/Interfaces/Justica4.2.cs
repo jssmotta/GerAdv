@@ -10,11 +10,11 @@ public partial interface IJusticaReader
     JusticaResponse? Read(FJustica dbRec, MsiSqlConnection? oCnn);
     JusticaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     JusticaResponse? Read(FJustica dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     JusticaResponseAll? ReadAll(FJustica dbRec, IDataRecord dr);
     JusticaResponseAll? ReadAll(SG.GerAdv.DBJustica dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<JusticaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<JusticaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

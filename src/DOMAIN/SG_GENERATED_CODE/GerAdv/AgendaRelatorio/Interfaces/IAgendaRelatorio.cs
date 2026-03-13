@@ -7,5 +7,5 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAgendaRelatorioService
 {
-    Task<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>> Filter(int max, Filters.FilterAgendaRelatorio filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>> Filter(int max, Filters.FilterAgendaRelatorio filter, string tenantKey = "", CancellationToken token = default);
 }

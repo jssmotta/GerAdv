@@ -8,7 +8,7 @@ import { HelpField } from "@/app/components/Cruds/Help/HelpCrud";
 import HelpButton from "@/app/components/Cruds/DockerInc/HelpButton";
 import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Escritorios";
 export const help_infoDescription = "Escritorios";
 
@@ -64,7 +64,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `escCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Escritorios`,
+    description: `Cidade relacionado à entidade Escritorios`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (

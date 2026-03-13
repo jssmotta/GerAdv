@@ -11,9 +11,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { getParamFromUrl } from "@/app/tools/helpers";
-import "@/app/styles/CrudFormsBase.css";
-import "@/app/styles/CrudFormsMobile.css";
-import "@/app/styles/CrudForms5.css"; // [ INDEX_SIZE ]
 
 import SaveButtonCrud from "@/app/components/Cruds/SaveButtonCrud";
 import { useIsMobile } from "@/app/context/MobileContext";

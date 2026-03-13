@@ -15,7 +15,12 @@ import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { DadosSelectProps } from "@/app/models/DadosSelectProps";
 import TiposAcaoWindow from "../Crud/Grids/TiposAcaoWindow";
 import { ITiposAcao } from "../Interfaces/interface.TiposAcao";
-import { pencilIcon, plusIcon, xIcon } from "@progress/kendo-svg-icons";
+import {
+  pencilIcon,
+  plusIcon,
+  xIcon,
+  searchIcon,
+} from "@progress/kendo-svg-icons";
 import { SvgIcon } from "@progress/kendo-react-common";
 import {
   ActionAdicionar,
@@ -44,7 +49,10 @@ const TiposAcaoComboBox: React.FC<DadosSelectProps> = ({
 
   const tiposacaoService = useMemo(() => {
     return new TiposAcaoService(
-      new TiposAcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new TiposAcaoApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -66,8 +74,15 @@ const TiposAcaoComboBox: React.FC<DadosSelectProps> = ({
   const dimensionsEmpty = useWindow();
   const isMobile = useIsMobile();
 
+  const dimensions = useWindow();
+
   const openCad = () => {
     setCadIsOpen(!cadIsOpen);
+  };
+  const selecItem = (item: ITiposAcao) => {
+    setValue({ id: item.id, nome: item.nome });
+    handleValueChange(item);
+    setCadIsOpen(false);
   };
   useEffect(() => {
     if (typeof value === "number" && value > 0 && !selectedValue) {
@@ -257,17 +272,38 @@ const TiposAcaoComboBox: React.FC<DadosSelectProps> = ({
         />
       )}
 
+      {cadIsOpen && (
+        <EditWindow
+          tableTitle={`Receitar`}
+          isOpen={cadIsOpen}
+          onClose={() => setCadIsOpen(false)}
+          dimensions={dimensions}
+          maxWidth={1200}
+          newHeight={600}
+          crud={true}
+        >
+          <TiposAcaoPage selectItem={selecItem} noLayout={true} />
+        </EditWindow>
+      )}
+
       <div
         className={`${cssDado} input-msi-combobox input-container ${className} ${icon ? "input-container-icon" : ""}`}
       >
         {icon && <InputAwesomeIcon icon={icon} inputText={false} />}
 
-        <div
-          className="comboboxLabel combo-label-cadopen"
-          onClick={() => openCad()}
-        >
-          <span className="k-floating-label">{label}</span>
+        <div className="comboboxLabel">
+          <span
+            title="Pesquise e selecione"
+            className="k-floating-label"
+            onClick={() => openCad()}
+          >
+            {label}{" "}
+            <span className="combo-label-cadopen">
+              <SvgIcon icon={searchIcon} />
+            </span>
+          </span>
         </div>
+
         <div className="combobox-box-msi">
           <ComboBox
             tabIndex={tabIndex}

@@ -10,7 +10,7 @@ import HelpCargos from "@/app/GerAdv_TS/Cargos/Help/HelpCargos";
 import HelpClientes from "@/app/GerAdv_TS/Clientes/Help/HelpClientes";
 import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Colaboradores";
 export const help_infoDescription = "Colaboradores";
 
@@ -26,7 +26,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `colCargo`,
     caption: `Cargos`,
-    description: `Cargos relacionado a Colaboradores`,
+    description: `Cargos relacionado à entidade Colaboradores`,
     acceptedValues: `Cadastrados em Cargos`,
     required: false,
     relatedTable: (
@@ -39,7 +39,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `colCliente`,
     caption: `Clientes`,
-    description: `Clientes relacionado a Colaboradores`,
+    description: `Clientes relacionado à entidade Colaboradores`,
     acceptedValues: `Cadastrados em Clientes`,
     required: false,
     relatedTable: (
@@ -116,7 +116,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `colCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Colaboradores`,
+    description: `Cidade relacionado à entidade Colaboradores`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (

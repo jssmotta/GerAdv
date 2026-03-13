@@ -29,7 +29,7 @@ public partial class AgendaServiceTests : IDisposable
     private readonly Mock<IEntityService> _mockEntityService;
     private readonly ServiceFilter _serviceS;
     private readonly AgendaService _service;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AgendaServiceTests(ITestOutputHelper output)
     {
         _output = output;
@@ -283,7 +283,7 @@ public partial class AgendaServiceTests : IDisposable
             Id = 0,
             Data = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Validation(validAgenda, invalidUri));
     }
@@ -356,7 +356,7 @@ public partial class AgendaServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.GetAll(max, invalidUri));
     }
@@ -390,7 +390,7 @@ public partial class AgendaServiceTests : IDisposable
         // Arrange
         var max = 10;
         var filter = new Filters.FilterAgenda();
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, filter, invalidUri));
     }
@@ -438,7 +438,7 @@ public partial class AgendaServiceTests : IDisposable
     {
         // Arrange
         var validId = 123;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Delete(validId, invalidUri));
     }
@@ -454,7 +454,7 @@ public partial class AgendaServiceTests : IDisposable
             Id = 0,
             Data = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.AddAndUpdate(validAgenda, invalidUri));
     }
@@ -600,7 +600,7 @@ public partial class AgendaServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri";
+        var invalidUri = "invalid-tenantKey";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, null !, invalidUri));
     }

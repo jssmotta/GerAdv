@@ -20,12 +20,12 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
     private readonly IOponentesValidation validation = validation;
     private readonly IOponentesWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    public async Task<ResultApi<IEnumerable<OponentesResponseAll>>> Filter(int max, Filters.FilterOponentes filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<OponentesResponseAll>>> Filter(int max, Filters.FilterOponentes filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -39,28 +39,28 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroOponentes(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            OponentesDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            OponentesDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Oponentes-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Oponentes-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<OponentesResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<OponentesResponseAll>>.Fail($"Oponentes - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<OponentesResponseAll>>.Fail($"Oponentes - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
     }
 
-    public async Task<ResultApi<OponentesResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<OponentesResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -84,20 +84,20 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            OponentesDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            OponentesDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Oponentes-GetById-{id}--{keyCache}", async cancel =>
+            OponentesDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            OponentesDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Oponentes-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                OponentesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                OponentesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<OponentesResponse>.NotFound($"Oponentes: Registro não encontrado para id {id}");
@@ -108,25 +108,25 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            OponentesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<OponentesResponse>.Fail($"Oponentes, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            OponentesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<OponentesResponse>.Fail($"Oponentes, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            OponentesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            OponentesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<OponentesResponse>.Fail($"Oponentes - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<OponentesResponse>.Fail($"Oponentes - {uri}-: GetById: {ex.Message}", 500);
+            OponentesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<OponentesResponse>.Fail($"Oponentes - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<OponentesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -134,11 +134,11 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return ResultApi<AuditorResponse>.Fail("Oponentes: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Oponentes: Auditor não encontrado para id {id}");
@@ -149,11 +149,11 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         catch (Exception ex)
         {
             _logger.Error(ex, "Oponentes: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Oponentes - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Oponentes - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<OponentesResponse>> AddAndUpdate(Models.Oponentes? regOponentes, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OponentesResponse>> AddAndUpdate(Models.Oponentes? regOponentes, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regOponentes == null)
@@ -161,14 +161,14 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return ResultApi<OponentesResponse>.Fail("Oponentes: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         var connectionStopwatch = OponentesDatabaseMetrics.StartTimer();
         var queryStopwatch = OponentesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -177,9 +177,9 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
 
         try
         {
-            OponentesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            OponentesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, uri, oCnn);
+            OponentesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            OponentesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -187,12 +187,12 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
         catch (SGValidationException ex)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -201,16 +201,16 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         {
             using var saved = await writer.WriteAsync(regOponentes, operadorId, oCnn);
             string tipoQuery = regOponentes.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            OponentesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            OponentesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regOponentes.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regOponentes.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -218,14 +218,14 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regOponentes, uri);
-            OponentesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regOponentes, tenantKey);
+            OponentesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            OponentesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<OponentesResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<OponentesResponse>> Validation(Models.Oponentes? regOponentes, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OponentesResponse>> Validation(Models.Oponentes? regOponentes, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regOponentes == null)
@@ -233,14 +233,13 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return ResultApi<OponentesResponse>.Fail("Oponentes: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         var connectionStopwatch = OponentesDatabaseMetrics.StartTimer();
-        var queryStopwatch = OponentesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -249,9 +248,9 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
 
         try
         {
-            OponentesDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            OponentesDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, uri, oCnn);
+            OponentesDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            OponentesDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -259,12 +258,12 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
         catch (SGValidationException ex)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -290,7 +289,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
     }
 
-    public async Task<ResultApi<OponentesResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OponentesResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -298,13 +297,13 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = OponentesDatabaseMetrics.StartTimer();
         var queryStopwatch = OponentesDatabaseMetrics.StartTimer();
@@ -315,9 +314,9 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
 
         try
         {
-            OponentesDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            OponentesDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            OponentesDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            OponentesDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -325,44 +324,44 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
         catch (SGValidationException ex)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OponentesResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OponentesResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var oponentes = await reader.ReadAsync(id ?? default, oCnn);
         if (oponentes == null)
         {
-            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OponentesResponse>.NotFound($"Oponentes: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(oponentes, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(oponentes, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(oponentes, nOperador, oCnn);
-                OponentesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                OponentesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(oponentes, uri);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(oponentes, tenantKey);
             return ResultApi<OponentesResponse>.Ok(oponentes);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(oponentes, uri);
-            OponentesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(oponentes, tenantKey);
+            OponentesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            OponentesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OponentesResponse>.Fail(ex.Message, 500);
         }
     }

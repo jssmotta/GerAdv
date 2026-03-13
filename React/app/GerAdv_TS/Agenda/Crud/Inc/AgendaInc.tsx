@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IAgendaFormProps } from "../../Interfaces/interface.Agenda";
+import { IAgenda, IAgendaFormProps } from "../../Interfaces/interface.Agenda";
 import { AgendaService } from "../../Services/Agenda.service";
 import { useAgendaForm, useValidationsAgenda } from "../../Hooks/hookAgenda";
 import { AgendaEmpty } from "../../../Models/Agenda";
 import { AgendaForm } from "../Forms/AgendaForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Agenda/Agenda.hooks";
 
 const AgendaInc: React.FC<IAgendaFormProps> = ({
   id,
@@ -34,13 +36,38 @@ const AgendaInc: React.FC<IAgendaFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadAgenda } = useAgendaForm(
+  const { data, handleChange, setData } = useAgendaForm(
     AgendaEmpty(),
     agendaService,
   );
 
+  const originalRef = useRef<IAgenda>(AgendaEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = AgendaEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await agendaService.fetchAgendaById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadAgenda(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +81,44 @@ const AgendaInc: React.FC<IAgendaFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedAgenda = await agendaService.saveAgenda(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedAgenda = await agendaService.saveAgenda(currentRecord);
 
       if (savedAgenda.id) {
         notificationService.showNotification(
@@ -91,7 +155,7 @@ const AgendaInc: React.FC<IAgendaFormProps> = ({
   };
 
   const handleReload = () => {
-    loadAgenda(id);
+    handleLoad(id);
   };
 
   return (

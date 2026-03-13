@@ -19,12 +19,12 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
     private readonly ITiposAcaoReader reader = reader;
     private readonly ITiposAcaoValidation validation = validation;
     private readonly ITiposAcaoWriter writer = writer;
-    public async Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> Filter(int max, Filters.FilterTiposAcao filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> Filter(int max, Filters.FilterTiposAcao filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TiposAcao: URI inválida");
+            throw new Exception("TiposAcao: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -38,28 +38,28 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroTiposAcao(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}TiposAcao-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}TiposAcao-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<TiposAcaoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<TiposAcaoResponseAll>>.Fail($"TiposAcao - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<TiposAcaoResponseAll>>.Fail($"TiposAcao - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -68,7 +68,7 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
     }
 
-    public async Task<ResultApi<TiposAcaoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<TiposAcaoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -83,20 +83,20 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            TiposAcaoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-TiposAcao-GetById-{id}--{keyCache}", async cancel =>
+            TiposAcaoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-TiposAcao-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                TiposAcaoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                TiposAcaoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<TiposAcaoResponse>.NotFound($"TiposAcao: Registro não encontrado para id {id}");
@@ -107,25 +107,25 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TiposAcaoResponse>.Fail($"TiposAcao, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TiposAcaoResponse>.Fail($"TiposAcao, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<TiposAcaoResponse>.Fail($"TiposAcao - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TiposAcaoResponse>.Fail($"TiposAcao - {uri}-: GetById: {ex.Message}", 500);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TiposAcaoResponse>.Fail($"TiposAcao - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<TiposAcaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -133,11 +133,11 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
             return ResultApi<AuditorResponse>.Fail("TiposAcao: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"TiposAcao: Auditor não encontrado para id {id}");
@@ -148,11 +148,11 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         catch (Exception ex)
         {
             _logger.Error(ex, "TiposAcao: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"TiposAcao - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"TiposAcao - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<TiposAcaoResponse>> AddAndUpdate(Models.TiposAcao? regTiposAcao, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TiposAcaoResponse>> AddAndUpdate(Models.TiposAcao? regTiposAcao, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTiposAcao == null)
@@ -160,14 +160,14 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
             return ResultApi<TiposAcaoResponse>.Fail("TiposAcao: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TiposAcao: URI inválida");
+            throw new Exception("TiposAcao: TenantApp inválida");
         }
 
         var connectionStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
         var queryStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -176,9 +176,9 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
 
         try
         {
-            TiposAcaoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regTiposAcao, this, uri, oCnn);
+            TiposAcaoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regTiposAcao, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -186,12 +186,12 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
         catch (SGValidationException ex)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -200,16 +200,16 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         {
             using var saved = await writer.WriteAsync(regTiposAcao, operadorId, oCnn);
             string tipoQuery = regTiposAcao.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            TiposAcaoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            TiposAcaoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regTiposAcao.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regTiposAcao.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -217,14 +217,14 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regTiposAcao, uri);
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regTiposAcao, tenantKey);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<TiposAcaoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<TiposAcaoResponse>> Validation(Models.TiposAcao? regTiposAcao, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TiposAcaoResponse>> Validation(Models.TiposAcao? regTiposAcao, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTiposAcao == null)
@@ -232,14 +232,13 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
             return ResultApi<TiposAcaoResponse>.Fail("TiposAcao: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TiposAcao: URI inválida");
+            throw new Exception("TiposAcao: TenantApp inválida");
         }
 
         var connectionStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
-        var queryStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -248,9 +247,9 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
 
         try
         {
-            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regTiposAcao, this, uri, oCnn);
+            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regTiposAcao, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -258,12 +257,12 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
         catch (SGValidationException ex)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -289,7 +288,7 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
     }
 
-    public async Task<ResultApi<TiposAcaoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TiposAcaoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -297,13 +296,13 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TiposAcao: URI inválida");
+            throw new Exception("TiposAcao: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
         var queryStopwatch = TiposAcaoDatabaseMetrics.StartTimer();
@@ -314,9 +313,9 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
 
         try
         {
-            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            TiposAcaoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            TiposAcaoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            TiposAcaoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -324,44 +323,44 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, IFTipos
         }
         catch (SGValidationException ex)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TiposAcaoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TiposAcaoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var tiposacao = await reader.ReadAsync(id ?? default, oCnn);
         if (tiposacao == null)
         {
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TiposAcaoResponse>.NotFound($"TiposAcao: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(tiposacao, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(tiposacao, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(tiposacao, nOperador, oCnn);
-                TiposAcaoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                TiposAcaoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(tiposacao, uri);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(tiposacao, tenantKey);
             return ResultApi<TiposAcaoResponse>.Ok(tiposacao);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(tiposacao, uri);
-            TiposAcaoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(tiposacao, tenantKey);
+            TiposAcaoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            TiposAcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TiposAcaoResponse>.Fail(ex.Message, 500);
         }
     }

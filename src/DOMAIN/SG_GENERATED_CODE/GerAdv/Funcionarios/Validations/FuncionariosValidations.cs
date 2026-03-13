@@ -6,20 +6,20 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IFuncionariosValidation
 {
-    Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class FuncionariosValidation : IFuncionariosValidation
 {
-    public async Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id ?? default }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id ?? default }, tenantKey);
         if (agendaExists0?.Data != null && agendaExists0.Data.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Compromisso associados a ele.");
         return true;
@@ -56,7 +56,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -131,7 +131,7 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
-            var testaCpf = await IsCpfExists(reg, service, uri);
+            var testaCpf = await IsCpfExists(reg, service, tenantKey);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
             {
                 throw new SGValidationException($"Colaborador ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.");
@@ -175,11 +175,11 @@ public class FuncionariosValidation : IFuncionariosValidation
         return true;
     }
 
-    private async Task<(bool, FuncionariosResponseAll? )> IsCpfExists(Models.Funcionarios reg, IFuncionariosService service, string uri)
+    private async Task<(bool, FuncionariosResponseAll? )> IsCpfExists(Models.Funcionarios reg, IFuncionariosService service, string tenantKey)
     {
         if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingFuncionarios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { CPF = reg.CPF.ClearInputCpf() }, uri));
+        var existingFuncionarios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { CPF = reg.CPF.ClearInputCpf() }, tenantKey));
         var first = existingFuncionarios.Data?.FirstOrDefault();
         return (first != null && first.Id > 0 && first.Id != reg.Id, first);
     }

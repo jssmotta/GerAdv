@@ -51,7 +51,7 @@ public partial class ServiceFilter
 
 public partial class TipoProDespositoService
 {
-    private async Task<IEnumerable<TipoProDespositoResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken cancellationToken)
+    private async Task<IEnumerable<TipoProDespositoResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken cancellationToken)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
@@ -61,7 +61,7 @@ public partial class TipoProDespositoService
         try
         {
             // Usar o reader para obter os dados
-            return await reader.ListarAsync(oCnn!, max, uri, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
+            return await reader.ListarAsync(oCnn!, max, tenantKey, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
         }
         catch (Exception)
         {
@@ -69,16 +69,16 @@ public partial class TipoProDespositoService
         }
     }
 
-    public async Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoProDesposito? filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoProDesposito? filtro, string tenantKey, CancellationToken token = default)
     {
         // Tracking: 20250606-1
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection;
         if (oCnn == null)
         {
@@ -89,7 +89,7 @@ public partial class TipoProDespositoService
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-        var cacheKey = $"{uri}-TipoProDesposito-{max}-{filterHash}GetListN";
+        var cacheKey = $"{tenantKey}-TipoProDesposito-{max}-{filterHash}GetListN";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
@@ -97,7 +97,7 @@ public partial class TipoProDespositoService
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync<IEnumerable<NomeID>>(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+            var result = await _cache.GetOrCreateAsync<IEnumerable<NomeID>>(cacheKey, async cancel => await GetDataListNAsync(max, tenantKey, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
             return ResultApi<IEnumerable<NomeID>>.Ok(result);
         }
         catch (Exception ex)
@@ -107,10 +107,10 @@ public partial class TipoProDespositoService
         }
     }
 
-    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter>? parameters, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string tenantKey, string where, List<SqlParameter>? parameters, CancellationToken token)
     {
         var result = new List<NomeID>(max);
-        var lista = await reader.ListarNAsync(max, uri, where, parameters, DBTipoProDespositoDicInfo.CampoNome);
+        var lista = await reader.ListarNAsync(max, tenantKey, where, parameters, DBTipoProDespositoDicInfo.CampoNome);
         if (lista == null || !lista.Any())
         {
             return result;
@@ -129,13 +129,13 @@ public partial class TipoProDespositoService
         return result;
     }
 
-    public async Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> GetAll(int max, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> GetAll(int max, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
         var entryOptions = new HybridCacheEntryOptions
@@ -143,29 +143,29 @@ public partial class TipoProDespositoService
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-        var cacheKey = $"{uri}-TipoProDesposito-GetAll-{max}";
+        var cacheKey = $"{tenantKey}-TipoProDesposito-GetAll-{max}";
         try
         {
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], tenantKey, cancel), entryOptions, cancellationToken: token);
             return ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "TipoProDesposito: GetAll failed for uri = {0}", uri);
+            _logger.Error(ex, "TipoProDesposito: GetAll failed for tenantKey = {0}", tenantKey);
             return ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail(ex.Message, 500);
         }
     }
 
-    private async Task<IEnumerable<TipoProDespositoResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<TipoProDespositoResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken token)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
             throw new DatabaseConnectionException();
         }
 
-        var result = await reader.ListarAsync(oCnn!, max, uri, where, parameters, string.Empty, token);
+        var result = await reader.ListarAsync(oCnn!, max, tenantKey, where, parameters, string.Empty, token);
         return result;
     }
 }

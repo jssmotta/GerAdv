@@ -21,12 +21,12 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
     private readonly IEscritoriosWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAdvogadosService advogadosService = advogadosService;
-    public async Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> Filter(int max, Filters.FilterEscritorios filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> Filter(int max, Filters.FilterEscritorios filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Escritorios: URI inválida");
+            throw new Exception("Escritorios: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -40,28 +40,28 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroEscritorios(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            EscritoriosDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            EscritoriosDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Escritorios-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Escritorios-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<EscritoriosResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail($"Escritorios - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail($"Escritorios - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
     }
 
-    public async Task<ResultApi<EscritoriosResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<EscritoriosResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -85,20 +85,20 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            EscritoriosDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Escritorios-GetById-{id}--{keyCache}", async cancel =>
+            EscritoriosDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Escritorios-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                EscritoriosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                EscritoriosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<EscritoriosResponse>.NotFound($"Escritorios: Registro não encontrado para id {id}");
@@ -109,25 +109,25 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            EscritoriosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<EscritoriosResponse>.Fail($"Escritorios, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<EscritoriosResponse>.Fail($"Escritorios, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            EscritoriosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<EscritoriosResponse>.Fail($"Escritorios - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<EscritoriosResponse>.Fail($"Escritorios - {uri}-: GetById: {ex.Message}", 500);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<EscritoriosResponse>.Fail($"Escritorios - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<EscritoriosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -135,11 +135,11 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             return ResultApi<AuditorResponse>.Fail("Escritorios: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Escritorios: Auditor não encontrado para id {id}");
@@ -150,11 +150,11 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         catch (Exception ex)
         {
             _logger.Error(ex, "Escritorios: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Escritorios - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Escritorios - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<EscritoriosResponse>> AddAndUpdate(Models.Escritorios? regEscritorios, string uri, CancellationToken token = default)
+    public async Task<ResultApi<EscritoriosResponse>> AddAndUpdate(Models.Escritorios? regEscritorios, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regEscritorios == null)
@@ -162,14 +162,14 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             return ResultApi<EscritoriosResponse>.Fail("Escritorios: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Escritorios: URI inválida");
+            throw new Exception("Escritorios: TenantApp inválida");
         }
 
         var connectionStopwatch = EscritoriosDatabaseMetrics.StartTimer();
         var queryStopwatch = EscritoriosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -178,9 +178,9 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
 
         try
         {
-            EscritoriosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
+            EscritoriosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -188,12 +188,12 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (SGValidationException ex)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -202,16 +202,16 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         {
             using var saved = await writer.WriteAsync(regEscritorios, operadorId, oCnn);
             string tipoQuery = regEscritorios.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            EscritoriosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            EscritoriosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regEscritorios.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regEscritorios.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -219,14 +219,14 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regEscritorios, uri);
-            EscritoriosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regEscritorios, tenantKey);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<EscritoriosResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<EscritoriosResponse>> Validation(Models.Escritorios? regEscritorios, string uri, CancellationToken token = default)
+    public async Task<ResultApi<EscritoriosResponse>> Validation(Models.Escritorios? regEscritorios, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regEscritorios == null)
@@ -234,14 +234,13 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             return ResultApi<EscritoriosResponse>.Fail("Escritorios: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Escritorios: URI inválida");
+            throw new Exception("Escritorios: TenantApp inválida");
         }
 
         var connectionStopwatch = EscritoriosDatabaseMetrics.StartTimer();
-        var queryStopwatch = EscritoriosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -250,9 +249,9 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
 
         try
         {
-            EscritoriosDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
+            EscritoriosDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -260,12 +259,12 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (SGValidationException ex)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -291,7 +290,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
     }
 
-    public async Task<ResultApi<EscritoriosResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<EscritoriosResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -299,13 +298,13 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Escritorios: URI inválida");
+            throw new Exception("Escritorios: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = EscritoriosDatabaseMetrics.StartTimer();
         var queryStopwatch = EscritoriosDatabaseMetrics.StartTimer();
@@ -316,9 +315,9 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
 
         try
         {
-            EscritoriosDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            EscritoriosDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, advogadosService, uri, oCnn);
+            EscritoriosDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            EscritoriosDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, advogadosService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -326,44 +325,44 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (SGValidationException ex)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<EscritoriosResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<EscritoriosResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var escritorios = await reader.ReadAsync(id ?? default, oCnn);
         if (escritorios == null)
         {
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<EscritoriosResponse>.NotFound($"Escritorios: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(escritorios, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(escritorios, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(escritorios, nOperador, oCnn);
-                EscritoriosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                EscritoriosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(escritorios, uri);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(escritorios, tenantKey);
             return ResultApi<EscritoriosResponse>.Ok(escritorios);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(escritorios, uri);
-            EscritoriosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(escritorios, tenantKey);
+            EscritoriosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            EscritoriosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<EscritoriosResponse>.Fail(ex.Message, 500);
         }
     }

@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
 {
     private readonly IFCidadeFactory _cidadeFactory = cidadeFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cidCodigo, cidNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<CidadeResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cidCodigo, cidNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<CidadeResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = CidadeDatabaseMetrics.StartTimer();
         var connStopwatch = CidadeDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
         {
             CidadeDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             CidadeDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBCidade.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBCidade.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             CidadeDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
         }
     }
 
-    private async Task<IEnumerable<CidadeResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<CidadeResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = CidadeDatabaseMetrics.StartTimer();
         var result = new List<CidadeResponseAll>(max);

@@ -32,7 +32,7 @@ public static partial class DBAreaDicInfo
     public static string TabelaNome => PTabelaNome;
     public const string PTabelaNome = "Area";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AreDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "are");
+    public static DBInfoSystem AreDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "are");
     public static DBInfoSystem AreTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "are");
     public static DBInfoSystem AreGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "are");
     public static DBInfoSystem AreQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "are"); // DBI 11 

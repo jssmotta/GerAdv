@@ -1,0 +1,1943 @@
+// ESTE ARQUIVO É AUTO-GERADO A PARTIR DE Darkmode.css
+// NÃO EDITE DIRETAMENTE - Edite Darkmode.css e execute: npm run generate:darkmode
+
+export const darkModeStyles = `:root {
+
+  --bg-primary: #121418;
+  --bg-secondary: #393f49;
+  --bg-tertiary: rgba(26, 26, 26, 0.8);
+  --bg-glass-primary: rgba(57, 57, 57, 0.8);
+  --bg-glass: rgba(90, 90, 90, 0.8);
+  --hover-bg: #2e3640;
+  --input-bg: #1a1e24;
+  --bg-menu-popup: #141416;
+  --text-menu-popup: rgb(226, 230, 238);
+
+  --var-color-container: rgba(156, 154, 154, 0.466);
+  --var-color-window: #131212;
+  --var-color-window-title: #eeebeb;
+
+  --text-primary: #e8eaed;
+  --text-secondary: #b0b8c2;
+  --text-tertiary: #8a929c;
+
+  --color-menphissi: rgba(255, 102, 51, 0.65);
+  --bg-forms: #1f2227;
+
+  --kendo-color-primary: #232930;
+  --kendo-primary: #232930;
+  --primary-color: #232930;
+  --primary-hover: #3a7fd4;
+  --primary-dark: #0d1a33;
+  --primary-light: #1dbfd1;
+  --accent-color: #27ddf5;
+
+  --border-color: #3a4555;
+  --input-border: #4a5568;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #3b82f6;
+
+  --kendo-primary-light: #0f161d;
+  --kendo-primary-dark: #11161f;
+  --kendo-secondary: #1b455e !important;
+  --kendo-hover: #3a4555;
+  --kendo-color-on-base: #e8eaed;
+  --kendo-primary-50: #6b9ad8;
+  --kendo-primary-160: #a1d5e2;
+
+  --focus-color-inputs: var(--color-menphissi);
+
+  --hover-menphis: rgba(11, 136, 173, 0.9);
+  --selected-menphis: rgba(13, 174, 223, 0.45);
+
+  --bg-light: var(--bg-forms);
+  --bg-white: var(--bg-primary);
+  --bg-surface: var(--bg-secondary);
+  --kendo-color-surface: var(--bg-secondary);
+  --kendo-color-on-app-surface: var(--text-primary);
+  --kendo-color-surface-alt: var(--bg-secondary);
+  --kendo-color-border: var(--border-color);
+
+  --input-transparent: transparent;
+}
+
+.title-page-cad {
+  color: #b7e0eb !important;
+}
+
+/* Inputs e labels - garantir legibilidade no Dark Mode */
+.k-input-inner,
+.input-login,
+body .k-form .k-label,
+body .k-form-fieldset label,
+.k-label,
+label {
+  color: var(--text-primary) !important;
+}
+
+/* Forçar o fundo / borda / texto dos inputs com a classe input-login e variações Kendo */
+.input-login .k-input,
+.input-login input,
+.k-input.input-login,
+.k-input,
+.k-input-inner,
+.k-textbox,
+input.k-input,
+input.k-input-inner,
+input.k-textbox,
+input.k-textbox.k-input-inner,
+.k-input input,
+.k-textbox input {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* Alvo específico para inputs de senha e quaisquer inputs dentro de formulários Kendo */
+form.k-form input[type="password"],
+.k-form input[type="password"],
+body .k-form input[type="password"] {
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* Placeholder mais suave - contraste melhorado */
+.input-login input::placeholder,
+.k-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* Forçar remoção de qualquer background-image e garantir preenchimento escuro
+     em todas as combinações possíveis do Kendo Input/Textbox e na classe
+    */
+.input-login,
+.input-login .k-input,
+.input-login .k-input-inner,
+.input-login input,
+.k-input,
+.k-input .k-input-inner,
+.k-input-inner,
+.k-textbox,
+input.k-input,
+input.k-textbox,
+.k-textbox input,
+.k-input input {
+  background-color: var(--input-var(--input-transparent)) !important; 
+  background-image: none !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* Caso o Kendo aplique um gradiente pseudo-elemento, escondemos também */
+.k-input::before,
+.k-input::after,
+.k-textbox::before,
+.k-textbox::after,
+.input-login::before,
+.input-login::after {
+  background: none !important;
+  content: none !important;
+}
+
+/* Override para autofill (Chrome / WebKit) que aplica fundo claro */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--input-transparent) inset !important;
+  box-shadow: 0 0 0 1000px var(--input-transparent) inset !important;
+  background-color: var(--input-transparent) !important;
+  background-image: none !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+input:-webkit-autofill::first-line,
+textarea:-webkit-autofill::first-line {
+  color: var(--text-primary) !important;
+}
+
+/* Regras de alta prioridade para sobrescrever classes Kendo e "glass" */
+body .k-appbar,
+body .k-appbar.k-appbar-light,
+.k-appbar.k-appbar-top {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body .glass {
+  background-color: var(--bg-glass-primary) !important;
+  border-color: var(--bg-glass-primary) !important;
+}
+
+body .glass-header {
+  background-color: var(--bg-glass) !important;
+  border-color: var(--bg-glass) !important;
+}
+
+/* Forçar inputs do Kendo a manterem aparência de linha (var(--input-transparent)es) */
+body .k-input,
+body .k-input.k-input-solid,
+body .k-textbox,
+body .k-dropdown,
+body .k-dropdownlist {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* Botões continuam a usar superfície escura */
+body .k-button,
+body .k-button.k-button-solid,
+body .k-button.k-button-solid-base {
+  /* background-color: var(--bg-tertiary) !important; */
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* App bar spacer and header text */
+body .glass-header .nameApp {
+  color: var(--text-primary) !important;
+}
+
+/* Estilos globais para Dark Mode */
+html,
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+body * {
+  border-color: var(--border-color);
+}
+
+/* Inputs e formulários */
+body input,
+body textarea,
+body select {
+  background-color: var(--input-transparent);
+  color: var(--text-primary);
+  border-color: var(--input-border);
+}
+
+body input::placeholder,
+body textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+body input:focus,
+body textarea:focus,
+body select:focus {
+  border-color: var(--color-menphissi);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 102, 51, 0.2);
+}
+
+/* Botões */
+body button {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body button:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+}
+
+body button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Cards e containers */
+body .card,
+body .panel,
+body .container {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+/* Tabelas */
+body table {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body td {
+  border-color: var(--border-color);
+}
+
+/* HOVER com toque Menphis */
+body tr:hover {
+  background-color: var(--hover-menphis);
+}
+
+/* Links - usando Menphis para consistência */
+body a {
+  color: var(--color-menphissi);
+}
+
+body a:hover {
+  color: #ff8855;
+}
+
+/* Modals e Overlays */
+body .modal,
+body .dialog {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body .modal-backdrop,
+body .overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Scrollbar para navegadores WebKit */
+body ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+body ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+body ::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+}
+
+body ::-webkit-scrollbar-thumb:hover {
+  background: var(--hover-bg);
+}
+
+/* ========================================
+         TELERIK KENDO UI DARK MODE STYLES
+         ======================================== */
+
+/* Kendo Grid */
+body .k-grid {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-grid-header {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-grid-header th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-grid td {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* HOVER nas linhas do Grid com toque Menphis */
+body .k-grid tr:hover td,
+body .k-grid .k-alt:hover td {
+  background-color: var(--hover-menphis);
+}
+
+body .k-grid .k-alt {
+  background-color: var(--bg-primary);
+}
+
+/* SELEÇÃO nas linhas do Grid com toque Menphis */
+body .k-grid .k-selected td {
+  background-color: var(--selected-menphis);
+  color: var(--text-primary);
+}
+
+/* Kendo Pager */
+body .k-pager {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-pager .k-link,
+body .k-pager .k-button {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-pager .k-state-selected {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+}
+
+/* Kendo DropDownList */
+body .k-dropdown,
+body .k-dropdownlist {
+  background-color: var(--input-transparent);
+  color: var(--text-primary);
+  border-color: var(--input-border);
+}
+
+body .k-dropdown .k-input,
+body .k-dropdownlist .k-input {
+  background-color: var(--input-transparent);
+  color: var(--text-primary);
+}
+
+body .k-dropdown .k-select,
+body .k-dropdownlist .k-select {
+  background-color: var(--bg-tertiary);
+  border-color: var(--input-border);
+}
+
+body .k-list-container {
+  background-color: var(--bg-menu-popup);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+body .k-list-item {
+  background-color: var(--bg-menu-popup);
+  color: var(--text-menu-popup);
+}
+
+body .k-list-item:hover,
+body .k-list-item.k-hover {
+  background-color: var(--hover-menphis);
+  color: var(--text-primary);
+}
+
+body .k-list-item.k-selected,
+body .k-list-item.k-state-selected {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+}
+
+/* Kendo Input - cobrir variações (focused / solid / inner) e inputs nativos */
+body .k-textbox,
+body .k-input,
+body input.k-input,
+body input.k-textbox,
+body .k-input-inner,
+body .k-textbox .k-input,
+body .k-textbox input,
+body .k-input input,
+.k-input.k-input-solid,
+.k-textbox.k-input-solid,
+.k-input.k-input-solid-base,
+input.k-input.k-input-solid,
+input.k-textbox.k-input-solid {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+  box-shadow: none !important;
+}
+
+/* Garantir que estados de foco mantenham apenas a linha inferior colorida */
+body .k-textbox:focus,
+body .k-input:focus,
+body .k-textbox.k-state-focused,
+body .k-input.k-state-focused,
+.k-textbox.k-state-focused,
+.k-input.k-state-focused,
+.k-input.k-state-focused .k-input-inner,
+input.k-textbox:focus,
+input.k-input:focus {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Kendo DatePicker */
+body .k-datepicker,
+body .k-datetimepicker,
+body .k-timepicker {
+  background-color: var(--input-transparent);
+  border-color: var(--input-border);
+}
+
+body .k-calendar {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-calendar .k-header {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body .k-calendar .k-content {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body .k-calendar td {
+  color: var(--text-primary);
+}
+
+body .k-calendar .k-today {
+  color: var(--color-menphissi);
+}
+
+body .k-calendar .k-state-selected {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+}
+
+body .k-calendar td:hover {
+  background-color: var(--hover-menphis);
+}
+
+/* Kendo Dialog/Window */
+body .k-dialog,
+body .k-window {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 4px 16px var(--shadow-color) !important;
+}
+
+body .k-window-titlebar,
+body .k-dialog-titlebar {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-window-content,
+body .k-dialog-content {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Forçar containers que recebem background inline branco a usarem dark mode */
+*[style*="background: #fff"],
+*[style*="background:#fff"],
+*[style*="background: rgb(255, 255, 255)"],
+*[style*="background: rgba(255,255,255,1)"],
+*[style*="background: white"] {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Áreas de footer/painel que às vezes são pintadas de branco inline */
+.pageFooter,
+.page-footer,
+.footer-panel,
+.k-window-footer,
+.k-window .k-window-footer,
+.k-window .k-window-content>div[style] {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-top: 1px solid var(--border-color) !important;
+}
+
+/* Drawer / page containers */
+body .k-drawer-container,
+body .k-drawer-content,
+body .card-container,
+body .pageContainer,
+body .k-drawer,
+body .k-drawer .k-drawer-item,
+body .k-drawer .k-drawer-content {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Colorir ícones do drawer/menu para destaque no Dark Mode */
+body .k-drawer .k-drawer-item .k-icon,
+body .k-drawer .k-drawer-item svg,
+body .k-drawer .k-drawer-item i,
+body .k-drawer .k-drawer-item .icon,
+.k-drawer .k-drawer-item .k-icon,
+.k-drawer .k-drawer-item svg,
+.k-drawer .k-drawer-item i,
+.drawer .icon,
+.drawer-menu .icon,
+.side-menu .icon,
+.menu-icon,
+.icon {
+  color: var(--primary-light) !important;
+  fill: var(--primary-light) !important;
+  stroke: var(--primary-light) !important;
+  opacity: 1 !important;
+}
+
+/* Card / Title / Toolbar specific overrides (header area like PACIENTES) */
+body .card-container,
+body .card-container .card-title,
+body .card-container .card-component,
+body .card-container .card-ranges,
+body .card-container .card-buttons,
+body .k-card-header,
+body .k-card-title,
+body .k-card-subtitle,
+body .custom-toolbar,
+body .custom-toolbar h3,
+body .card-container.grid {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body .custom-toolbar::after {
+  background-color: rgba(255, 102, 51, 0.06) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Force any direct white backgrounds inside the title/header area to use dark colors */
+body .card-container *,
+body .card-container .card-title *,
+body .card-container .card-component * {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+}
+
+body .card-container .card-title h1,
+body .card-container .card-title h2,
+body .card-container .card-title h3 {
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Overlay/backdrop */
+body .k-overlay,
+body .k-overlay-wrapper,
+body .k-overlay-backdrop,
+body .modal-backdrop,
+body .overlay {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Kendo Button */
+body .k-button {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-button:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+}
+
+body .k-button.k-primary {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+  border-color: var(--color-menphissi);
+}
+
+body .k-button.k-primary:hover:not(:disabled) {
+  background-color: #e55a2b;
+}
+
+/* Kendo TabStrip */
+body .k-tabstrip {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-tabstrip-items {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+body .k-tabstrip .k-item {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-tabstrip .k-item:hover {
+  background-color: var(--hover-menphis);
+  color: var(--text-primary);
+}
+
+body .k-tabstrip .k-state-active {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom-color: var(--color-menphissi);
+}
+
+body .k-tabstrip-content {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Kendo TreeView */
+body .k-treeview {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body .k-treeview .k-item {
+  color: var(--text-primary);
+}
+
+body .k-treeview .k-item:hover {
+  background-color: var(--hover-menphis);
+}
+
+body .k-treeview .k-state-selected {
+  background-color: var(--selected-menphis);
+  color: var(--text-primary);
+}
+
+/* Kendo Menu */
+body .k-menu {
+  background-color: var(--bg-menu-popup);
+  border-color: var(--border-color);
+}
+
+body .k-menu .k-item {
+  color: var(--text-menu-popup);
+  background-color: var(--bg-menu-popup);
+}
+
+body .k-menu .k-item:hover {
+  background-color: var(--hover-menphis);
+}
+
+body .k-menu-popup {
+  background-color: var(--bg-menu-popup);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* Kendo Notification */
+body .k-notification {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-notification-info {
+  background-color: rgba(74, 144, 226, 0.9);
+  color: #ffffff;
+}
+
+body .k-notification-success {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: #ffffff;
+}
+
+body .k-notification-warning {
+  background-color: rgba(255, 152, 0, 0.9);
+  color: #ffffff;
+}
+
+body .k-notification-error {
+  background-color: rgba(244, 67, 54, 0.9);
+  color: #ffffff;
+}
+
+/* Kendo Tooltip */
+body .k-tooltip {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+/* Kendo Scheduler */
+body .k-scheduler {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-scheduler-header {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body .k-scheduler-times th,
+body .k-scheduler-header th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body .k-scheduler-table td {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-event {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+}
+
+/* Kendo Chart */
+body .k-chart {
+  background-color: var(--bg-secondary);
+}
+
+.input-container {
+  max-height: 56px !important;
+}
+
+/* Mobile-specific: garantir que o pager / controles do grid fiquem escuros */
+@media (max-width: 900px) {
+
+  body .k-pager,
+  body .k-grid .k-pager,
+  .k-pager-wrap,
+  .k-pager-container {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: none !important;
+  }
+
+  body .k-pager .k-button,
+  body .k-pager .k-link,
+  body .k-pager .k-select {
+    /* background-color: var(--bg-tertiary) !important; */
+    color: var(--text-primary) !important;
+    border-color: var(--input-border) !important;
+  }
+
+  /* O pequeno input / dropdown de paginação (caixa branca) */
+  body .k-pager .k-input,
+  body .k-pager .k-input .k-input-inner,
+  body .k-pager input[type="text"],
+  body .k-pager .k-dropdown .k-input {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--input-border) !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+  }
+
+  /* Evitar fundo claro em itens selecionados do pager */
+  body .k-pager .k-state-selected,
+  body .k-pager .k-state-active {
+    background-color: var(--input-transparent) !important;
+    color: var(--color-menphissi) !important;
+  }
+
+  /* Ajuste de sombras e bordas para aparência consistente */
+  body .k-pager .k-button:hover,
+  body .k-pager .k-link:hover {
+    background-color: var(--hover-menphis) !important;
+  }
+
+  /* Botão de confirmação no mobile */
+  .button-confirmation,
+  .k-button.button-confirmation,
+  button.button-confirmation,
+  .k-button.k-primary.button-confirmation,
+  body .k-button.button-confirmation,
+  body .k-button.k-primary.button-confirmation,
+  html.appsg-dark-mode .button-confirmation,
+  html.appsg-dark-mode .k-button.button-confirmation,
+  html.appsg-dark-mode .k-button.k-primary.button-confirmation {
+    background-color: var(--kendo-primary-50) !important;
+    color: #ffffff !important;
+    border-color: var(--kendo-primary-50) !important;
+  }
+
+  .button-confirmation:hover,
+  .k-button.button-confirmation:hover,
+  button.button-confirmation:hover,
+  .k-button.k-primary.button-confirmation:hover,
+  body .k-button.button-confirmation:hover,
+  html.appsg-dark-mode .button-confirmation:hover,
+  html.appsg-dark-mode .k-button.button-confirmation:hover {
+    background-color: var(--primary-hover) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-hover) !important;
+  }
+}
+
+body .k-chart text {
+  fill: var(--text-primary);
+}
+
+/* Kendo Upload */
+body .k-upload {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-upload .k-dropzone {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body .k-upload .k-upload-files {
+  background-color: var(--bg-secondary);
+}
+
+body .k-upload .k-file {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Kendo Editor */
+body .k-editor {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-editor-toolbar {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+body .k-editor-content {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+/* Kendo Loader/Progress */
+body .k-loading-mask {
+  background-color: rgba(26, 26, 26, 0.5);
+}
+
+body .k-loading-image {
+  filter: invert(1);
+}
+
+/* Kendo Splitter */
+body .k-splitter {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-splitbar {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+body .k-splitbar:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Kendo PanelBar */
+body .k-panelbar {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body .k-panelbar>.k-item>.k-link {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body .k-panelbar>.k-item>.k-link:hover {
+  background-color: var(--hover-menphis);
+}
+
+body .k-panelbar .k-content {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Transição suave ao mudar de modo */
+body,
+input,
+textarea,
+select,
+button,
+.k-grid,
+.k-dialog,
+.k-window,
+.k-button,
+.k-dropdown,
+.k-textbox,
+.k-calendar {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Restaurar efeito de Skeleton (Kendo Indicators) no Dark Mode */
+/* Apply shimmer only to the skeleton element itself to avoid
+         overriding child content that may be rendered inside it. */
+.k-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.06) 37%, rgba(255, 255, 255, 0.03) 63%) !important;
+  background-size: 200% 100% !important;
+  animation: kendo-skeleton-shimmer 1.2s linear infinite !important;
+}
+
+@keyframes kendo-skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.today-header {
+  background-color: var(--color-menphissi) !important;
+}
+
+/* More specific selector to override body .glass-header in dark mode */
+body .glass-header.today-header,
+.day-header.glass-header.today-header {
+  background-color: var(--color-menphissi) !important;
+}
+
+/* Preserve InputsMsi.css behaviour in Dark Mode:
+       - inputs keep var(--input-transparent) inner background
+       - show only a bottom border (uses --input-border) and color it on focus
+    */
+/* Inner input elements should be var(--input-transparent) and NOT draw the bottom border
+       — the container (.input-msi-combobox / .input-container / .combobox-box-msi)
+       will be responsible for the visible bottom line to avoid double lines. */
+.k-textbox,
+.k-input,
+.k-input-inner,
+input.k-input,
+input.k-textbox,
+.k-textbox input,
+.k-input input,
+span.k-combobox span.k-dropdown-wrap,
+.k-dropdown .k-dropdown-wrap,
+.k-datepicker .k-picker-wrap,
+.k-numerictextbox .k-numeric-wrap,
+.input-login input,
+.input-login .k-input {
+  background-color: var(--input-transparent) !important; 
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* On focus, show the bottom border using the app's focus color */
+.k-textbox:focus,
+.k-input:focus,
+.k-input.k-state-focused,
+.k-textbox.k-state-focused,
+span.k-combobox.k-state-focused span.k-dropdown-wrap,
+.k-dropdown.k-state-focused span.k-dropdown-wrap,
+.k-datepicker.k-state-focused span.k-picker-wrap,
+.k-numerictextbox.k-state-focused span.k-numeric-wrap,
+.input-msi-combobox:focus-within,
+.input-container:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+}
+
+/* Extra high-specificity rules to ensure focused bottom-border color applies */
+.input-msi-combobox:focus-within span.k-dropdown-wrap,
+.input-msi-combobox:focus-within .k-input,
+.input-msi-combobox:focus-within input.k-input,
+.input-container:focus-within span.k-dropdown-wrap,
+.input-container:focus-within .k-input,
+.combobox-box-msi:focus-within span.k-dropdown-wrap,
+span.k-combobox.k-state-focused span.k-dropdown-wrap,
+.k-combobox.k-state-focused span.k-dropdown-wrap {
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+}
+
+/* Ensure container-based bottom border shows in dark mode (matches InputsMsi.css) */
+.input-msi-combobox,
+.input-container,
+.input-container-date,
+.combobox-box-msi {
+  position: relative !important;
+  background: var(--input-transparent) !important;
+}
+
+/* Hide any existing pseudo-element borders that could conflict (we draw via container) */
+.k-combobox::after,
+.k-dropdown::after,
+.k-datepicker::after,
+.k-numerictextbox::after,
+span.k-combobox::after,
+.input-msi-combobox::after,
+.input-container::after {
+  content: none !important;
+  background: var(--input-transparent) !important;
+  height: 0 !important;
+}
+
+/* Keep inner inputs var(--input-transparent) while container displays the focus line */
+.input-msi-combobox .k-input,
+.input-msi-combobox .k-input-inner,
+.input-msi-combobox span.k-dropdown-wrap,
+.input-container .k-input,
+.input-container .k-input-inner,
+.combobox-box-msi .k-combobox .k-dropdown-wrap {
+  background-color: var(--input-transparent) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Specific rules for Clientes ComboBox: ensure container border color on focus
+       Kendo often injects the input inside a span.k-dropdown-wrap; target the
+       outer container (clientesInput / input-msi-combobox / input-container)
+       so the visible bottom line is consistently colored on focus. */
+.clientesInput.input-msi-combobox.input-container:focus-within,
+.clientesInput.input-msi-combobox:focus-within,
+.clientesInput.input-container:focus-within,
+.clientesInput:focus-within {
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--input-transparent) !important;
+}
+
+/* Also react when internal Kendo wrappers are focused (input inside k-dropdown-wrap) */
+.clientesInput .k-dropdown-wrap:focus-within,
+.clientesInput .k-combobox:focus-within,
+.clientesInput input.k-input:focus {
+  outline: none !important;
+}
+
+/* Modern selector: if any descendant is focused or has Kendo focused state,
+       paint the container border. Uses CSS :has() where supported as a parent
+       selector; combined with :focus-within to cover older engines. */
+.clientesInput:has(.k-state-focused),
+.clientesInput:has(.k-input:focus),
+.clientesInput:has(.k-input-inner:focus),
+.clientesInput:has(.k-dropdown-wrap:focus),
+.clientesInput:has(.k-combobox.k-state-focused),
+.clientesInput:has(.k-dropdown-wrap[aria-expanded="true"]) {
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--input-transparent) !important;
+}
+
+/* ------------------------------------------------------------------
+       InputsMsi.css (Dark mode): replicate input / combobox styling but
+       using dark variables. This keeps inner inputs var(--input-transparent) and draws
+       the visible bottom line from the container, coloring it on focus.
+       ------------------------------------------------------------------ */
+.input-container-check {
+  padding-top: 10px;
+}
+
+.k-textbox,
+.k-input,
+.k-input-inner,
+.k-input-md,
+.k-textarea,
+.k-numerictextbox,
+.k-datepicker .k-input,
+.k-combobox .k-input,
+.k-dropdown .k-dropdown-wrap,
+.k-autocomplete .k-input,
+.k-multiselect .k-multiselect-wrap,
+.k-dropdownlist .k-input,
+.k-picker-wrap,
+.k-dropdown-wrap,
+.k-numeric-wrap,
+.k-multiselect-wrap {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+  transition: border-color 0.3s ease !important;
+}
+
+/* When a Kendo component or its wrapper gains focus, paint bottom border */
+.k-textbox:focus,
+.k-input:focus,
+.k-input-md:focus,
+.k-textarea:focus,
+.k-numerictextbox.k-state-focused,
+.k-datepicker.k-state-focused .k-input,
+.k-combobox.k-state-focused .k-input,
+.k-dropdown.k-state-focused .k-dropdown-wrap,
+.k-autocomplete.k-state-focused .k-input,
+.k-multiselect.k-state-focused .k-multiselect-wrap,
+.k-dropdownlist.k-state-focused .k-input,
+.k-picker-wrap.k-state-focused,
+.k-dropdown-wrap.k-state-focused,
+.k-numeric-wrap.k-state-focused,
+.k-multiselect-wrap.k-state-focused,
+.input-msi-combobox:focus-within,
+.input-container:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+}
+
+/* Ensure the span.k-combobox wrapper shows the dark bottom line */
+span.k-combobox span.k-dropdown-wrap,
+.k-dropdown span.k-dropdown-wrap,
+.k-datepicker span.k-picker-wrap,
+.k-numerictextbox span.k-numeric-wrap {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+  transition: border-color 0.3s ease !important;
+}
+
+/* Focused variants for wrappers */
+span.k-combobox.k-state-focused span.k-dropdown-wrap,
+span.k-combobox:focus span.k-dropdown-wrap,
+span.k-combobox span.k-dropdown-wrap.k-state-focused,
+span.k-combobox.k-state-active span.k-dropdown-wrap,
+.k-dropdown.k-state-focused span.k-dropdown-wrap,
+.k-datepicker.k-state-focused span.k-picker-wrap,
+.k-numerictextbox.k-state-focused span.k-numeric-wrap,
+.input-msi-combobox:focus-within span.k-dropdown-wrap,
+.input-container:focus-within span.k-dropdown-wrap {
+  box-shadow: none !important;
+  background-color: var(--input-transparent) !important;
+}
+
+.input-msi-combobox:focus-within,
+.input-container:focus-within,
+.input-container-date:focus-within {
+
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+
+}
+
+/* Fallback pseudo-element approach: single bottom line drawn for components */
+.k-combobox::after,
+.k-dropdown::after,
+.k-datepicker::after,
+.k-numerictextbox::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background-color: var(--input-border) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* Ensure textareas do NOT render any pseudo-element lines (remove stray top line) */
+.k-textarea::before,
+.k-textarea::after,
+.k-textarea .k-input-inner::before,
+.k-textarea .k-input-inner::after {
+  content: none !important;
+  background: var(--input-transparent) !important;
+  height: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Force textareas to have only a bottom border and no top border */
+.k-textarea,
+.k-textarea .k-input-inner,
+.k-textarea:focus,
+.k-textarea.k-state-focused {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--input-border) !important;
+  background: var(--input-transparent) !important;
+  box-shadow: none !important;
+}
+
+/* InputMemo uses an internal div to draw the bottom line. In dark mode
+       don't draw container borders for textarea containers; let the
+       component-controlled div draw the single line. */
+.input-container-textarea {
+  border-bottom: none !important;
+  background: var(--input-transparent) !important;
+}
+
+.input-container-textarea .k-textarea,
+.input-container-textarea .k-textarea .k-input-inner {
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: var(--input-transparent) !important;
+}
+
+/* If any child inside the textarea container draws a border, remove it
+       except the last child (the InputMemo inner div that intentionally
+       draws the visible bottom line). This prevents duplicate lines. */
+.input-container-textarea>*:not(:last-child) {
+  border: none !important;
+  border-bottom: none !important;
+  background: var(--input-transparent) !important;
+  box-shadow: none !important;
+}
+
+/* Force the actual textarea node to be var(--input-transparent) even if inline styles exist */
+.input-container-textarea textarea.k-textarea,
+.input-container-textarea textarea.k-textarea[style] {
+  background: var(--input-transparent) !important;
+  background-color: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Remove any pseudo-element lines that could appear inside textarea containers */
+.input-container-textarea::after,
+.input-container-textarea::before,
+.input-container-textarea .k-textarea::after,
+.input-container-textarea .k-textarea::before {
+  content: none !important;
+  height: 0 !important;
+  background: var(--input-transparent) !important;
+}
+
+
+
+/* Container defaults used across app */
+.input-msi-combobox,
+.input-container,
+.input-container-date {
+  position: relative !important;
+  border-bottom: 1px solid var(--input-border) !important;
+  background: var(--input-transparent) !important;
+}
+
+
+
+/* Keep inner inputs var(--input-transparent) */
+.input-container .k-input,
+.input-container .k-input-inner,
+.input-msi-combobox .k-input,
+.input-msi-combobox .k-input-inner,
+.input-container .k-combobox .k-dropdown-wrap {
+  background: var(--input-transparent) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure icon/space adjustments remain for dark mode */
+.input-container-icon .k-input,
+.input-container-icon input,
+.input-container-icon .k-combobox {
+  padding-left: 40px !important;
+}
+
+/* Very high-specificity fallbacks to ensure container border uses focus color
+       when any descendant receives focus or Kendo applies focused state. */
+body .input-msi-combobox:focus-within,
+body .input-container:focus-within,
+body .clientesInput:focus-within,
+body .input-msi-combobox.focused,
+body .input-container.focused,
+body .clientesInput.focused,
+body span.k-combobox.k-state-focused>span.k-dropdown-wrap,
+body .k-combobox.k-state-focused span.k-dropdown-wrap,
+body .k-dropdown.k-state-focused span.k-dropdown-wrap,
+body .k-dropdown-wrap.k-state-focused,
+body .k-input.k-state-focused,
+body .k-input:focus {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+  border-bottom-color: var(--focus-color-inputs) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--input-transparent) !important;
+}
+
+/* Make sure inner elements do not draw their own bottom border to avoid overrides */
+body .input-msi-combobox .k-input,
+body .input-msi-combobox span.k-dropdown-wrap,
+body .input-container .k-input,
+body .input-container span.k-dropdown-wrap,
+body span.k-combobox span.k-dropdown-wrap {
+  border-bottom: none !important;
+}
+
+/* Additional fix: prevent duplicate bottom line for Kendo inputs inside
+   .input-container when the container or input is focused. This hides
+   any pseudo-elements, shadows or native borders on the inner input so
+   only the container's focus underline remains visible. */
+.input-container:focus-within .k-input,
+.input-container:focus-within input.k-input,
+.input-container .k-input:focus,
+.input-container input.k-input:focus,
+.input-container:focus-within .k-textbox,
+.input-container .k-textbox:focus {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: var(--input-transparent) !important;
+}
+
+.input-container:focus-within .k-input::before,
+.input-container:focus-within .k-input::after,
+.input-container:focus-within .k-textbox::before,
+.input-container:focus-within .k-textbox::after,
+.input-container .k-input::before,
+.input-container .k-input::after,
+.input-container .k-textbox::before,
+.input-container .k-textbox::after {
+  content: none !important;
+  display: none !important;
+  height: 0 !important;
+  background: var(--input-transparent) !important;
+}
+
+/* Ensure form inputs (eg. password field in PasswordForm.tsx) follow the
+       app's inputs pattern in dark mode: var(--input-transparent) background + single
+       bottom border that colors on focus. Targets Kendo Input markup inside
+       forms and common variations. */
+body .k-form .k-input,
+body .k-form input.k-input,
+body .k-form .k-input-inner,
+body .k-form .k-textbox,
+body .k-form input[type="password"],
+.k-form .k-input.k-input-inner,
+.k-form input.k-input {
+  background: var(--input-transparent) !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--input-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Focused state for form inputs — force bottom border color */
+body .k-form .k-input:focus,
+body .k-form input.k-input:focus,
+body .k-form .k-textbox:focus,
+body .k-form input[type="password"]:focus,
+.k-form .k-input.k-state-focused,
+.k-form .k-textbox.k-state-focused {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--input-transparent) !important;
+}
+
+/* Disabled inputs keep var(--input-transparent) background but lower opacity */
+body .k-form input[disabled],
+body .k-form .k-input[disabled],
+body .k-form .k-input[aria-disabled="true"] {
+  background: var(--input-transparent) !important;
+  color: var(--text-secondary) !important;
+  opacity: 0.9 !important;
+  border-bottom: 1px solid var(--input-border) !important;
+}
+
+/* Final override: ensure textarea containers (InputMemo) do NOT draw any
+       container border/lines so the component's own bottom-line div remains
+       the single visible line. This must come after generic container rules. */
+body .input-container-textarea,
+body .input-container.input-container-textarea,
+.input-container-textarea {
+  border-bottom: none !important;
+  background: var(--input-transparent) !important;
+  box-shadow: none !important;
+}
+
+/* Specific guarantee for textarea nodes (including inline styles) */
+body .input-container-textarea textarea.k-textarea,
+body .input-container-textarea textarea.k-textarea[style],
+body .input-container-textarea .k-textarea,
+body .input-container-textarea .k-textarea .k-input-inner {
+  border: none !important;
+  border-bottom: none !important;
+  background: var(--input-transparent) !important;
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
+}
+
+/* DatePicker / InputDate specific: ensure only the outer container
+       (.input-container-date) draws the bottom line. Remove inner/pseudo
+       element lines that Kendo may add and color container on focus. */
+.input-container-date {
+  position: relative !important;
+  border-bottom: 1px solid var(--input-border) !important;
+  background: var(--input-transparent) !important;
+  box-shadow: none !important;
+}
+
+.input-container-date .k-input,
+.input-container-date .k-picker-wrap,
+.input-container-date .k-datepicker,
+.input-container-date .k-datepicker .k-input,
+.input-container-date .k-datepicker .k-picker-wrap {
+  background: var(--input-transparent) !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any pseudo-element line Kendo draws for datepicker inside the container */
+.input-container-date .k-datepicker::after,
+.input-container-date .k-picker-wrap::after,
+.input-container-date .k-input::after {
+  content: none !important;
+  background: var(--input-transparent) !important;
+  height: 0 !important;
+}
+
+/* On focus, color the container's bottom border (single visible line) */
+.input-container-date:focus-within {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs);
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--input-transparent) !important;
+}
+
+
+/* Footer mobile (BottomNavigation) - garantir legibilidade em Dark Mode */
+.footer-container,
+.footer-container .k-bottom-navigation,
+.footer-container .k-bottom-navigation .k-item,
+.footer-container .k-bottom-navigation .k-link,
+.footer-container .k-bottom-navigation .k-button {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  border-top: 1px solid var(--border-color) !important;
+}
+
+.footer-container {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+  box-shadow: 0 -6px 16px var(--shadow-color) !important;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+  padding-bottom: env(safe-area-inset-bottom, 8px) !important;
+  padding-top: 6px !important;
+}
+
+.footer-container .k-item,
+.footer-container .k-link,
+.footer-container .k-button {
+  color: var(--text-tertiary) !important;
+  opacity: 0.95 !important;
+}
+
+.footer-container .k-item.k-state-active,
+.footer-container .k-item.k-state-selected,
+.footer-container .k-link.k-state-active,
+.footer-container .k-button.k-state-active {
+  color: var(--color-menphissi) !important;
+  fill: var(--color-menphissi) !important;
+}
+
+
+.footer-container .k-item .k-label,
+.footer-container .k-item .k-text,
+.footer-container .k-item .k-item-text {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* Garantir que item selecionado não ganhe fundo claro inesperado */
+.footer-container .k-item.k-state-active,
+.footer-container .k-item.k-state-selected {
+  background-color: var(--input-transparent) !important;
+}
+
+.footer-container a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Compat: aplicar sem prefixo para componentes genéricos que não usam html.appsg-dark-mode */
+.k-button-danger,
+.k-button.k-button-danger,
+button.k-button-danger,
+.k-button-filter.k-button.k-button-danger,
+.k-button.k-button-danger.k-state-focused,
+.k-button.k-button-danger.k-state-active,
+.k-window .k-button-danger {
+  background-color: var(--error-color, #dc3545) !important;
+  color: #ffffff !important;
+  border-color: var(--error-color, #dc3545) !important;
+  box-shadow: none !important;
+  fill: #ffffff !important;
+  -webkit-filter: none !important;
+}
+
+.k-button-danger:hover,
+.k-button.k-button-danger:hover,
+button.k-button-danger:hover,
+.k-button-filter.k-button.k-button-danger:hover,
+.k-window .k-button-danger:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+  color: #ffffff !important;
+}
+
+.k-button-danger:disabled,
+.k-button.k-button-danger:disabled,
+.k-button-filter.k-button.k-button-danger:disabled,
+.k-window .k-button-danger:disabled {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+/* Botão CONFIRMAR no filtro - aplicar accent-color */
+.k-button-filter-confirm,
+.k-button.k-button-filter-confirm,
+button.k-button-filter-confirm,
+.k-window .k-button-filter-confirm,
+.k-window-content .k-button-filter-confirm,
+.appsg-dark-mode .k-button-filter-confirm,
+body.appsg-dark-mode .k-button-filter-confirm,
+[class*="appsg-dark-mode"] .k-button-filter-confirm,
+html.appsg-dark-mode .k-button-filter-confirm,
+html.appsg-dark-mode .k-window .k-button-filter-confirm {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* SVG/Ícone do botão confirmar em preto */
+.k-button-filter-confirm svg,
+.k-button.k-button-filter-confirm svg,
+button.k-button-filter-confirm svg,
+.k-button-filter-confirm .k-icon,
+.k-button-filter-confirm i {
+  color: #121418 !important;
+  fill: #121418 !important;
+  stroke: #121418 !important;
+}
+
+.k-button-filter-confirm:hover,
+.k-button.k-button-filter-confirm:hover,
+button.k-button-filter-confirm:hover,
+.k-window .k-button-filter-confirm:hover,
+.k-window-content .k-button-filter-confirm:hover,
+.appsg-dark-mode .k-button-filter-confirm:hover,
+body.appsg-dark-mode .k-button-filter-confirm:hover,
+[class*="appsg-dark-mode"] .k-button-filter-confirm:hover,
+html.appsg-dark-mode .k-button-filter-confirm:hover,
+html.appsg-dark-mode .k-window .k-button-filter-confirm:hover {
+  background-color: var(--kendo-primary) !important;
+  border-color: var(--kendo-primary) !important;
+  color: var(--kendo-hover) !important;
+}
+
+/* SVG/Ícone do botão confirmar ao hover também em preto */
+.k-button-filter-confirm:hover svg,
+.k-button.k-button-filter-confirm:hover svg,
+button.k-button-filter-confirm:hover svg,
+.k-button-filter-confirm:hover .k-icon,
+.k-button-filter-confirm:hover i {
+  color: #121418 !important;
+  fill: #121418 !important;
+  stroke: #121418 !important;
+}
+
+/* Garantir que botões de ação 'danger' (ex: LIMPAR) fiquem vermelhos no dark mode
+       Usamos o prefixo html.appsg-dark-mode para aumentar especificidade e
+       sobrepor estilos injetados localmente nos componentes. */
+html.appsg-dark-mode .k-button-danger,
+html.appsg-dark-mode .k-button.k-button-danger,
+html.appsg-dark-mode button.k-button-danger,
+html.appsg-dark-mode .k-button-filter.k-button.k-button-danger,
+html.appsg-dark-mode .k-button.k-button-danger.k-state-focused,
+html.appsg-dark-mode .k-button.k-button-danger.k-state-active {
+  background-color: var(--error-color, #dc3545) !important;
+  color: #ffffff !important;
+  border-color: var(--error-color, #dc3545) !important;
+  box-shadow: none !important;
+  fill: #ffffff !important;
+  -webkit-filter: none !important;
+}
+
+html.appsg-dark-mode .k-button-danger:hover,
+html.appsg-dark-mode .k-button.k-button-danger:hover,
+html.appsg-dark-mode button.k-button-danger:hover,
+html.appsg-dark-mode .k-button-filter.k-button.k-button-danger:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+  color: #ffffff !important;
+}
+
+html.appsg-dark-mode .k-button-danger:disabled,
+html.appsg-dark-mode .k-button.k-button-danger:disabled,
+html.appsg-dark-mode .k-button-filter.k-button.k-button-danger:disabled {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+/* Aplicar mesmo estilo do danger para o indicador de filtro ativo */
+html.appsg-dark-mode .k-current-filter-active,
+html.appsg-dark-mode .k-current-filter-active .k-chip,
+html.appsg-dark-mode .k-current-filter-active.k-state-active,
+html.appsg-dark-mode .k-current-filter-active.k-current-filter-active {
+  background-color: var(--error-color, #dc3545) !important;
+  color: #ffffff !important;
+  border-color: var(--error-color, #dc3545) !important;
+  box-shadow: none !important;
+  fill: #ffffff !important;
+}
+
+html.appsg-dark-mode .k-current-filter-active:hover,
+html.appsg-dark-mode .k-current-filter-active.k-state-active:hover,
+html.appsg-dark-mode .k-current-filter-active .k-chip:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+  color: #ffffff !important;
+}
+
+html.appsg-dark-mode .k-current-filter-active:disabled,
+html.appsg-dark-mode .k-current-filter-active.k-state-disabled {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+html.appsg-dark-mode .buttonOk {
+  background-color: var(--color-menphissi) !important;
+}
+
+/* ========================================
+   BUTTON-CONFIRMATION - Usando --primary-color
+   ======================================== */
+.button-confirmation,
+.k-button.button-confirmation,
+button.button-confirmation,
+.k-button.k-primary.button-confirmation,
+body .k-button.button-confirmation,
+body .k-button.k-primary.button-confirmation,
+html.appsg-dark-mode .button-confirmation,
+html.appsg-dark-mode .k-button.button-confirmation,
+html.appsg-dark-mode .k-button.k-primary.button-confirmation {
+  background-color: var(--kendo-primary-50) !important;
+  color: #ffffff !important;
+  border-color: var(--kendo-primary-50) !important;
+}
+
+.button-confirmation:hover,
+.k-button.button-confirmation:hover,
+button.button-confirmation:hover,
+.k-button.k-primary.button-confirmation:hover,
+body .k-button.button-confirmation:hover,
+html.appsg-dark-mode .button-confirmation:hover,
+html.appsg-dark-mode .k-button.button-confirmation:hover {
+  background-color: var(--kendo-primary-hover) !important;
+  color: #ffffff !important;
+  border-color: var(--kendo-primary-hover) !important;
+}
+
+/* ========================================
+   TEXT-MUTED - Contraste melhorado para acessibilidade
+   ======================================== */
+.text-muted,
+.k-text-muted,
+.muted,
+.secondary-text {
+  color: var(--text-secondary) !important;
+}
+
+/* ========================================
+   BADGES E CHIPS - Com toque Menphis
+   ======================================== */
+.k-badge,
+.k-chip {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.k-badge.k-badge-primary,
+.k-chip.k-chip-primary {
+  background-color: var(--color-menphissi);
+  color: #ffffff;
+  border-color: var(--color-menphissi);
+}
+
+/* ========================================
+   SELECTION HIGHLIGHT - Identidade Menphis
+   ======================================== */
+::selection {
+  background-color: var(--selected-menphis);
+  color: var(--text-primary);
+}
+
+::-moz-selection {
+  background-color: var(--selected-menphis);
+  color: var(--text-primary);
+}
+
+/* ========================================
+   FOCUS RINGS - Usando Menphis
+   ======================================== */
+*:focus-visible {
+  outline: 2px solid var(--color-menphissi);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   PROGRESS BARS - Com Menphis
+   ======================================== */
+.k-progressbar .k-selected,
+.k-progressbar .k-progress-status-wrap {
+  background-color: var(--color-menphissi);
+}
+
+/* ========================================
+   SWITCH/TOGGLE - Com Menphis quando ativo
+   ======================================== */
+.k-switch-on .k-switch-track {
+  background-color: var(--color-menphissi) !important;
+  border-color: var(--color-menphissi) !important;
+}
+
+.k-switch-on .k-switch-thumb {
+  background-color: #ffffff !important;
+}
+
+/* Mobile: garantir que o texto dos botões de CRUD (ex: SALVAR) use a cor primária de texto */
+@media (max-width: 900px) {
+  .colorCrudTextButton {
+    color: var(--text-primary) !important;
+  }
+}
+
+/* Input textarea focus handling: no base bottom border, but show focus color
+   when focused or when the textarea container is focus-within. Appended
+   here to ensure it runs after darkmode overrides. */
+textarea,
+.k-textarea {
+  border-bottom: none !important;
+}
+
+textarea:focus,
+.k-textarea:focus,
+.input-container-textarea:focus-within textarea,
+.input-container-textarea:focus-within .k-textarea {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+}
+
+.dark-button-auth {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-button-auth:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.dark-button-auth-2 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-button-auth-2:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.k-menu-group .k-item>.k-link,
+.k-menu.k-context-menu .k-item>.k-link {
+  color: var(--text-menu-popup) !important;
+  background-color: var(--bg-menu-popup) !important;
+}
+
+@media (max-width: 768px) {
+
+  .input-container-icon,
+  .input-container {
+    margin-bottom: 35px !important;
+    padding-bottom: 80px !important;
+  } 
+}
+
+ .card-item {
+  background: var(--bg-secondary) !important;   
+  box-shadow: 0 2px 8px var( --bg-glass) !important;        
+}
+
+.input-container, .input-default-main
+{
+  margin-bottom: 20px !important;
+}
+
+/* HelpCrud: forçar placeholder da busca para cor clara consistente */
+.hc-searchInput::placeholder,
+.hc-searchInput input::placeholder,
+input.hc-searchInput::placeholder,
+.hc-searchInput .k-input::placeholder,
+.k-input.hc-searchInput::placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+.hc-searchInput::-webkit-input-placeholder,
+.hc-searchInput input::-webkit-input-placeholder,
+input.hc-searchInput::-webkit-input-placeholder,
+.hc-searchInput .k-input::-webkit-input-placeholder,
+.k-input.hc-searchInput::-webkit-input-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+.hc-searchInput::-moz-placeholder,
+.hc-searchInput input::-moz-placeholder,
+input.hc-searchInput::-moz-placeholder,
+.hc-searchInput .k-input::-moz-placeholder,
+.k-input.hc-searchInput::-moz-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+.hc-searchInput:-ms-input-placeholder,
+.hc-searchInput input:-ms-input-placeholder,
+input.hc-searchInput:-ms-input-placeholder,
+.hc-searchInput .k-input:-ms-input-placeholder,
+.k-input.hc-searchInput:-ms-input-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+.hc-searchInput::-ms-input-placeholder,
+.hc-searchInput input::-ms-input-placeholder,
+input.hc-searchInput::-ms-input-placeholder,
+.hc-searchInput .k-input::-ms-input-placeholder,
+.k-input.hc-searchInput::-ms-input-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+
+/* Extra-high-specificity fallbacks to beat any other component CSS or ordering */
+html body input.hc-searchInput[placeholder]::placeholder,
+html body .hc-searchInput[placeholder]::placeholder,
+input.hc-searchInput[placeholder]::placeholder,
+html body input.hc-searchInput[placeholder]::-webkit-input-placeholder,
+html body .hc-searchInput[placeholder]::-webkit-input-placeholder,
+input.hc-searchInput[placeholder]::-webkit-input-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+html body input.hc-searchInput[placeholder]::-moz-placeholder,
+html body .hc-searchInput[placeholder]::-moz-placeholder,
+input.hc-searchInput[placeholder]::-moz-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+html body input.hc-searchInput[placeholder]:-ms-input-placeholder,
+html body .hc-searchInput[placeholder]:-ms-input-placeholder,
+input.hc-searchInput[placeholder]:-ms-input-placeholder,
+html body input.hc-searchInput[placeholder]::-ms-input-placeholder,
+html body .hc-searchInput[placeholder]::-ms-input-placeholder,
+input.hc-searchInput[placeholder]::-ms-input-placeholder {
+  color: #D0D0D0 !important; opacity: 1 !important;
+}
+
+
+.k-filtercell .k-filtercell-wrapper .k-input.k-textbox .k-input-inner,
+.k-filtercell .k-filtercell-wrapper input.k-input-inner {
+  background-color: var(--text-tertiary) !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+.k-filtercell .k-filtercell-wrapper .k-input.k-textbox .k-input-inner::placeholder {
+  color: var(--text-primary) !important;
+  opacity: 0.85;
+}`;

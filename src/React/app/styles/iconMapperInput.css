@@ -1,0 +1,64 @@
+ .input-icon,
+ .input-icon-text {
+   position: absolute;
+   left: 12px;
+   bottom: 12px;
+   /* alinhar na linha inferior do input */
+   color: #718096;
+   font-size: 14px;
+   z-index: 10;
+   pointer-events: none;
+ }
+ 
+.input-icon, .input-icon-text {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #718096;
+  font-size: 14px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.input-icon-text {   
+  top: 50%;
+}
+
+
+/* Layout adjustments for checkbox container */
+.input-checkbox-container {
+  position: relative;
+}
+
+/* Different sizes for mobile */
+@media (max-width: 480px) {
+  .input-icon, .input-icon-text {
+    left: 8px;
+    font-size: 12px;
+  }
+  .input-container-checkbox-icon .input-checkbox-icon + label {
+    margin-left: 24px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) 
+{
+ 
+  .input-container-checkbox-icon .input-checkbox-icon + .k-checkbox-label,
+  .input-container-checkbox-icon .input-checkbox-icon + label {
+    margin-left: 28px; 
+    display: inline-block;
+  }
+
+  .input-icon, .input-icon-text {
+    left: 10px;
+    max-height: 16px;
+    max-width: 16px;    
+    height: 16px;
+    width: 16px;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+}

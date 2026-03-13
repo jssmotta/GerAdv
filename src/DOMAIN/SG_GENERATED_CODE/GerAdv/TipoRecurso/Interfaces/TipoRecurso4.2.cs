@@ -10,11 +10,11 @@ public partial interface ITipoRecursoReader
     TipoRecursoResponse? Read(FTipoRecurso dbRec, MsiSqlConnection? oCnn);
     TipoRecursoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoRecursoResponse? Read(FTipoRecurso dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     TipoRecursoResponseAll? ReadAll(FTipoRecurso dbRec, IDataRecord dr);
     TipoRecursoResponseAll? ReadAll(SG.GerAdv.DBTipoRecurso dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<TipoRecursoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoRecursoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

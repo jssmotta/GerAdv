@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IUFService
 {
-    Task<ResultApi<IEnumerable<UFResponseAll>>> Filter(int max, Filters.FilterUF filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<UFResponse>> AddAndUpdate(Models.UF? regUF, string uri = "", CancellationToken token = default);
-    Task<ResultApi<UFResponse>> Validation(Models.UF? regUF, string uri = "", CancellationToken token = default);
-    Task<ResultApi<UFResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<UFResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<UFResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterUF? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<UFResponseAll>>> Filter(int max, Filters.FilterUF filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<UFResponse>> AddAndUpdate(Models.UF? regUF, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<UFResponse>> Validation(Models.UF? regUF, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<UFResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<UFResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<UFResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterUF? filter, string tenantKey = "", CancellationToken token = default);
 }

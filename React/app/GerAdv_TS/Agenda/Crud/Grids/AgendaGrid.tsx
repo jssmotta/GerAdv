@@ -32,6 +32,8 @@ import {
 import { useAgendaFilter } from "../../Hooks/hookAgendaFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Agenda/Agenda.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface AgendaGridProps {
   selectItem?: (item: IAgenda) => void;
@@ -84,15 +86,21 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await agendaService.getAll(
           filtro ?? ({} as FilterAgenda),
-          (onlineData) => {
-            setAgendaData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setAgendaData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setAgendaData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setAgendaData(processed);
           setLoading(false);
         } else {
           setAgendaData([]);
@@ -105,6 +113,18 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useAgendaFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -122,6 +142,11 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (agenda: IAgenda) => {
     setSelectedAgenda(agenda);
     setShowInc(true);
@@ -133,8 +158,11 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedAgenda(AgendaEmpty());
+  const handleAdd = async () => {
+    let empty = AgendaEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -160,8 +188,24 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = agendaData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await agendaService.deleteAgenda(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -194,24 +238,6 @@ const AgendaGrid: React.FC<AgendaGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useAgendaFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

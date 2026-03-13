@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IAdvogados } from "@/app/GerAdv_TS/Advogados/Interfaces/interface.Advogados";
 import { AdvogadosGridAdapter } from "@/app/GerAdv_TS/Advogados/Adapter/AdvogadosGridAdapter";
 import AdvogadosGridContainer from "@/app/GerAdv_TS/Advogados/Components/AdvogadosGridContainer";

@@ -175,10 +175,10 @@ export const useTipoRecursoList = (
 export function useValidationsTipoRecurso() {
   async function runValidation(
     data: ITipoRecurso,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const tiporecursoApi = new TipoRecursoApi(uri ?? "", token ?? "");
+    const tiporecursoApi = new TipoRecursoApi(tenantKey ?? "", token ?? "");
 
     const result = await tiporecursoApi.validation(data);
 

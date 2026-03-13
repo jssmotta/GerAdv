@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PrintHelpButton.css — Botão + regras de impressão da Window de ajuda
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Botão ── */
+.phb-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.phb-button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.phb-button:active {
+  transform: scale(0.98);
+}
+
+.phb-icon {
+  flex-shrink: 0;
+}
+
+/* ── Impressão: só imprime o conteúdo da Window do Kendo ── */
+@media print {
+
+  /* Esconde TUDO */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Mostra só a Window de ajuda e seus filhos */
+  .k-window,
+  .k-window * {
+    visibility: visible !important;
+  }
+
+  /* Posiciona a Window como bloco principal */
+  .k-window {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove a barra de título da Window na impressão */
+  .k-window-titlebar {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Esconde botões que não fazem sentido impresso */
+  .phb-button,
+  .k-window-titlebar-action {
+    display: none !important;
+  }
+
+  /* Força cores nos badges e elementos coloridos */
+  .hc-badge-req,
+  .hc-req-tag,
+  .hmi-icon,
+  .hmi-badge {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

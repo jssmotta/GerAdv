@@ -10,7 +10,7 @@ public class ForoValidationTests : IDisposable
     private readonly Mock<IForoService> _mockForoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public ForoValidationTests()
     {
         _validation = new ForoValidation();

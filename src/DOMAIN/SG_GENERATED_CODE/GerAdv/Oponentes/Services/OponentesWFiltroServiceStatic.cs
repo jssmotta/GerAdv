@@ -362,7 +362,7 @@ public partial class ServiceFilter
 
 public partial class OponentesService
 {
-    private async Task<IEnumerable<OponentesResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken cancellationToken)
+    private async Task<IEnumerable<OponentesResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken cancellationToken)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
@@ -372,7 +372,7 @@ public partial class OponentesService
         try
         {
             // Usar o reader para obter os dados
-            return await reader.ListarAsync(oCnn!, max, uri, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
+            return await reader.ListarAsync(oCnn!, max, tenantKey, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
         }
         catch (Exception)
         {
@@ -380,28 +380,28 @@ public partial class OponentesService
         }
     }
 
-    public async Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterOponentes? filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterOponentes? filtro, string tenantKey, CancellationToken token = default)
     {
         // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         var filtroResult = filtro == null ? null : servicesFilter.WFiltroOponentes(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection;
         if (oCnn == null)
         {
             return ResultApi<IEnumerable<NomeID>>.Fail("Conexão nula.", 503);
         }
 
-        var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+        var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
         var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-        var cacheKey = $"{uri}-Oponentes-{max}-{filterHash}-GetListN-{keyCache}";
+        var cacheKey = $"{tenantKey}-Oponentes-{max}-{filterHash}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
@@ -409,7 +409,7 @@ public partial class OponentesService
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, tenantKey, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
             return ResultApi<IEnumerable<NomeID>>.Ok(result);
         }
         catch (Exception ex)
@@ -419,10 +419,10 @@ public partial class OponentesService
         }
     }
 
-    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter>? parameters, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string tenantKey, string where, List<SqlParameter>? parameters, CancellationToken token)
     {
         var result = new List<NomeID>(max);
-        var lista = await reader.ListarNAsync(max, uri, where, parameters, DBOponentesDicInfo.CampoNome);
+        var lista = await reader.ListarNAsync(max, tenantKey, where, parameters, DBOponentesDicInfo.CampoNome);
         if (lista == null || !lista.Any())
         {
             return result;
@@ -441,13 +441,13 @@ public partial class OponentesService
         return result;
     }
 
-    public async Task<ResultApi<IEnumerable<OponentesResponseAll>>> GetAll(int max, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<OponentesResponseAll>>> GetAll(int max, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Oponentes: URI inválida");
+            throw new Exception("Oponentes: TenantApp inválida");
         }
 
         var entryOptions = new HybridCacheEntryOptions
@@ -455,30 +455,30 @@ public partial class OponentesService
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection;
-        var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
-        var cacheKey = $"{uri}-Oponentes-Filter-{max}-{keyCache}";
+        var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
+        var cacheKey = $"{tenantKey}-Oponentes-Filter-{max}-{keyCache}";
         try
         {
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], tenantKey, cancel), entryOptions, cancellationToken: token);
             return ResultApi<IEnumerable<OponentesResponseAll>>.Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Oponentes: GetAll failed for uri = {0}", uri);
+            _logger.Error(ex, "Oponentes: GetAll failed for tenantKey = {0}", tenantKey);
             return ResultApi<IEnumerable<OponentesResponseAll>>.Fail(ex.Message, 500);
         }
     }
 
-    private async Task<IEnumerable<OponentesResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<OponentesResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken token)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
             throw new DatabaseConnectionException();
         }
 
-        var result = await reader.ListarAsync(oCnn!, max, uri, where, parameters, string.Empty, token);
+        var result = await reader.ListarAsync(oCnn!, max, tenantKey, where, parameters, string.Empty, token);
         return result;
     }
 }

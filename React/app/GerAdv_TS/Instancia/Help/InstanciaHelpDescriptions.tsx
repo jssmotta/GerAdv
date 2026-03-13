@@ -10,7 +10,7 @@ import HelpAcao from "@/app/GerAdv_TS/Acao/Help/HelpAcao";
 import HelpForo from "@/app/GerAdv_TS/Foro/Help/HelpForo";
 import HelpTipoRecurso from "@/app/GerAdv_TS/TipoRecurso/Help/HelpTipoRecurso";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Instancia";
 export const help_infoDescription = "Instancia";
 
@@ -154,7 +154,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `insAcao`,
     caption: `Acao`,
-    description: `Acao relacionado a Instancia`,
+    description: `Acao relacionado à entidade Instancia`,
     acceptedValues: `Cadastrados em Acao`,
     required: false,
     relatedTable: (
@@ -167,7 +167,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `insForo`,
     caption: `Foro`,
-    description: `Foro relacionado a Instancia`,
+    description: `Foro relacionado à entidade Instancia`,
     acceptedValues: `Cadastrados em Foro`,
     required: false,
     relatedTable: (
@@ -180,7 +180,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `insTipoRecurso`,
     caption: `Tipo Recurso`,
-    description: `Tipo Recurso relacionado a Instancia`,
+    description: `Tipo Recurso relacionado à entidade Instancia`,
     acceptedValues: `Cadastrados em Tipo Recurso`,
     required: false,
     relatedTable: (

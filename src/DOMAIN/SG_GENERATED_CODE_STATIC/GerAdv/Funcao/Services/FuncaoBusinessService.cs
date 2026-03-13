@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class FuncaoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string tenantKey)
     {
         if (regFuncao == null)
         {
-            _logger.Warn("Funcao: BeforeDeleteAsync - regFuncao is null for uri = {0}", uri);
+            _logger.Warn("Funcao: BeforeDeleteAsync - regFuncao is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            FuncaoMetrics.RecordNotFound("BeforeDelete", uri, FuncaoMetrics.StartTimer());
+            FuncaoMetrics.RecordNotFound("BeforeDelete", tenantKey, FuncaoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = FuncaoMetrics.StartTimer();
-        _logger.Debug("Funcao: BeforeDeleteAsync success for Id={0}, uri={1}", regFuncao.Id, uri);
+        _logger.Debug("Funcao: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regFuncao.Id, tenantKey);
         // record successful business layer pre-delete
-        FuncaoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        FuncaoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncaoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Funcao: AfterDeleteAsync - Id={0}, uri={1}", regFuncao?.Id ?? 0, uri);
+        _logger.Info("Funcao: AfterDeleteAsync - Id={0}, tenantKey={1}", regFuncao?.Id ?? 0, tenantKey);
         // record delete metrics
-        FuncaoMetrics.RecordDeleted(uri);
-        FuncaoMetrics.RecordDeletedByHour(uri);
-        FuncaoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        FuncaoMetrics.RecordDeleted(tenantKey);
+        FuncaoMetrics.RecordDeletedByHour(tenantKey);
+        FuncaoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Funcao: DeleteErrorAsync - Id={0}, uri={1}", regFuncao?.Id ?? 0, uri);
+        _logger.Error("Funcao: DeleteErrorAsync - Id={0}, tenantKey={1}", regFuncao?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        FuncaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        FuncaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        FuncaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        FuncaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<FuncaoResponse> AfterCreateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse> AfterCreateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncaoMetrics.StartTimer();
         var result = regFuncao ?? new FuncaoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Funcao: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Funcao: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        FuncaoMetrics.RecordCreated(uri);
-        FuncaoMetrics.RecordCreatedByHour(uri);
-        FuncaoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        FuncaoMetrics.RecordCreated(tenantKey);
+        FuncaoMetrics.RecordCreatedByHour(tenantKey);
+        FuncaoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<FuncaoResponse> AfterUpdateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse> AfterUpdateAsync([FromBody] FuncaoResponse? regFuncao, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncaoMetrics.StartTimer();
         var result = regFuncao ?? new FuncaoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Funcao: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        FuncaoMetrics.RecordUpdated(uri);
-        FuncaoMetrics.RecordUpdatedByHour(uri);
-        FuncaoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Funcao: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        FuncaoMetrics.RecordUpdated(tenantKey);
+        FuncaoMetrics.RecordUpdatedByHour(tenantKey);
+        FuncaoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Funcao? regFuncao, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Funcao? regFuncao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Funcao: AddAndUpdateErrorAsync - Id={0}, uri={1}", regFuncao?.Id ?? 0, uri);
+        _logger.Error("Funcao: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regFuncao?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        FuncaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        FuncaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        FuncaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        FuncaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

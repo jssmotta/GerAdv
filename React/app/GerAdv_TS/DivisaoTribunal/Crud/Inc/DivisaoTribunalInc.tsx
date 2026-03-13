@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IDivisaoTribunalFormProps } from "../../Interfaces/interface.DivisaoTribunal";
+import {
+  IDivisaoTribunal,
+  IDivisaoTribunalFormProps,
+} from "../../Interfaces/interface.DivisaoTribunal";
 import { DivisaoTribunalService } from "../../Services/DivisaoTribunal.service";
 import {
   useDivisaoTribunalForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookDivisaoTribunal";
 import { DivisaoTribunalEmpty } from "../../../Models/DivisaoTribunal";
 import { DivisaoTribunalForm } from "../Forms/DivisaoTribunalForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/DivisaoTribunal/DivisaoTribunal.hooks";
 
 const DivisaoTribunalInc: React.FC<IDivisaoTribunalFormProps> = ({
   id,
@@ -40,13 +45,39 @@ const DivisaoTribunalInc: React.FC<IDivisaoTribunalFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadDivisaoTribunal } = useDivisaoTribunalForm(
+  const { data, handleChange, setData } = useDivisaoTribunalForm(
     DivisaoTribunalEmpty(),
     divisaotribunalService,
   );
 
+  const originalRef = useRef<IDivisaoTribunal>(DivisaoTribunalEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = DivisaoTribunalEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record =
+        await divisaotribunalService.fetchDivisaoTribunalById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadDivisaoTribunal(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,8 +91,45 @@ const DivisaoTribunalInc: React.FC<IDivisaoTribunalFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
       const savedDivisaoTribunal =
-        await divisaotribunalService.saveDivisaoTribunal(data);
+        await divisaotribunalService.saveDivisaoTribunal(currentRecord);
 
       if (savedDivisaoTribunal.id) {
         notificationService.showNotification(
@@ -98,7 +166,7 @@ const DivisaoTribunalInc: React.FC<IDivisaoTribunalFormProps> = ({
   };
 
   const handleReload = () => {
-    loadDivisaoTribunal(id);
+    handleLoad(id);
   };
 
   return (

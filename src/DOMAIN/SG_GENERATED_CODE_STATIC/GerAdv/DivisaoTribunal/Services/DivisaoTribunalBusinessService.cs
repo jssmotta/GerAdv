@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class DivisaoTribunalService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         if (regDivisaoTribunal == null)
         {
-            _logger.Warn("DivisaoTribunal: BeforeDeleteAsync - regDivisaoTribunal is null for uri = {0}", uri);
+            _logger.Warn("DivisaoTribunal: BeforeDeleteAsync - regDivisaoTribunal is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            DivisaoTribunalMetrics.RecordNotFound("BeforeDelete", uri, DivisaoTribunalMetrics.StartTimer());
+            DivisaoTribunalMetrics.RecordNotFound("BeforeDelete", tenantKey, DivisaoTribunalMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = DivisaoTribunalMetrics.StartTimer();
-        _logger.Debug("DivisaoTribunal: BeforeDeleteAsync success for Id={0}, uri={1}", regDivisaoTribunal.Id, uri);
+        _logger.Debug("DivisaoTribunal: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regDivisaoTribunal.Id, tenantKey);
         // record successful business layer pre-delete
-        DivisaoTribunalMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        DivisaoTribunalMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = DivisaoTribunalMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("DivisaoTribunal: AfterDeleteAsync - Id={0}, uri={1}", regDivisaoTribunal?.Id ?? 0, uri);
+        _logger.Info("DivisaoTribunal: AfterDeleteAsync - Id={0}, tenantKey={1}", regDivisaoTribunal?.Id ?? 0, tenantKey);
         // record delete metrics
-        DivisaoTribunalMetrics.RecordDeleted(uri);
-        DivisaoTribunalMetrics.RecordDeletedByHour(uri);
-        DivisaoTribunalMetrics.RecordSuccess("AfterDelete", uri, sw);
+        DivisaoTribunalMetrics.RecordDeleted(tenantKey);
+        DivisaoTribunalMetrics.RecordDeletedByHour(tenantKey);
+        DivisaoTribunalMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("DivisaoTribunal: DeleteErrorAsync - Id={0}, uri={1}", regDivisaoTribunal?.Id ?? 0, uri);
+        _logger.Error("DivisaoTribunal: DeleteErrorAsync - Id={0}, tenantKey={1}", regDivisaoTribunal?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        DivisaoTribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        DivisaoTribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        DivisaoTribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        DivisaoTribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<DivisaoTribunalResponse> AfterCreateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse> AfterCreateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = DivisaoTribunalMetrics.StartTimer();
         var result = regDivisaoTribunal ?? new DivisaoTribunalResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("DivisaoTribunal: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("DivisaoTribunal: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        DivisaoTribunalMetrics.RecordCreated(uri);
-        DivisaoTribunalMetrics.RecordCreatedByHour(uri);
-        DivisaoTribunalMetrics.RecordSuccess("AfterCreate", uri, sw);
+        DivisaoTribunalMetrics.RecordCreated(tenantKey);
+        DivisaoTribunalMetrics.RecordCreatedByHour(tenantKey);
+        DivisaoTribunalMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<DivisaoTribunalResponse> AfterUpdateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse> AfterUpdateAsync([FromBody] DivisaoTribunalResponse? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         var sw = DivisaoTribunalMetrics.StartTimer();
         var result = regDivisaoTribunal ?? new DivisaoTribunalResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("DivisaoTribunal: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        DivisaoTribunalMetrics.RecordUpdated(uri);
-        DivisaoTribunalMetrics.RecordUpdatedByHour(uri);
-        DivisaoTribunalMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("DivisaoTribunal: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        DivisaoTribunalMetrics.RecordUpdated(tenantKey);
+        DivisaoTribunalMetrics.RecordUpdatedByHour(tenantKey);
+        DivisaoTribunalMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("DivisaoTribunal: AddAndUpdateErrorAsync - Id={0}, uri={1}", regDivisaoTribunal?.Id ?? 0, uri);
+        _logger.Error("DivisaoTribunal: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regDivisaoTribunal?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        DivisaoTribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        DivisaoTribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        DivisaoTribunalMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        DivisaoTribunalMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

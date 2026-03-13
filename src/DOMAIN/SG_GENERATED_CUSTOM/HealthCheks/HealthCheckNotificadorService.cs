@@ -3,11 +3,11 @@ using MenphisSI.GerEntityTools.Entity;
 
 namespace MenphisSI.GerAdv.HealthCheck;
 
-public class HealthCheckNotificadorService([Required] string uri, [Required] SendEmailApi sendEmailApi, int horaDia, int horaNovos) : IHealthCheck, IDisposable
+public class HealthCheckNotificadorService([Required] string tenantKey, [Required] SendEmailApi sendEmailApi, int horaDia, int horaNovos) : IHealthCheck, IDisposable
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private bool _disposed;
-    private readonly string _uri = uri;
+    private readonly string _uri = tenantKey;
     private readonly SendEmailApi _sendEmailApi = sendEmailApi ?? throw new ArgumentNullException(nameof(sendEmailApi));
     private readonly int _horaDia = horaDia;
     private readonly int _horaNovos = horaNovos;

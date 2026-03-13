@@ -31,7 +31,10 @@ const TribunalWindowId: React.FC<TribunalWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const tribunalService = useMemo(() => {
     return new TribunalService(
-      new TribunalApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new TribunalApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

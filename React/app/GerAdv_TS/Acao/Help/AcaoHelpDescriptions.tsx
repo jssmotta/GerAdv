@@ -9,7 +9,7 @@ import HelpButton from "@/app/components/Cruds/DockerInc/HelpButton";
 import HelpJustica from "@/app/GerAdv_TS/Justica/Help/HelpJustica";
 import HelpArea from "@/app/GerAdv_TS/Area/Help/HelpArea";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Acao";
 export const help_infoDescription = "Acao";
 
@@ -25,7 +25,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `acaJustica`,
     caption: `Justiça`,
-    description: `Justiça relacionado a Acao`,
+    description: `Justiça relacionado à entidade Acao`,
     acceptedValues: `Cadastrados em Justiça`,
     required: false,
     relatedTable: (
@@ -38,7 +38,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `acaArea`,
     caption: `Área`,
-    description: `Área relacionado a Acao`,
+    description: `Área relacionado à entidade Acao`,
     acceptedValues: `Cadastrados em Área`,
     required: false,
     relatedTable: (

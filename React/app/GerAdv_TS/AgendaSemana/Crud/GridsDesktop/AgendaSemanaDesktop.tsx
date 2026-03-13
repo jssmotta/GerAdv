@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsDesktopHoook.tsx - Versão Refatorada
+// GridsDesktopHoook1.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,7 +39,8 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useAgendaSemanaGrid } from "../../Hooks/hookAgendaSemanaGrid";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
 import "@/app/styles/grid-desktop-performance.css";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
+import AgendaSemanaHelpCrudButton from "../../Help/AgendaSemanaHelpCrudButton";
 
 interface AgendaSemanaGridProps {
   data: IAgendaSemana[];
@@ -419,7 +420,10 @@ export const AgendaSemanaGridDesktopComponent = React.memo(
             <GridToolbar>
               {toolbar}
 
-              <PageTitle title="Agenda Semana" />
+              <PageTitle
+                title="Agenda Semana"
+                helpButton={<AgendaSemanaHelpCrudButton isMobile={false} />}
+              />
             </GridToolbar>
             {finalGridColumns}
           </Grid>

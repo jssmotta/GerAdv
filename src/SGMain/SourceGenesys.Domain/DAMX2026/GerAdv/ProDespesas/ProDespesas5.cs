@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBProDespesas
 {
-    public const string CadastroGuid = "65a6bdd3-400e-45ae-8964-f4eca6f43259";
+    public const string CadastroGuid = "be722b99-e16d-4393-bf13-8716b491efcc";
     public const string PTabelaNome = "ProDespesas";
     public const string CamposSqlX = " ProDespesas.* ";
     public const string CampoCodigo = "desCodigo";

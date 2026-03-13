@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsDesktopHoook.tsx - Versão Refatorada
+// GridsDesktopHoook1.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,7 +39,8 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useJusticaGrid } from "../../Hooks/hookJusticaGrid";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
 import "@/app/styles/grid-desktop-performance.css";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
+import JusticaHelpCrudButton from "../../Help/JusticaHelpCrudButton";
 
 interface JusticaGridProps {
   data: IJustica[];
@@ -641,7 +642,10 @@ export const JusticaGridDesktopComponent = React.memo(
             <GridToolbar>
               {toolbar}
 
-              <PageTitle title="Justiças" />
+              <PageTitle
+                title="Justiças"
+                helpButton={<JusticaHelpCrudButton isMobile={false} />}
+              />
             </GridToolbar>
             {finalGridColumns}
           </Grid>

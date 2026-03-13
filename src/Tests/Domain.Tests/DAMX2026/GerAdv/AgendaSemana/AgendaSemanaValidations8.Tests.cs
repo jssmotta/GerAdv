@@ -13,7 +13,7 @@ public class AgendaSemanaValidationTests : IDisposable
     private readonly Mock<IAdvogadosReader> _mockAdvogadosReader;
     private readonly Mock<ITipoCompromissoReader> _mockTipoCompromissoReader;
     private readonly Mock<IClientesReader> _mockClientesReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AgendaSemanaValidationTests()
     {
         _validation = new AgendaSemanaValidation();

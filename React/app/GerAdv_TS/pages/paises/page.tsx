@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IPaises } from "@/app/GerAdv_TS/Paises/Interfaces/interface.Paises";
 import { PaisesGridAdapter } from "@/app/GerAdv_TS/Paises/Adapter/PaisesGridAdapter";
 import PaisesGridContainer from "@/app/GerAdv_TS/Paises/Components/PaisesGridContainer";

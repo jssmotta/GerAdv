@@ -10,7 +10,7 @@ public class ProDespesasValidationTests : IDisposable
     private readonly Mock<IProDespesasService> _mockProDespesasService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IClientesReader> _mockClientesReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public ProDespesasValidationTests()
     {
         _validation = new ProDespesasValidation();

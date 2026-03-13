@@ -9,7 +9,7 @@ public class CargosValidationTests : IDisposable
     private readonly CargosValidation _validation;
     private readonly Mock<ICargosService> _mockCargosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public CargosValidationTests()
     {
         _validation = new CargosValidation();

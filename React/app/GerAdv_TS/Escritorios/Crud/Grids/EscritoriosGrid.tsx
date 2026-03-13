@@ -32,6 +32,8 @@ import {
 import { useEscritoriosFilter } from "../../Hooks/hookEscritoriosFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Escritorios/Escritorios.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface EscritoriosGridProps {
   selectItem?: (item: IEscritorios) => void;
@@ -58,7 +60,10 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
 
   const escritoriosService = useMemo(() => {
     return new EscritoriosService(
-      new EscritoriosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new EscritoriosApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await escritoriosService.getAll(
           filtro ?? ({} as FilterEscritorios),
-          (onlineData) => {
-            setEscritoriosData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setEscritoriosData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setEscritoriosData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setEscritoriosData(processed);
           setLoading(false);
         } else {
           setEscritoriosData([]);
@@ -106,6 +117,18 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useEscritoriosFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (escritorios: IEscritorios) => {
     setSelectedEscritorios(escritorios);
     setShowInc(true);
@@ -134,8 +162,11 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedEscritorios(EscritoriosEmpty());
+  const handleAdd = async () => {
+    let empty = EscritoriosEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = escritoriosData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await escritoriosService.deleteEscritorios(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const EscritoriosGrid: React.FC<EscritoriosGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useEscritoriosFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

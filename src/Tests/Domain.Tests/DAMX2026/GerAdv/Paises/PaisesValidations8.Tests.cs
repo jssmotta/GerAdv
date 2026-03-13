@@ -9,7 +9,7 @@ public class PaisesValidationTests : IDisposable
     private readonly PaisesValidation _validation;
     private readonly Mock<IPaisesService> _mockPaisesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public PaisesValidationTests()
     {
         _validation = new PaisesValidation();

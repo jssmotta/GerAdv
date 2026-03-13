@@ -32,6 +32,8 @@ import {
 import { useInstanciaFilter } from "../../Hooks/hookInstanciaFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Instancia/Instancia.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface InstanciaGridProps {
   selectItem?: (item: IInstancia) => void;
@@ -58,7 +60,10 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
 
   const instanciaService = useMemo(() => {
     return new InstanciaService(
-      new InstanciaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new InstanciaApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await instanciaService.getAll(
           filtro ?? ({} as FilterInstancia),
-          (onlineData) => {
-            setInstanciaData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setInstanciaData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setInstanciaData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setInstanciaData(processed);
           setLoading(false);
         } else {
           setInstanciaData([]);
@@ -106,6 +117,18 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useInstanciaFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (instancia: IInstancia) => {
     setSelectedInstancia(instancia);
     setShowInc(true);
@@ -134,8 +162,11 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedInstancia(InstanciaEmpty());
+  const handleAdd = async () => {
+    let empty = InstanciaEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = instanciaData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await instanciaService.deleteInstancia(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const InstanciaGrid: React.FC<InstanciaGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useInstanciaFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

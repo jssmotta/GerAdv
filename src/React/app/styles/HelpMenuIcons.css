@@ -1,0 +1,122 @@
+.hmi-header {
+  padding: 20px 28px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hmi-header-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.hmi-header-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* ── List ── */
+.hmi-list {
+  padding: 8px 20px;
+}
+
+/* ── Item ── */
+.hmi-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 8px;
+}
+
+.hmi-item--bordered {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* ── Icon Box ── */
+.hmi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hmi-icon--default {
+  background: rgba(37, 99, 235, 0.07);
+  color: #2563eb;
+}
+
+.hmi-icon--danger {
+  background: rgba(239, 68, 68, 0.07);
+  color: #ef4444;
+}
+
+.hmi-icon--whatsapp {
+  background: rgba(37, 211, 102, 0.08);
+  color: #25d366;
+}
+
+/* ── Content ── */
+.hmi-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.hmi-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.hmi-title--default {
+  color: #0f172a;
+}
+
+.hmi-title--danger {
+  color: #ef4444;
+}
+
+.hmi-title--whatsapp {
+  color: #25d366;
+}
+
+.hmi-description {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* ── Badge ── */
+.hmi-badge {
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.hmi-badge--default {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #94a3b8;
+}
+
+.hmi-badge--danger {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.hmi-badge--whatsapp {
+  background: rgba(37, 211, 102, 0.06);
+  border: 1px solid rgba(37, 211, 102, 0.15);
+  color: #25d366;
+}

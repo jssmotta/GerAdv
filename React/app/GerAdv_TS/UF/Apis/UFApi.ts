@@ -76,21 +76,21 @@ export class UFApi {
   private authorization: string;
   private baseUrl: string;
   private notificationService: INotificationService;
-  private uri: string;
+  private tenantKey: string;
   private circuitBreaker: CircuitBreaker;
 
   constructor(
-    uri: string,
+    tenantKey: string,
     authorization: string,
     version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? "1"),
   ) {
     this.authorization = authorization;
-    this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/UF`;
+    this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${tenantKey}/UF`;
     this.notificationService = new NotificationService();
-    this.uri = uri;
+    this.tenantKey = tenantKey;
 
     // Initialize Circuit Breaker for this entity
-    this.circuitBreaker = circuitBreakerRegistry.getBreaker(`UF-${uri}`, {
+    this.circuitBreaker = circuitBreakerRegistry.getBreaker(`UF-${tenantKey}`, {
       ...UF_CIRCUIT_BREAKER_CONFIG,
       onStateChange: (state, entityName) => {
         this.handleCircuitBreakerStateChange(state, entityName);
@@ -373,7 +373,7 @@ export class UFApi {
     max: number = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS,
   ): Promise<AxiosResponse> {
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${uniqueKeyDay()}_lst_getAll_${max}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${uniqueKeyDay()}_lst_getAll_${max}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -391,7 +391,7 @@ export class UFApi {
 
   public async getById(id: number): Promise<AxiosResponse> {
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${uniqueKeyDay()}_lst_getById_${id}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${uniqueKeyDay()}_lst_getById_${id}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -420,7 +420,7 @@ export class UFApi {
         : filtro;
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${uniqueKeyDay()}_lst_listN_data`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${uniqueKeyDay()}_lst_listN_data`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -442,7 +442,7 @@ export class UFApi {
   ): Promise<AxiosResponse> {
     const _filtro = filtro || new FilterUFDefaults();
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
     );
     const offlineData = localStorage.getItem(storageKey);
     const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
@@ -464,7 +464,7 @@ export class UFApi {
         : filtro;
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -494,7 +494,7 @@ export class UFApi {
     };
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-UF-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-UF-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -702,7 +702,7 @@ export class UFApi {
       voiceCommand: voiceCommand,
     };
 
-    const url = `${this.baseUrl}/Filter/${this.uri}`;
+    const url = `${this.baseUrl}/Filter/${this.tenantKey}`;
     const key = `${url}::${this.authorization}::${JSON.stringify(request)}`;
 
     return useSWR<UF[]>(key, fetcher, {

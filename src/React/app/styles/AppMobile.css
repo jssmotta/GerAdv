@@ -1,0 +1,212 @@
+/* Solução definitiva para footer fixo em mobile */
+
+/* Primeiro, vamos garantir que o body tenha as propriedades corretas */
+@media (max-width: 768px) {
+
+  
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden !important;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menu-toggle-button-top {
+  display:block;
+  margin-top: 8px;
+}
+
+.input-container-date {
+  min-height: 66px !important;
+  margin-top: 12px !important;
+  margin-bottom: 22px !important;
+}
+
+  /* Garantir que o drawer-content não esconda o footer */
+  .k-drawer-content {
+    overflow: visible !important;
+    padding-bottom: 100px !important;
+  }
+
+  /* Criar um container fixo para o footer que NÃO se move com a página */
+  .footer-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    height: var(--footer-bar-height) !important;
+    /* Prevenir problemas com iOS */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Garantir que o footer está visualmente separado */
+    border-top: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);    
+  }
+
+  .button-cadinc {
+    width: 80vw;
+    max-width: 300px;
+    color: white !important;
+  }
+
+  .button-delete-inc, .button-auditor-inc, .button-bottom-inc {
+    display: flex;
+    min-height: 48px;
+    margin-top: 60px;
+    justify-content: center;
+    border: none !important;
+  }
+
+  .k-footer-mobile-msi {
+    padding-top: 0 !important;
+    border-top: 2px solid var(--kendo-primary) !important;
+  }
+
+  /* Este é o segredo - configurar para que qualquer transformação não afete o layout */
+  .k-bottom-navigation.footer-container {
+    /* Reset de todas as propriedades de posicionamento que podem estar causando problemas */
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 90px !important;
+    /* Impedir qualquer transformação que possa ser aplicada pelo navegador */
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    /* Forçar a camada a ser renderizada diretamente */
+    will-change: auto !important;
+    /* Garantir compatibilidade com iOS */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background-color: #ffffff !important;
+    z-index: 9999 !important;    
+  }
+
+  /* Espaço para o footer */
+  .content-wrapper {
+    padding-bottom: 75px !important;
+  }
+
+  /* Específico para iOS */
+  @supports (-webkit-touch-callout: none) {
+    .footer-container {
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      height: calc(90px + env(safe-area-inset-bottom, 0));
+    }
+  }
+
+  .input-checkbox-container {
+    max-height: 52px !important;
+    min-height: 52px !important;
+  }
+
+  .input-checkbox-icon {
+    margin-left: 40px !important;
+  }
+
+  /* ========================================
+     GRID MOBILE - COMBOBOX
+     Ícones movidos para CrudPencil.css
+     ======================================== */
+
+  /* ComboBox dentro de grid mobile - AUMENTAR TAMANHO MÁXIMO */
+  .k-grid-content .k-combobox,
+  .k-grid-content .k-dropdown {
+    display: inline-block !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    width: 100% !important;
+    min-width: 220px !important;
+    max-width: 100% !important;
+    vertical-align: middle !important;
+    flex: 1 1 auto !important;
+  }
+
+  .k-grid-content .k-combobox .k-input-inner,
+  .k-grid-content .k-dropdown .k-input-inner {
+    min-height: 42px !important;
+    font-size: 15px !important;
+    padding: 10px 12px !important;
+    width: 100% !important;
+  }
+
+  /* Botão do ComboBox */
+  .k-grid-content .k-combobox .k-select,
+  .k-grid-content .k-dropdown .k-select {
+    min-width: 42px !important;
+    min-height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Input container no grid */
+  .k-grid-content .input-msi-combobox {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Garantir que a linha do grid acomode o ComboBox */
+  .k-grid-content tr {
+    min-height: 60px !important;
+  }
+
+  .k-grid-content td {
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+
+  /* Ícones de ação no grid */
+  .k-grid-content td .k-svg-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    cursor: pointer !important;
+    padding: 2px !important;
+    margin: 0 2px !important;
+    vertical-align: middle !important;
+    z-index: 99 !important;
+    pointer-events: auto !important;
+  }
+
+  /* SVG dentro dos ícones do grid */
+  .k-grid-content td .k-svg-icon svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* FORÇAR spans e buttons de ação a aparecerem */
+  .k-grid-content td span[class*="action-svg"],
+  .k-grid-content td button[class*="action-svg"] {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Garantir que todos os elementos inline fiquem visíveis */
+  .k-grid-content td > * {
+    display: inline-block !important;
+  }
+
+  .input-search-box {
+    width: 100% !important;
+    display: block !important;
+  }
+ 
+ 
+
+}

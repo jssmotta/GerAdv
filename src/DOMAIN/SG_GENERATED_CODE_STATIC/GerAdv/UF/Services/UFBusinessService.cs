@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class UFService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string tenantKey)
     {
         if (regUF == null)
         {
-            _logger.Warn("UF: BeforeDeleteAsync - regUF is null for uri = {0}", uri);
+            _logger.Warn("UF: BeforeDeleteAsync - regUF is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            UFMetrics.RecordNotFound("BeforeDelete", uri, UFMetrics.StartTimer());
+            UFMetrics.RecordNotFound("BeforeDelete", tenantKey, UFMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = UFMetrics.StartTimer();
-        _logger.Debug("UF: BeforeDeleteAsync success for Id={0}, uri={1}", regUF.Id, uri);
+        _logger.Debug("UF: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regUF.Id, tenantKey);
         // record successful business layer pre-delete
-        UFMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        UFMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string tenantKey)
     {
         var sw = UFMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("UF: AfterDeleteAsync - Id={0}, uri={1}", regUF?.Id ?? 0, uri);
+        _logger.Info("UF: AfterDeleteAsync - Id={0}, tenantKey={1}", regUF?.Id ?? 0, tenantKey);
         // record delete metrics
-        UFMetrics.RecordDeleted(uri);
-        UFMetrics.RecordDeletedByHour(uri);
-        UFMetrics.RecordSuccess("AfterDelete", uri, sw);
+        UFMetrics.RecordDeleted(tenantKey);
+        UFMetrics.RecordDeletedByHour(tenantKey);
+        UFMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("UF: DeleteErrorAsync - Id={0}, uri={1}", regUF?.Id ?? 0, uri);
+        _logger.Error("UF: DeleteErrorAsync - Id={0}, tenantKey={1}", regUF?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        UFMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        UFMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        UFMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        UFMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<UFResponse> AfterCreateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task<UFResponse> AfterCreateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string tenantKey)
     {
         var sw = UFMetrics.StartTimer();
         var result = regUF ?? new UFResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("UF: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("UF: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        UFMetrics.RecordCreated(uri);
-        UFMetrics.RecordCreatedByHour(uri);
-        UFMetrics.RecordSuccess("AfterCreate", uri, sw);
+        UFMetrics.RecordCreated(tenantKey);
+        UFMetrics.RecordCreatedByHour(tenantKey);
+        UFMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<UFResponse> AfterUpdateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string uri)
+    public async Task<UFResponse> AfterUpdateAsync([FromBody] UFResponse? regUF, [FromRoute, Required] string tenantKey)
     {
         var sw = UFMetrics.StartTimer();
         var result = regUF ?? new UFResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("UF: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        UFMetrics.RecordUpdated(uri);
-        UFMetrics.RecordUpdatedByHour(uri);
-        UFMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("UF: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        UFMetrics.RecordUpdated(tenantKey);
+        UFMetrics.RecordUpdatedByHour(tenantKey);
+        UFMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.UF? regUF, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.UF? regUF, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("UF: AddAndUpdateErrorAsync - Id={0}, uri={1}", regUF?.Id ?? 0, uri);
+        _logger.Error("UF: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regUF?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        UFMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        UFMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        UFMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        UFMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

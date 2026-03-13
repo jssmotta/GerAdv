@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IProDespesasFormProps } from "../../Interfaces/interface.ProDespesas";
+import {
+  IProDespesas,
+  IProDespesasFormProps,
+} from "../../Interfaces/interface.ProDespesas";
 import { ProDespesasService } from "../../Services/ProDespesas.service";
 import {
   useProDespesasForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookProDespesas";
 import { ProDespesasEmpty } from "../../../Models/ProDespesas";
 import { ProDespesasForm } from "../Forms/ProDespesasForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/ProDespesas/ProDespesas.hooks";
 
 const ProDespesasInc: React.FC<IProDespesasFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const ProDespesasInc: React.FC<IProDespesasFormProps> = ({
   const router = useRouter();
 
   const prodespesasService = new ProDespesasService(
-    new ProDespesasApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new ProDespesasApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadProDespesas } = useProDespesasForm(
+  const { data, handleChange, setData } = useProDespesasForm(
     ProDespesasEmpty(),
     prodespesasService,
   );
 
+  const originalRef = useRef<IProDespesas>(ProDespesasEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = ProDespesasEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await prodespesasService.fetchProDespesasById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadProDespesas(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +90,45 @@ const ProDespesasInc: React.FC<IProDespesasFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedProDespesas = await prodespesasService.saveProDespesas(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedProDespesas =
+        await prodespesasService.saveProDespesas(currentRecord);
 
       if (savedProDespesas.id) {
         notificationService.showNotification(
@@ -94,7 +165,7 @@ const ProDespesasInc: React.FC<IProDespesasFormProps> = ({
   };
 
   const handleReload = () => {
-    loadProDespesas(id);
+    handleLoad(id);
   };
 
   return (

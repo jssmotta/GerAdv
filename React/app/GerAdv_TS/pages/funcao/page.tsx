@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IFuncao } from "@/app/GerAdv_TS/Funcao/Interfaces/interface.Funcao";
 import { FuncaoGridAdapter } from "@/app/GerAdv_TS/Funcao/Adapter/FuncaoGridAdapter";
 import FuncaoGridContainer from "@/app/GerAdv_TS/Funcao/Components/FuncaoGridContainer";

@@ -10,7 +10,7 @@ import HelpCargos from "@/app/GerAdv_TS/Cargos/Help/HelpCargos";
 import HelpEscritorios from "@/app/GerAdv_TS/Escritorios/Help/HelpEscritorios";
 import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Advogados";
 export const help_infoDescription = "Advogados";
 
@@ -26,7 +26,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `advCargo`,
     caption: `Cargos`,
-    description: `Cargos relacionado a Advogados`,
+    description: `Cargos relacionado à entidade Advogados`,
     acceptedValues: `Cadastrados em Cargos`,
     required: false,
     relatedTable: (
@@ -79,7 +79,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `advEscritorio`,
     caption: `Escritorios`,
-    description: `Escritorios relacionado a Advogados`,
+    description: `Escritorios relacionado à entidade Advogados`,
     acceptedValues: `Cadastrados em Escritorios`,
     required: false,
     relatedTable: (
@@ -126,7 +126,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `advCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Advogados`,
+    description: `Cidade relacionado à entidade Advogados`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (

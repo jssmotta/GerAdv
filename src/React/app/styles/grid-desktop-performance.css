@@ -1,0 +1,102 @@
+/* CSS genérico para melhorar performance e scroll de todos os Grids Desktop */
+/* Arquivo: grid-desktop-performance.css */
+/* Aplicável a todos os grids desktop gerados automaticamente */
+
+/* ===== CONFIGURAÇÕES GERAIS DE SCROLL ===== */
+.grid-desktop-crud .k-grid-content {
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  max-height: 95vh;
+  -webkit-overflow-scrolling: touch;
+}
+
+.grid-desktop-crud .k-virtual-scrollable-wrap {
+  overflow-y: auto !important;
+}
+
+.grid-desktop-crud {
+  height: auto !important;
+  max-height: 95vh;
+}
+
+/* ===== MELHORIAS DE PERFORMANCE ===== */
+.grid-desktop-crud .k-virtual-content {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.grid-desktop-crud .k-grid-table {
+  table-layout: fixed;
+}
+
+/* ===== ELLIPSIS NAS CÉLULAS (SEM QUEBRA DE LINHA) ===== */
+.grid-desktop-crud .k-grid-table td {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.grid-desktop-crud .k-grid-header th {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ===== ESTILIZAÇÃO DE SCROLLBAR ===== */
+.grid-desktop-crud .k-grid-content::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.grid-desktop-crud .k-grid-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.grid-desktop-crud .k-grid-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+}
+
+.grid-desktop-crud .k-grid-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* ===== SUPORTE PARA TOUCH E MOBILE ===== */
+.grid-desktop-crud .k-grid-content {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+/* ===== OTIMIZAÇÕES PARA MUITOS ITENS ===== */
+.grid-desktop-crud .k-grid-container {
+  contain: layout style paint;
+}
+
+.grid-desktop-crud .k-grid-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-height: 800px) {
+  .grid-desktop-crud .k-grid-content {
+    max-height: 60vh;
+  }
+  
+  .grid-desktop-crud {
+    max-height: 95vh;
+  }
+}
+
+@media (max-height: 600px) {
+  .grid-desktop-crud .k-grid-content {
+    max-height: 50vh;
+  }
+  
+  .grid-desktop-crud {
+    max-height: 60vh;
+  }
+}

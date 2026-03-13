@@ -32,6 +32,8 @@ import {
 import { useClientesSociosFilter } from "../../Hooks/hookClientesSociosFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/ClientesSocios/ClientesSocios.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface ClientesSociosGridProps {
   selectItem?: (item: IClientesSocios) => void;
@@ -92,15 +94,21 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
       try {
         const offlineData = await clientessociosService.getAll(
           filtro ?? ({} as FilterClientesSocios),
-          (onlineData) => {
-            setClientesSociosData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setClientesSociosData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setClientesSociosData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setClientesSociosData(processed);
           setLoading(false);
         } else {
           setClientesSociosData([]);
@@ -113,6 +121,18 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useClientesSociosFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -131,6 +151,11 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (clientessocios: IClientesSocios) => {
     setSelectedClientesSocios(clientessocios);
     setShowInc(true);
@@ -142,8 +167,11 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedClientesSocios(ClientesSociosEmpty());
+  const handleAdd = async () => {
+    let empty = ClientesSociosEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -169,8 +197,24 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = clientessociosData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await clientessociosService.deleteClientesSocios(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -203,24 +247,6 @@ const ClientesSociosGrid: React.FC<ClientesSociosGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useClientesSociosFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

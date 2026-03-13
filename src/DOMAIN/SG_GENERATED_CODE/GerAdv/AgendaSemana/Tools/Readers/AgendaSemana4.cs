@@ -6,7 +6,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactory) : IAgendaSemanaReader
 {
     private readonly IFAgendaSemanaFactory _agendasemanaFactory = agendasemanaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<AgendaSemanaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AgendaSemanaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = AgendaSemanaDatabaseMetrics.StartTimer();
         var connStopwatch = AgendaSemanaDatabaseMetrics.StartTimer();
@@ -14,7 +14,7 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         {
             AgendaSemanaDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             AgendaSemanaDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAgendaSemana.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAgendaSemana.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             AgendaSemanaDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -34,7 +34,7 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         }
     }
 
-    private async Task<IEnumerable<AgendaSemanaResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<AgendaSemanaResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = AgendaSemanaDatabaseMetrics.StartTimer();
         var result = new List<AgendaSemanaResponseAll>(max);

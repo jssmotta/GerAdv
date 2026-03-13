@@ -87,20 +87,20 @@ public static class AppSGStartup
         var sendEmailApi = tempProvider.GetRequiredService<SendEmailApi>();
 
         // Register one health check instance per configured URI for the agenda notifier
-        foreach (var uri in urisNotificadorAgenda)
+        foreach (var tenantKey in urisNotificadorAgenda)
         {
-            var name = $"Notification-{uri}";
-            healthBuilder.AddCheck(name, new HealthCheckNotificadorService(uri, sendEmailApi, horaDia, horaNovos), tags: ["notify"]);
+            var name = $"Notification-{tenantKey}";
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorService(tenantKey, sendEmailApi, horaDia, horaNovos), tags: ["notify"]);
         }
 
  
         // Register one health check instance per configured URI for the aniversariantes notifier
-        foreach (var uri in urisAniversariantes)
+        foreach (var tenantKey in urisAniversariantes)
         {
-            var name = $"Aniversariantes-{uri}";
+            var name = $"Aniversariantes-{tenantKey}";
             // EnvioNotificacoesAniversariantes depends on SendEmailApi
             var envio = new EnvioNotificacoesAniversariantes(sendEmailApi);
-            healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(uri, envio, horaDia), tags: new[] { "Niver" });
+            healthBuilder.AddCheck(name, new HealthCheckNotificadorAniversariantesService(tenantKey, envio, horaDia), tags: new[] { "Niver" });
         }
 
  

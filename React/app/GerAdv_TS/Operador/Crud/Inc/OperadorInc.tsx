@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IOperadorFormProps } from "../../Interfaces/interface.Operador";
+import {
+  IOperador,
+  IOperadorFormProps,
+} from "../../Interfaces/interface.Operador";
 import { OperadorService } from "../../Services/Operador.service";
 import {
   useOperadorForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookOperador";
 import { OperadorEmpty } from "../../../Models/Operador";
 import { OperadorForm } from "../Forms/OperadorForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Operador/Operador.hooks";
 
 const OperadorInc: React.FC<IOperadorFormProps> = ({
   id,
@@ -37,13 +42,38 @@ const OperadorInc: React.FC<IOperadorFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadOperador } = useOperadorForm(
+  const { data, handleChange, setData } = useOperadorForm(
     OperadorEmpty(),
     operadorService,
   );
 
+  const originalRef = useRef<IOperador>(OperadorEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = OperadorEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await operadorService.fetchOperadorById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadOperador(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +87,44 @@ const OperadorInc: React.FC<IOperadorFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedOperador = await operadorService.saveOperador(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedOperador = await operadorService.saveOperador(currentRecord);
 
       if (savedOperador.id) {
         notificationService.showNotification(
@@ -94,7 +161,7 @@ const OperadorInc: React.FC<IOperadorFormProps> = ({
   };
 
   const handleReload = () => {
-    loadOperador(id);
+    handleLoad(id);
   };
 
   return (

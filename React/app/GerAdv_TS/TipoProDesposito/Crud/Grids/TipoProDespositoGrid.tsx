@@ -32,6 +32,8 @@ import {
 import { useTipoProDespositoFilter } from "../../Hooks/hookTipoProDespositoFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/TipoProDesposito/TipoProDesposito.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface TipoProDespositoGridProps {
   selectItem?: (item: ITipoProDesposito) => void;
@@ -92,15 +94,21 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
       try {
         const offlineData = await tipoprodespositoService.getAll(
           filtro ?? ({} as FilterTipoProDesposito),
-          (onlineData) => {
-            setTipoProDespositoData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setTipoProDespositoData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setTipoProDespositoData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setTipoProDespositoData(processed);
           setLoading(false);
         } else {
           setTipoProDespositoData([]);
@@ -115,6 +123,18 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useTipoProDespositoFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -133,6 +153,11 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (tipoprodesposito: ITipoProDesposito) => {
     setSelectedTipoProDesposito(tipoprodesposito);
     setShowInc(true);
@@ -144,8 +169,11 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedTipoProDesposito(TipoProDespositoEmpty());
+  const handleAdd = async () => {
+    let empty = TipoProDespositoEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -171,8 +199,24 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = tipoprodespositoData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await tipoprodespositoService.deleteTipoProDesposito(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -205,24 +249,6 @@ const TipoProDespositoGrid: React.FC<TipoProDespositoGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useTipoProDespositoFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

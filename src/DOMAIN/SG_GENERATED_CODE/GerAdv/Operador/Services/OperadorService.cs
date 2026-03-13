@@ -20,12 +20,12 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
     private readonly IOperadorValidation validation = validation;
     private readonly IOperadorWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    public async Task<ResultApi<IEnumerable<OperadorResponseAll>>> Filter(int max, Filters.FilterOperador filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<OperadorResponseAll>>> Filter(int max, Filters.FilterOperador filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Operador: URI inválida");
+            throw new Exception("Operador: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -39,28 +39,28 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroOperador(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            OperadorDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            OperadorDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Operador-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Operador-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<OperadorResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<OperadorResponseAll>>.Fail($"Operador - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<OperadorResponseAll>>.Fail($"Operador - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
     }
 
-    public async Task<ResultApi<OperadorResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<OperadorResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -84,20 +84,20 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            OperadorDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            OperadorDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Operador-GetById-{id}--{keyCache}", async cancel =>
+            OperadorDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            OperadorDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Operador-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                OperadorDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                OperadorDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<OperadorResponse>.NotFound($"Operador: Registro não encontrado para id {id}");
@@ -108,25 +108,25 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            OperadorDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<OperadorResponse>.Fail($"Operador, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            OperadorDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<OperadorResponse>.Fail($"Operador, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            OperadorDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            OperadorDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<OperadorResponse>.Fail($"Operador - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<OperadorResponse>.Fail($"Operador - {uri}-: GetById: {ex.Message}", 500);
+            OperadorDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<OperadorResponse>.Fail($"Operador - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<OperadorResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -134,11 +134,11 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             return ResultApi<AuditorResponse>.Fail("Operador: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Operador: Auditor não encontrado para id {id}");
@@ -149,11 +149,11 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         catch (Exception ex)
         {
             _logger.Error(ex, "Operador: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Operador - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Operador - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<OperadorResponse>> AddAndUpdate(Models.Operador? regOperador, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OperadorResponse>> AddAndUpdate(Models.Operador? regOperador, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regOperador == null)
@@ -161,14 +161,14 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             return ResultApi<OperadorResponse>.Fail("Operador: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Operador: URI inválida");
+            throw new Exception("Operador: TenantApp inválida");
         }
 
         var connectionStopwatch = OperadorDatabaseMetrics.StartTimer();
         var queryStopwatch = OperadorDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -177,9 +177,9 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
 
         try
         {
-            OperadorDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            OperadorDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regOperador, this, uri, oCnn);
+            OperadorDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            OperadorDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regOperador, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -187,12 +187,12 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (SGValidationException ex)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -201,16 +201,16 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         {
             using var saved = await writer.WriteAsync(regOperador, operadorId, oCnn);
             string tipoQuery = regOperador.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            OperadorDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            OperadorDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regOperador.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regOperador.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -218,14 +218,14 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regOperador, uri);
-            OperadorDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regOperador, tenantKey);
+            OperadorDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            OperadorDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<OperadorResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<OperadorResponse>> Validation(Models.Operador? regOperador, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OperadorResponse>> Validation(Models.Operador? regOperador, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regOperador == null)
@@ -233,14 +233,13 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             return ResultApi<OperadorResponse>.Fail("Operador: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Operador: URI inválida");
+            throw new Exception("Operador: TenantApp inválida");
         }
 
         var connectionStopwatch = OperadorDatabaseMetrics.StartTimer();
-        var queryStopwatch = OperadorDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -249,9 +248,9 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
 
         try
         {
-            OperadorDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            OperadorDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regOperador, this, uri, oCnn);
+            OperadorDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            OperadorDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regOperador, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -259,12 +258,12 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (SGValidationException ex)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -290,7 +289,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
     }
 
-    public async Task<ResultApi<OperadorResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<OperadorResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -298,9 +297,9 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Operador: URI inválida");
+            throw new Exception("Operador: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -309,7 +308,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             throw new Exception("Você não pode excluir a si mesmo.");
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = OperadorDatabaseMetrics.StartTimer();
         var queryStopwatch = OperadorDatabaseMetrics.StartTimer();
@@ -326,9 +325,9 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
 
         try
         {
-            OperadorDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            OperadorDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
+            OperadorDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            OperadorDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -336,25 +335,25 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (SGValidationException ex)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OperadorResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OperadorResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var operador = await reader.ReadAsync(id ?? default, oCnn);
         if (operador == null)
         {
-            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OperadorResponse>.NotFound($"Operador: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(operador, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(operador, tenantKey);
             if (beforeValidationBusness)
             {
                 var operWrite = await reader.ReadMAsync(id ?? default, oCnn);
@@ -366,22 +365,22 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
                 operWrite.Situacao = false;
                 operWrite.Excluido = true;
                 using var saved = await writer.WriteAsync(operWrite, nOperador, oCnn);
-                OperadorDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                OperadorDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(operador, uri);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(operador, tenantKey);
             return ResultApi<OperadorResponse>.Ok(operador);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(operador, uri);
-            OperadorDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(operador, tenantKey);
+            OperadorDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            OperadorDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<OperadorResponse>.Fail(ex.Message, 500);
         }
     }

@@ -10,7 +10,7 @@ using System.Diagnostics.Metrics;
 namespace MenphisSI.GerAdv.Metrics;
 /// <summary>
 /// OpenTelemetry metrics for the ProDespesas controller with tenant_id support
-/// All metrics include tenant_id (uri parameter) for multi-tenant observability
+/// All metrics include tenant_id (tenantKey parameter) for multi-tenant observability
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class ProDespesasMetrics
@@ -96,7 +96,7 @@ public static class ProDespesasMetrics
     /// <returns>Started Stopwatch</returns>
     public static Stopwatch StartTimer() => Stopwatch.StartNew();
     /// <summary>
-    /// Get tenant_id from HttpContext (alternative to using uri parameter)
+    /// Get tenant_id from HttpContext (alternative to using tenantKey parameter)
     /// </summary>
     /// <param name = "context">HttpContext</param>
     /// <returns>Tenant ID or null</returns>
@@ -110,10 +110,10 @@ public static class ProDespesasMetrics
     // ========================================
     /// <summary>
     /// Records a successful request WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordSuccess("GetAll", uri, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordSuccess("GetAll", tenantKey, stopwatch);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     /// <param name = "stopwatch">Stopwatch for duration</param>
     public static void RecordSuccess(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -134,7 +134,7 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records an error WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordError("GetAll", uri, ex, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordError("GetAll", tenantKey, ex, stopwatch);
     /// </summary>
     public static void RecordError(string operacao, string? tenantId, Exception ex, Stopwatch stopwatch)
     {
@@ -157,7 +157,7 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a not found (404) WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordNotFound("GetById", uri, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordNotFound("GetById", tenantKey, stopwatch);
     /// </summary>
     public static void RecordNotFound(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -178,7 +178,7 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a validation failure WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordInvalid("Create", uri, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordInvalid("Create", tenantKey, stopwatch);
     /// </summary>
     public static void RecordInvalid(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -200,7 +200,7 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a conflict (409) WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordConflict("Delete", uri, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordConflict("Delete", tenantKey, stopwatch);
     /// </summary>
     public static void RecordConflict(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -221,7 +221,7 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a bulkhead rejection WITH tenant_id tag
-    /// Usage: ProDespesasMetrics.RecordBulkheadRejection("GetAll", uri, stopwatch);
+    /// Usage: ProDespesasMetrics.RecordBulkheadRejection("GetAll", tenantKey, stopwatch);
     /// </summary>
     public static void RecordBulkheadRejection(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -247,10 +247,10 @@ public static class ProDespesasMetrics
     // ========================================
     /// <summary>
     /// Records the number of records returned in a query WITH tenant_id
-    /// Usage: ProDespesasMetrics.RecordRecordsCount(result?.Count() ?? 0, uri);
+    /// Usage: ProDespesasMetrics.RecordRecordsCount(result?.Count() ?? 0, tenantKey);
     /// </summary>
     /// <param name = "count">Number of records</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordRecordsCount(int count, string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -265,9 +265,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a created record (total counter) with tenant_id
-    /// Usage: ProDespesasMetrics.RecordCreated(uri);
+    /// Usage: ProDespesasMetrics.RecordCreated(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordCreated(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -282,9 +282,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records an updated record (total counter) with tenant_id
-    /// Usage: ProDespesasMetrics.RecordUpdated(uri);
+    /// Usage: ProDespesasMetrics.RecordUpdated(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordUpdated(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -299,9 +299,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a deleted record (total counter) with tenant_id
-    /// Usage: ProDespesasMetrics.RecordDeleted(uri);
+    /// Usage: ProDespesasMetrics.RecordDeleted(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordDeleted(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -316,9 +316,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a created record with hour tag and tenant_id
-    /// Usage: ProDespesasMetrics.RecordCreatedByHour(uri);
+    /// Usage: ProDespesasMetrics.RecordCreatedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordCreatedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -334,9 +334,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records an updated record with hour tag and tenant_id
-    /// Usage: ProDespesasMetrics.RecordUpdatedByHour(uri);
+    /// Usage: ProDespesasMetrics.RecordUpdatedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordUpdatedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -352,9 +352,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a deleted record with hour tag and tenant_id
-    /// Usage: ProDespesasMetrics.RecordDeletedByHour(uri);
+    /// Usage: ProDespesasMetrics.RecordDeletedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordDeletedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -370,9 +370,9 @@ public static class ProDespesasMetrics
 
     /// <summary>
     /// Records a read record with hour tag and tenant_id
-    /// Usage: ProDespesasMetrics.RecordReadByHour(uri);
+    /// Usage: ProDespesasMetrics.RecordReadByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordReadByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");

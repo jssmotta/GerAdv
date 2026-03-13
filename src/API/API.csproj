@@ -117,6 +117,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Services\" />
 		<Folder Include="SG_GENERATED_CODE\" />
 	</ItemGroup>
 

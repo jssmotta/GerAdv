@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsMobileHoook.tsx.txt - Versão Refatorada
+// GridsMobileHoook.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,9 +39,10 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useInstanciaGrid } from "../../Hooks/hookInstanciaGrid";
 import "@/app/styles/MobileCrudGrid.css";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import ViewMobile from "@/app/components/Cruds/ViewMobile";
 import ViewMobileContainer from "@/app/components/Cruds/ViewMobileContainer";
+import InstanciaHelpCrudButton from "../../Help/InstanciaHelpCrudButton";
 
 interface InstanciaGridProps {
   data: IInstancia[];
@@ -323,7 +324,10 @@ export const InstanciaGridMobileComponent = React.memo(
       <>
         {initialized && (
           <>
-            <PageTitle title="Instancia" />
+            <PageTitle
+              title="Instancia"
+              helpButton={<InstanciaHelpCrudButton isMobile={true} />}
+            />
 
             <ViewMobileContainer
               title="Instancia"

@@ -6,11 +6,11 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoProDespositoService
 {
-    Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> Filter(int max, Filters.FilterTipoProDesposito filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoProDespositoResponse>> AddAndUpdate(Models.TipoProDesposito? regTipoProDesposito, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoProDespositoResponse>> Validation(Models.TipoProDesposito? regTipoProDesposito, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoProDespositoResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoProDespositoResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoProDesposito? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> Filter(int max, Filters.FilterTipoProDesposito filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoProDespositoResponse>> AddAndUpdate(Models.TipoProDesposito? regTipoProDesposito, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoProDespositoResponse>> Validation(Models.TipoProDesposito? regTipoProDesposito, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoProDespositoResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoProDespositoResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoProDesposito? filter, string tenantKey = "", CancellationToken token = default);
 }

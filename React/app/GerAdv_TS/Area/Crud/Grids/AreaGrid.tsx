@@ -32,6 +32,8 @@ import {
 import { useAreaFilter } from "../../Hooks/hookAreaFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Area/Area.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface AreaGridProps {
   selectItem?: (item: IArea) => void;
@@ -84,15 +86,21 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await areaService.getAll(
           filtro ?? ({} as FilterArea),
-          (onlineData) => {
-            setAreaData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setAreaData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setAreaData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setAreaData(processed);
           setLoading(false);
         } else {
           setAreaData([]);
@@ -105,6 +113,18 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useAreaFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -122,6 +142,11 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (area: IArea) => {
     setSelectedArea(area);
     setShowInc(true);
@@ -133,8 +158,11 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedArea(AreaEmpty());
+  const handleAdd = async () => {
+    let empty = AreaEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -160,8 +188,24 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = areaData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await areaService.deleteArea(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -194,24 +238,6 @@ const AreaGrid: React.FC<AreaGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useAreaFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

@@ -15,7 +15,7 @@ import HelpArea from "@/app/GerAdv_TS/Area/Help/HelpArea";
 import HelpJustica from "@/app/GerAdv_TS/Justica/Help/HelpJustica";
 import HelpOperador from "@/app/GerAdv_TS/Operador/Help/HelpOperador";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Compromisso";
 export const help_infoDescription = "Compromisso";
 
@@ -63,7 +63,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Compromisso`,
+    description: `Cidade relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (
@@ -101,14 +101,14 @@ export const help_helpFields: HelpField[] = [
     columnName: `ageHrFinal`,
     caption: `HrFinal`,
     description: `HrFinal`,
-    acceptedValues: `DD/MM/AAAA`,
+    acceptedValues: `HH:MM — formato de hora 24h`,
     required: false,
     relatedTable: null,
   },
   {
     columnName: `ageAdvogado`,
     caption: `Advogados`,
-    description: `Advogados relacionado a Compromisso`,
+    description: `Advogados relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Advogados`,
     required: false,
     relatedTable: (
@@ -137,7 +137,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageFuncionario`,
     caption: `Colaborador`,
-    description: `Colaborador relacionado a Compromisso`,
+    description: `Colaborador relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Colaborador`,
     required: false,
     relatedTable: (
@@ -161,7 +161,7 @@ export const help_helpFields: HelpField[] = [
     columnName: `ageHora`,
     caption: `Hora`,
     description: `Hora`,
-    acceptedValues: `DD/MM/AAAA`,
+    acceptedValues: `HH:MM — formato de hora 24h`,
     required: false,
     relatedTable: null,
   },
@@ -176,7 +176,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageTipoCompromisso`,
     caption: `Tipo Compromisso`,
-    description: `Tipo Compromisso relacionado a Compromisso`,
+    description: `Tipo Compromisso relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Tipo Compromisso`,
     required: false,
     relatedTable: (
@@ -191,7 +191,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageCliente`,
     caption: `Clientes`,
-    description: `Clientes relacionado a Compromisso`,
+    description: `Clientes relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Clientes`,
     required: false,
     relatedTable: (
@@ -228,7 +228,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageArea`,
     caption: `Área`,
-    description: `Área relacionado a Compromisso`,
+    description: `Área relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Área`,
     required: false,
     relatedTable: (
@@ -241,7 +241,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageJustica`,
     caption: `Justiça`,
-    description: `Justiça relacionado a Compromisso`,
+    description: `Justiça relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Justiça`,
     required: false,
     relatedTable: (
@@ -278,7 +278,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `ageUsuario`,
     caption: `Operador`,
-    description: `Operador relacionado a Compromisso`,
+    description: `Operador relacionado à entidade Compromisso`,
     acceptedValues: `Cadastrados em Operador`,
     required: false,
     relatedTable: (

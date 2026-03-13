@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class CargosReader(IFCargosFactory cargosFactory) : ICargosReader
 {
     private readonly IFCargosFactory _cargosFactory = cargosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("carCodigo, carNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<CargosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("carCodigo, carNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<CargosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = CargosDatabaseMetrics.StartTimer();
         var connStopwatch = CargosDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class CargosReader(IFCargosFactory cargosFactory) : ICargosReader
         {
             CargosDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             CargosDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBCargos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBCargos.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             CargosDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class CargosReader(IFCargosFactory cargosFactory) : ICargosReader
         }
     }
 
-    private async Task<IEnumerable<CargosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<CargosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = CargosDatabaseMetrics.StartTimer();
         var result = new List<CargosResponseAll>(max);

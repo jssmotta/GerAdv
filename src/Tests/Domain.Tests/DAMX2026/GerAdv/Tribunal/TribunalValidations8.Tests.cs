@@ -12,7 +12,7 @@ public class TribunalValidationTests : IDisposable
     private readonly Mock<IAreaReader> _mockAreaReader;
     private readonly Mock<IJusticaReader> _mockJusticaReader;
     private readonly Mock<IInstanciaReader> _mockInstanciaReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public TribunalValidationTests()
     {
         _validation = new TribunalValidation();

@@ -175,10 +175,10 @@ export const useProDespesasList = (
 export function useValidationsProDespesas() {
   async function runValidation(
     data: IProDespesas,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const prodespesasApi = new ProDespesasApi(uri ?? "", token ?? "");
+    const prodespesasApi = new ProDespesasApi(tenantKey ?? "", token ?? "");
 
     const result = await prodespesasApi.validation(data);
 

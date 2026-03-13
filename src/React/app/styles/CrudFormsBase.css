@@ -1,0 +1,90 @@
+ .uppercase-input input {
+   text-transform: uppercase !important;
+ }
+
+ .uppercase-input .k-input {
+   text-transform: uppercase !important;
+ }
+
+ .k-current-filter-active {
+   background-color: var(--kendo-error-150) !important;
+ }
+
+ .k-current-filter-active .k-svg-icon svg {
+   fill: white !important;
+   stroke: white !important;
+ }
+
+ .invalid {
+   color: red;
+ }
+
+ .TitleMobile {
+   display: none;
+ }
+
+ .buttons-container {
+   order: -1;
+ }
+
+ button[aria-label*="close"] {
+   order: 1;
+ }
+
+ .colorCrudTextButton {
+   color: #000 !important;
+ }
+
+ .buttonCrudOk {
+   background-color: var(--color-menphissi) !important;
+   color: black !important;
+ }
+
+ .buttonCrudSair {
+   background-color: #73b9e7 !important;
+   color: black !important;
+ }
+
+ .k-window-titlebar-actions span {
+   color: #fff !important;
+ }
+
+ .k-window-titlebar-actions span {
+   color: #fff !important;
+ }
+
+ .buttons-window {
+   margin-left: 0;
+   order: -1;
+   display: block;
+   float: right;
+ }
+
+ .input-container {
+   width: 360px;
+ }
+
+ .form-spacer {
+   background: none;
+   border: none;
+ }
+
+ /* Ícones de ação em comboboxes */
+ /* MOVIDO PARA CrudPencil.css */
+
+ /* Estilos genéricos para botões de ação em comboboxes */
+ /* MOVIDO PARA CrudPencil.css */
+
+ .button-copy-clipboard {
+   max-width: 150px;
+ }
+
+ .k-window-content,
+ .k-prompt-container {
+   padding-block: 0;
+   padding-inline: 0;
+ }
+
+ .k-window-content {
+   padding: 5px !important;
+ }

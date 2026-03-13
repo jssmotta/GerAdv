@@ -32,6 +32,8 @@ import {
 import { useForoFilter } from "../../Hooks/hookForoFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Foro/Foro.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface ForoGridProps {
   selectItem?: (item: IForo) => void;
@@ -84,15 +86,21 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await foroService.getAll(
           filtro ?? ({} as FilterForo),
-          (onlineData) => {
-            setForoData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setForoData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setForoData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setForoData(processed);
           setLoading(false);
         } else {
           setForoData([]);
@@ -105,6 +113,18 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useForoFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -122,6 +142,11 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (foro: IForo) => {
     setSelectedForo(foro);
     setShowInc(true);
@@ -133,8 +158,11 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedForo(ForoEmpty());
+  const handleAdd = async () => {
+    let empty = ForoEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -160,8 +188,24 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = foroData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await foroService.deleteForo(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -194,24 +238,6 @@ const ForoGrid: React.FC<ForoGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useForoFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

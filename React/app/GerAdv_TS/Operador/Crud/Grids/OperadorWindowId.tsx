@@ -31,7 +31,10 @@ const OperadorWindowId: React.FC<OperadorWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const operadorService = useMemo(() => {
     return new OperadorService(
-      new OperadorApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new OperadorApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

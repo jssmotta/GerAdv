@@ -42,7 +42,7 @@ public static partial class DBUFDicInfo
     public static DBInfoSystem UfID => new(0, PTabelaNome, CampoCodigo, ID, 4, "Código", "Código", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
     public static DBInfoSystem UfPais => new(0, PTabelaNome, CampoCodigo, Pais, "Pais", "Pais", EDataTypeSystemInfo.SystemInfoForeingkey, DBPaisesDicInfo.CampoCodigo, DBPaisesDicInfo.TabelaNome, new DBPaisesODicInfo(), false, prefixo: "uf"); // DBI 11 
     public static DBInfoSystem UfTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "uf", isRequired: true);
-    public static DBInfoSystem UfDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
     public static DBInfoSystem UfGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "uf");
     public static DBInfoSystem UfQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "uf"); // DBI 11 
     public static DBInfoSystem UfDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "uf");

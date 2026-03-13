@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ICidade } from "@/app/GerAdv_TS/Cidade/Interfaces/interface.Cidade";
 import { CidadeGridAdapter } from "@/app/GerAdv_TS/Cidade/Adapter/CidadeGridAdapter";
 import CidadeGridContainer from "@/app/GerAdv_TS/Cidade/Components/CidadeGridContainer";

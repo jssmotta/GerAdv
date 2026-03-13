@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IOponentesFormProps } from "../../Interfaces/interface.Oponentes";
+import {
+  IOponentes,
+  IOponentesFormProps,
+} from "../../Interfaces/interface.Oponentes";
 import { OponentesService } from "../../Services/Oponentes.service";
 import {
   useOponentesForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookOponentes";
 import { OponentesEmpty } from "../../../Models/Oponentes";
 import { OponentesForm } from "../Forms/OponentesForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Oponentes/Oponentes.hooks";
 
 const OponentesInc: React.FC<IOponentesFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const OponentesInc: React.FC<IOponentesFormProps> = ({
   const router = useRouter();
 
   const oponentesService = new OponentesService(
-    new OponentesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new OponentesApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadOponentes } = useOponentesForm(
+  const { data, handleChange, setData } = useOponentesForm(
     OponentesEmpty(),
     oponentesService,
   );
 
+  const originalRef = useRef<IOponentes>(OponentesEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = OponentesEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await oponentesService.fetchOponentesById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadOponentes(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +90,45 @@ const OponentesInc: React.FC<IOponentesFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedOponentes = await oponentesService.saveOponentes(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedOponentes =
+        await oponentesService.saveOponentes(currentRecord);
 
       if (savedOponentes.id) {
         notificationService.showNotification(
@@ -94,7 +165,7 @@ const OponentesInc: React.FC<IOponentesFormProps> = ({
   };
 
   const handleReload = () => {
-    loadOponentes(id);
+    handleLoad(id);
   };
 
   return (

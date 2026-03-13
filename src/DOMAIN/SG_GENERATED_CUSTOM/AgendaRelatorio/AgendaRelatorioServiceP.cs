@@ -6,7 +6,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AgendaRelatorioService
 {
-    public Task<AgendaRelatorioResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default)
+    public Task<AgendaRelatorioResponse?> GetById(int id, [FromRoute, Required] string tenantKey = "", CancellationToken token = default)
     {
         throw new NotImplementedException();
     }

@@ -9,7 +9,7 @@ public class RitoValidationTests : IDisposable
     private readonly RitoValidation _validation;
     private readonly Mock<IRitoService> _mockRitoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public RitoValidationTests()
     {
         _validation = new RitoValidation();

@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ITiposAcao } from "@/app/GerAdv_TS/TiposAcao/Interfaces/interface.TiposAcao";
 import { TiposAcaoGridAdapter } from "@/app/GerAdv_TS/TiposAcao/Adapter/TiposAcaoGridAdapter";
 import TiposAcaoGridContainer from "@/app/GerAdv_TS/TiposAcao/Components/TiposAcaoGridContainer";

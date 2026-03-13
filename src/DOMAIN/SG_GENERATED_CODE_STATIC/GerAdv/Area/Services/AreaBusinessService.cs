@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AreaService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string tenantKey)
     {
         if (regArea == null)
         {
-            _logger.Warn("Area: BeforeDeleteAsync - regArea is null for uri = {0}", uri);
+            _logger.Warn("Area: BeforeDeleteAsync - regArea is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            AreaMetrics.RecordNotFound("BeforeDelete", uri, AreaMetrics.StartTimer());
+            AreaMetrics.RecordNotFound("BeforeDelete", tenantKey, AreaMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = AreaMetrics.StartTimer();
-        _logger.Debug("Area: BeforeDeleteAsync success for Id={0}, uri={1}", regArea.Id, uri);
+        _logger.Debug("Area: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regArea.Id, tenantKey);
         // record successful business layer pre-delete
-        AreaMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        AreaMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string tenantKey)
     {
         var sw = AreaMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Area: AfterDeleteAsync - Id={0}, uri={1}", regArea?.Id ?? 0, uri);
+        _logger.Info("Area: AfterDeleteAsync - Id={0}, tenantKey={1}", regArea?.Id ?? 0, tenantKey);
         // record delete metrics
-        AreaMetrics.RecordDeleted(uri);
-        AreaMetrics.RecordDeletedByHour(uri);
-        AreaMetrics.RecordSuccess("AfterDelete", uri, sw);
+        AreaMetrics.RecordDeleted(tenantKey);
+        AreaMetrics.RecordDeletedByHour(tenantKey);
+        AreaMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Area: DeleteErrorAsync - Id={0}, uri={1}", regArea?.Id ?? 0, uri);
+        _logger.Error("Area: DeleteErrorAsync - Id={0}, tenantKey={1}", regArea?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        AreaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AreaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AreaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AreaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<AreaResponse> AfterCreateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task<AreaResponse> AfterCreateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string tenantKey)
     {
         var sw = AreaMetrics.StartTimer();
         var result = regArea ?? new AreaResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Area: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Area: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        AreaMetrics.RecordCreated(uri);
-        AreaMetrics.RecordCreatedByHour(uri);
-        AreaMetrics.RecordSuccess("AfterCreate", uri, sw);
+        AreaMetrics.RecordCreated(tenantKey);
+        AreaMetrics.RecordCreatedByHour(tenantKey);
+        AreaMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<AreaResponse> AfterUpdateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string uri)
+    public async Task<AreaResponse> AfterUpdateAsync([FromBody] AreaResponse? regArea, [FromRoute, Required] string tenantKey)
     {
         var sw = AreaMetrics.StartTimer();
         var result = regArea ?? new AreaResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Area: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        AreaMetrics.RecordUpdated(uri);
-        AreaMetrics.RecordUpdatedByHour(uri);
-        AreaMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Area: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        AreaMetrics.RecordUpdated(tenantKey);
+        AreaMetrics.RecordUpdatedByHour(tenantKey);
+        AreaMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Area? regArea, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Area? regArea, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Area: AddAndUpdateErrorAsync - Id={0}, uri={1}", regArea?.Id ?? 0, uri);
+        _logger.Error("Area: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regArea?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        AreaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AreaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AreaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AreaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

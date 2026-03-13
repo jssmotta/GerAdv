@@ -1,0 +1,259 @@
+.form-container {
+  width: 99.5%;
+  min-height: 95%;
+  padding: 5px;
+  overflow: hidden;
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 5px;
+    align-items: start;
+  }
+
+  .grid-container>.input-container,
+  .grid-container>.input-container-icon,
+  .grid-container>.input-msi-combobox {
+    margin: 0;
+    padding: 0;
+  }
+
+  .grid-container .k-label,
+  .grid-container .k-floating-label {
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .grid-container .k-input,
+  .grid-container .k-combobox,
+  .grid-container .k-datepicker,
+  .grid-container .input-msi-combobox,
+  .grid-container .combobox-box-msi {
+    width: 360px !important;
+  }
+
+  @media (max-width: 768px) {
+    .grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.auditor-button {
+  background-color: var(--kendo-error-150) !important;
+  color: black !important;
+}
+
+.loaderGrid {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 100px;
+  max-height: 100px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: grid;
+  gap: 10px;
+}
+
+/* Aumentar combo (items per page) do pager e torná-lo consistente no dark mode */
+.k-pager .k-dropdown .k-input,
+.k-pager .k-input,
+.k-pager .k-select,
+.k-pager .k-dropdown-wrap,
+.k-pager .k-dropdown {
+  min-width: 72px !important;
+  width: auto !important;
+  padding: 6px 10px !important;
+  height: 36px !important;
+  line-height: 24px !important;
+  border-radius: 8px !important;
+  background-color: var(--input-bg, #1a1e24) !important;
+  color: var(--text-primary, #e8eaed) !important;
+  border: 1px solid var(--input-border, #4a5568) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Versão móvel ligeiramente menor para caber em telas estreitas */
+@media (max-width: 480px) {
+
+  .k-pager .k-dropdown .k-input,
+  .k-pager .k-input,
+  .k-pager .k-dropdown-wrap {
+    min-width: 56px !important;
+    height: 32px !important;
+    padding: 4px 8px !important;
+  }
+}
+
+/* Garantir contraste do ícone/triângulo dentro do combo */
+.k-pager .k-dropdown .k-select::after,
+.k-pager .k-dropdown .k-select .k-icon,
+.k-pager .k-dropdown .k-select svg {
+  color: var(--text-primary, #e8eaed) !important;
+  fill: var(--text-primary, #e8eaed) !important;
+}
+
+/* Regras mais específicas e de alta prioridade caso Kendo injete outras classes/inline styles */
+body .k-grid .k-pager .k-dropdown .k-input,
+body .k-grid .k-pager .k-dropdown .k-input .k-input-inner,
+body .k-grid .k-pager .k-dropdown-wrap,
+body .k-grid .k-pager .k-dropdownlist .k-input,
+.k-grid .k-pager .k-dropdown .k-input,
+.k-grid .k-pager .k-input,
+.k-grid .k-pager input.k-input,
+.k-pager .k-dropdown .k-input,
+.k-pager input.k-input,
+.k-pager .k-dropdownlist .k-input {
+  min-width: 88px !important;
+  width: 88px !important;
+  padding: 8px 12px !important;
+  height: 40px !important;
+  line-height: 24px !important;
+  border-radius: 10px !important;
+  background-color: var(--input-bg, #1a1e24) !important;
+  color: var(--text-primary, #e8eaed) !important;
+  border: 1px solid var(--input-border, #4a5568) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Forçar o inner element do Kendo DropdownList */
+body .k-grid .k-pager .k-dropdownlist .k-input .k-input-inner,
+.k-pager .k-dropdownlist .k-input .k-input-inner {
+  min-width: 88px !important;
+  width: 88px !important;
+  height: 40px !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Se o widget estiver recebendo inline background branco, forçar transparência */
+.k-pager .k-dropdown .k-input[style],
+.k-pager .k-input[style],
+.k-pager .k-dropdownlist .k-input[style] {
+  background-color: var(--input-bg, #1a1e24) !important;
+  color: var(--text-primary, #e8eaed) !important;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.blink {
+  animation: blink 3.2s ease-in-out infinite;
+}
+
+
+.k-grid-toolbar {
+  border-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+ 
+  .input-title-container-bottom,
+  .block-bottom-container > .input-container,
+  .block-bottom-container > .input-container-check {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+}
+
+@media (min-width: 768px) {
+
+.input-title-container-bottom {
+  min-height: 100px;
+  min-width: 120px;  
+}
+
+.block-bottom-container {
+  width: 100%;  
+  max-height: 120px;
+  margin-top: 40px;
+}
+
+.block-bottom-container-max100 {
+  min-width: 100%;
+}
+
+.block-bottom-container-max100 > .input-container,
+.block-bottom-container-max100 > .input-container-check  {
+  display: block !important;
+  float: left !important;    
+  max-width: 120px;  
+}
+
+.block-bottom-container-wide {
+  display: block !important;
+  float: left !important;
+  min-width: 100%;  
+}
+
+.block-bottom-container-wide > .input-container,
+.block-bottom-container-wide > .input-container-check  {
+  display: block !important;
+  float: left !important;    
+  max-width: 120px;
+}
+ 
+.input-title-container-bottom,
+.block-bottom-container > .input-container,
+.block-bottom-container > .input-container-check  {
+  display: block !important;
+  float: left !important;
+  min-width: 100px;  
+}
+
+
+.input-container-bottom-input {
+  float: right !important;    
+  margin-right: 0;  
+}
+
+}
+
+.input-container-timepicker {
+  max-width: 300px !important;
+  padding-bottom: 12px !important;
+}
+
+.input-time-picker,  
+.k-timepicker .k-input.input-time-picker
+{
+  max-width: 100px !important;
+
+}
+
+.input-time-label {
+  margin-bottom: 15px !important;
+  display: block !important;
+}
+
+.input-container, .input-default-main {
+    margin-bottom: 20px !important;
+}

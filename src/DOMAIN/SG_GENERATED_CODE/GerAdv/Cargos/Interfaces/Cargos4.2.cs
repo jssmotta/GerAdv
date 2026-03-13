@@ -10,11 +10,11 @@ public partial interface ICargosReader
     CargosResponse? Read(FCargos dbRec, MsiSqlConnection? oCnn);
     CargosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     CargosResponse? Read(FCargos dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     CargosResponseAll? ReadAll(FCargos dbRec, IDataRecord dr);
     CargosResponseAll? ReadAll(SG.GerAdv.DBCargos dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<CargosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<CargosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -176,14 +176,14 @@ public class AdvogadosReaderTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var uri = "test-uri"; // This would need to be a valid URI in actual implementation
+        var tenantKey = "test-tenantKey"; // This would need to be a valid URI in actual implementation
         var cWhere = "advCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "advnome";
         // Act & Assert
         try
         {
-            var result = await _advogadosReader.ListarNAsync(max, uri, cWhere, parameters, order);
+            var result = await _advogadosReader.ListarNAsync(max, tenantKey, cWhere, parameters, order);
             // If we get here, the method executed successfully
             result.Should().NotBeNull();
             _output?.WriteLine($"ListarN returned result");
@@ -203,12 +203,12 @@ public class AdvogadosReaderTests : IDisposable
     {
         // Arrange
         var max = 0;
-        var uri = string.Empty; // Empty URI should cause an exception
+        var tenantKey = string.Empty; // Empty URI should cause an exception
         var cWhere = string.Empty;
         var parameters = new List<SqlParameter>();
         var order = string.Empty;
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosReader.ListarNAsync(max, uri, cWhere, parameters, order));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosReader.ListarNAsync(max, tenantKey, cWhere, parameters, order));
     }
 
 #endregion
@@ -686,13 +686,13 @@ public class AdvogadosReaderTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var uri = "test-uri"; // Invalid URI
+        var tenantKey = "test-tenantKey"; // Invalid URI
         var cWhere = "";
         var parameters = new List<SqlParameter>();
         var order = "";
         // Act & Assert
         // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosReader.ListarNAsync(max, uri, cWhere, parameters, order));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosReader.ListarNAsync(max, tenantKey, cWhere, parameters, order));
     }
 
 #endregion

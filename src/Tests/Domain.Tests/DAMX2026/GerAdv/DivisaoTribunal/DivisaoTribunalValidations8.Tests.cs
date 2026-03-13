@@ -14,7 +14,7 @@ public class DivisaoTribunalValidationTests : IDisposable
     private readonly Mock<ICidadeReader> _mockCidadeReader;
     private readonly Mock<IForoReader> _mockForoReader;
     private readonly Mock<ITribunalReader> _mockTribunalReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public DivisaoTribunalValidationTests()
     {
         _validation = new DivisaoTribunalValidation();

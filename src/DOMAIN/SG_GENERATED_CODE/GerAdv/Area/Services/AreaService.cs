@@ -24,12 +24,12 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly ITipoRecursoService tiporecursoService = tiporecursoService;
     private readonly ITribunalService tribunalService = tribunalService;
-    public async Task<ResultApi<IEnumerable<AreaResponseAll>>> Filter(int max, Filters.FilterArea filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AreaResponseAll>>> Filter(int max, Filters.FilterArea filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Area: URI inválida");
+            throw new Exception("Area: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -43,28 +43,28 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroArea(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            AreaDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            AreaDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Area-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Area-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<AreaResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            AreaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<AreaResponseAll>>.Fail($"Area - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            AreaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<AreaResponseAll>>.Fail($"Area - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
     }
 
-    public async Task<ResultApi<AreaResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AreaResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -88,20 +88,20 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            AreaDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            AreaDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Area-GetById-{id}--{keyCache}", async cancel =>
+            AreaDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            AreaDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Area-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                AreaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                AreaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            AreaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<AreaResponse>.NotFound($"Area: Registro não encontrado para id {id}");
@@ -112,25 +112,25 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            AreaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            AreaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AreaResponse>.Fail($"Area, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            AreaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            AreaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AreaResponse>.Fail($"Area, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AreaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            AreaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AreaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            AreaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<AreaResponse>.Fail($"Area - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AreaResponse>.Fail($"Area - {uri}-: GetById: {ex.Message}", 500);
+            AreaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AreaResponse>.Fail($"Area - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<AreaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -138,11 +138,11 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             return ResultApi<AuditorResponse>.Fail("Area: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Area: Auditor não encontrado para id {id}");
@@ -153,11 +153,11 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         catch (Exception ex)
         {
             _logger.Error(ex, "Area: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Area - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Area - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<AreaResponse>> AddAndUpdate(Models.Area? regArea, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AreaResponse>> AddAndUpdate(Models.Area? regArea, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regArea == null)
@@ -165,14 +165,14 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             return ResultApi<AreaResponse>.Fail("Area: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Area: URI inválida");
+            throw new Exception("Area: TenantApp inválida");
         }
 
         var connectionStopwatch = AreaDatabaseMetrics.StartTimer();
         var queryStopwatch = AreaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -181,9 +181,9 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
 
         try
         {
-            AreaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            AreaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
+            AreaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            AreaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regArea, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -191,12 +191,12 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (SGValidationException ex)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -205,16 +205,16 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         {
             using var saved = await writer.WriteAsync(regArea, operadorId, oCnn);
             string tipoQuery = regArea.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            AreaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            AreaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regArea.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regArea.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -222,14 +222,14 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regArea, uri);
-            AreaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regArea, tenantKey);
+            AreaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            AreaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<AreaResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<AreaResponse>> Validation(Models.Area? regArea, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AreaResponse>> Validation(Models.Area? regArea, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regArea == null)
@@ -237,14 +237,13 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             return ResultApi<AreaResponse>.Fail("Area: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Area: URI inválida");
+            throw new Exception("Area: TenantApp inválida");
         }
 
         var connectionStopwatch = AreaDatabaseMetrics.StartTimer();
-        var queryStopwatch = AreaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -253,9 +252,9 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
 
         try
         {
-            AreaDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            AreaDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
+            AreaDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            AreaDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regArea, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -263,12 +262,12 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (SGValidationException ex)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -294,7 +293,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
     }
 
-    public async Task<ResultApi<AreaResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AreaResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -302,13 +301,13 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Area: URI inválida");
+            throw new Exception("Area: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = AreaDatabaseMetrics.StartTimer();
         var queryStopwatch = AreaDatabaseMetrics.StartTimer();
@@ -319,9 +318,9 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
 
         try
         {
-            AreaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            AreaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, tiporecursoService, tribunalService, uri, oCnn);
+            AreaDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            AreaDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, tiporecursoService, tribunalService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -329,44 +328,44 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (SGValidationException ex)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AreaResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AreaResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var area = await reader.ReadAsync(id ?? default, oCnn);
         if (area == null)
         {
-            AreaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AreaResponse>.NotFound($"Area: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(area, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(area, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(area, nOperador, oCnn);
-                AreaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                AreaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            AreaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(area, uri);
+            AreaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(area, tenantKey);
             return ResultApi<AreaResponse>.Ok(area);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(area, uri);
-            AreaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            AreaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(area, tenantKey);
+            AreaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            AreaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AreaResponse>.Fail(ex.Message, 500);
         }
     }

@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class InstanciaService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string tenantKey)
     {
         if (regInstancia == null)
         {
-            _logger.Warn("Instancia: BeforeDeleteAsync - regInstancia is null for uri = {0}", uri);
+            _logger.Warn("Instancia: BeforeDeleteAsync - regInstancia is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            InstanciaMetrics.RecordNotFound("BeforeDelete", uri, InstanciaMetrics.StartTimer());
+            InstanciaMetrics.RecordNotFound("BeforeDelete", tenantKey, InstanciaMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = InstanciaMetrics.StartTimer();
-        _logger.Debug("Instancia: BeforeDeleteAsync success for Id={0}, uri={1}", regInstancia.Id, uri);
+        _logger.Debug("Instancia: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regInstancia.Id, tenantKey);
         // record successful business layer pre-delete
-        InstanciaMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        InstanciaMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string tenantKey)
     {
         var sw = InstanciaMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Instancia: AfterDeleteAsync - Id={0}, uri={1}", regInstancia?.Id ?? 0, uri);
+        _logger.Info("Instancia: AfterDeleteAsync - Id={0}, tenantKey={1}", regInstancia?.Id ?? 0, tenantKey);
         // record delete metrics
-        InstanciaMetrics.RecordDeleted(uri);
-        InstanciaMetrics.RecordDeletedByHour(uri);
-        InstanciaMetrics.RecordSuccess("AfterDelete", uri, sw);
+        InstanciaMetrics.RecordDeleted(tenantKey);
+        InstanciaMetrics.RecordDeletedByHour(tenantKey);
+        InstanciaMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Instancia: DeleteErrorAsync - Id={0}, uri={1}", regInstancia?.Id ?? 0, uri);
+        _logger.Error("Instancia: DeleteErrorAsync - Id={0}, tenantKey={1}", regInstancia?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        InstanciaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        InstanciaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        InstanciaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        InstanciaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<InstanciaResponse> AfterCreateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse> AfterCreateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string tenantKey)
     {
         var sw = InstanciaMetrics.StartTimer();
         var result = regInstancia ?? new InstanciaResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Instancia: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Instancia: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        InstanciaMetrics.RecordCreated(uri);
-        InstanciaMetrics.RecordCreatedByHour(uri);
-        InstanciaMetrics.RecordSuccess("AfterCreate", uri, sw);
+        InstanciaMetrics.RecordCreated(tenantKey);
+        InstanciaMetrics.RecordCreatedByHour(tenantKey);
+        InstanciaMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<InstanciaResponse> AfterUpdateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse> AfterUpdateAsync([FromBody] InstanciaResponse? regInstancia, [FromRoute, Required] string tenantKey)
     {
         var sw = InstanciaMetrics.StartTimer();
         var result = regInstancia ?? new InstanciaResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Instancia: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        InstanciaMetrics.RecordUpdated(uri);
-        InstanciaMetrics.RecordUpdatedByHour(uri);
-        InstanciaMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Instancia: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        InstanciaMetrics.RecordUpdated(tenantKey);
+        InstanciaMetrics.RecordUpdatedByHour(tenantKey);
+        InstanciaMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Instancia? regInstancia, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Instancia? regInstancia, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Instancia: AddAndUpdateErrorAsync - Id={0}, uri={1}", regInstancia?.Id ?? 0, uri);
+        _logger.Error("Instancia: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regInstancia?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        InstanciaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        InstanciaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        InstanciaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        InstanciaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

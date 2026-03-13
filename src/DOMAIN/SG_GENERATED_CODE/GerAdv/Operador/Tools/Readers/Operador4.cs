@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperadorReader
 {
     private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<OperadorResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<OperadorResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = OperadorDatabaseMetrics.StartTimer();
         var connStopwatch = OperadorDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
         {
             OperadorDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             OperadorDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBOperador.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBOperador.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             OperadorDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
         }
     }
 
-    private async Task<IEnumerable<OperadorResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<OperadorResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = OperadorDatabaseMetrics.StartTimer();
         var result = new List<OperadorResponseAll>(max);

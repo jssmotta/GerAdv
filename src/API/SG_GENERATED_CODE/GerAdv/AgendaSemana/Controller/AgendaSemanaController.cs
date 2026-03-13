@@ -4,7 +4,7 @@
 // Entity:AgendaSemana
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaService) : ControllerBase
@@ -14,13 +14,13 @@ public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaSer
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AgendaSemanaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AgendaSemanaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaSemana filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaSemanaMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            AgendaSemanaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AgendaSemanaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -28,22 +28,22 @@ public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaSer
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendasemanaService.Filter(max, filter, uri);
+                return await _agendasemanaService.Filter(max, filter, tenantKey);
             });
-            AgendaSemanaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AgendaSemanaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AgendaSemanaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AgendaSemanaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaSemanaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("AgendaSemana: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaSemanaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("AgendaSemana: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaSemanaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "AgendaSemana: Filter failed with exception for uri = {0}", uri);
+            AgendaSemanaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "AgendaSemana: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Fail(ex.Message, 500));
         }
     }

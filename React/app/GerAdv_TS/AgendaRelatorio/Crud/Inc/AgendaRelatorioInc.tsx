@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IAgendaRelatorioFormProps } from "../../Interfaces/interface.AgendaRelatorio";
+import {
+  IAgendaRelatorio,
+  IAgendaRelatorioFormProps,
+} from "../../Interfaces/interface.AgendaRelatorio";
 import { AgendaRelatorioService } from "../../Services/AgendaRelatorio.service";
 import {
   useAgendaRelatorioForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookAgendaRelatorio";
 import { AgendaRelatorioEmpty } from "../../../Models/AgendaRelatorio";
 import { AgendaRelatorioForm } from "../Forms/AgendaRelatorioForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/AgendaRelatorio/AgendaRelatorio.hooks";
 
 const AgendaRelatorioInc: React.FC<IAgendaRelatorioFormProps> = ({
   id,
@@ -40,13 +45,39 @@ const AgendaRelatorioInc: React.FC<IAgendaRelatorioFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadAgendaRelatorio } = useAgendaRelatorioForm(
+  const { data, handleChange, setData } = useAgendaRelatorioForm(
     AgendaRelatorioEmpty(),
     agendarelatorioService,
   );
 
+  const originalRef = useRef<IAgendaRelatorio>(AgendaRelatorioEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = AgendaRelatorioEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record =
+        await agendarelatorioService.fetchAgendaRelatorioById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadAgendaRelatorio(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,8 +91,45 @@ const AgendaRelatorioInc: React.FC<IAgendaRelatorioFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
       const savedAgendaRelatorio =
-        await agendarelatorioService.saveAgendaRelatorio(data);
+        await agendarelatorioService.saveAgendaRelatorio(currentRecord);
 
       if (savedAgendaRelatorio.id) {
         notificationService.showNotification(
@@ -98,7 +166,7 @@ const AgendaRelatorioInc: React.FC<IAgendaRelatorioFormProps> = ({
   };
 
   const handleReload = () => {
-    loadAgendaRelatorio(id);
+    handleLoad(id);
   };
 
   return (

@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IForoFormProps } from "../../Interfaces/interface.Foro";
+import { IForo, IForoFormProps } from "../../Interfaces/interface.Foro";
 import { ForoService } from "../../Services/Foro.service";
 import { useForoForm, useValidationsForo } from "../../Hooks/hookForo";
 import { ForoEmpty } from "../../../Models/Foro";
 import { ForoForm } from "../Forms/ForoForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Foro/Foro.hooks";
 
 const ForoInc: React.FC<IForoFormProps> = ({
   id,
@@ -34,13 +36,35 @@ const ForoInc: React.FC<IForoFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadForo } = useForoForm(
-    ForoEmpty(),
-    foroService,
-  );
+  const { data, handleChange, setData } = useForoForm(ForoEmpty(), foroService);
+
+  const originalRef = useRef<IForo>(ForoEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = ForoEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await foroService.fetchForoById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
 
   useEffect(() => {
-    loadForo(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +78,44 @@ const ForoInc: React.FC<IForoFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedForo = await foroService.saveForo(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedForo = await foroService.saveForo(currentRecord);
 
       if (savedForo.id) {
         notificationService.showNotification(
@@ -91,7 +152,7 @@ const ForoInc: React.FC<IForoFormProps> = ({
   };
 
   const handleReload = () => {
-    loadForo(id);
+    handleLoad(id);
   };
 
   return (

@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsDesktopHoook.tsx - Versão Refatorada
+// GridsDesktopHoook1.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,7 +39,8 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useCargosGrid } from "../../Hooks/hookCargosGrid";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
 import "@/app/styles/grid-desktop-performance.css";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
+import CargosHelpCrudButton from "../../Help/CargosHelpCrudButton";
 
 interface CargosGridProps {
   data: ICargos[];
@@ -533,7 +534,10 @@ export const CargosGridDesktopComponent = React.memo(
             <GridToolbar>
               {toolbar}
 
-              <PageTitle title="Cargos" />
+              <PageTitle
+                title="Cargos"
+                helpButton={<CargosHelpCrudButton isMobile={false} />}
+              />
             </GridToolbar>
             {finalGridColumns}
           </Grid>

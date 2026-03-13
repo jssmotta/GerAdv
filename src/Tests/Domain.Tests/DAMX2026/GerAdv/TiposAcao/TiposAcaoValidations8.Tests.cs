@@ -9,7 +9,7 @@ public class TiposAcaoValidationTests : IDisposable
     private readonly TiposAcaoValidation _validation;
     private readonly Mock<ITiposAcaoService> _mockTiposAcaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public TiposAcaoValidationTests()
     {
         _validation = new TiposAcaoValidation();

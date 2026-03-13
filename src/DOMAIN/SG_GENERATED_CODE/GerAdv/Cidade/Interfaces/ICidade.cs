@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ICidadeService
 {
-    Task<ResultApi<IEnumerable<CidadeResponseAll>>> Filter(int max, Filters.FilterCidade filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CidadeResponse>> AddAndUpdate(Models.Cidade? regCidade, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CidadeResponse>> Validation(Models.Cidade? regCidade, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CidadeResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CidadeResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<CidadeResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterCidade? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<CidadeResponseAll>>> Filter(int max, Filters.FilterCidade filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CidadeResponse>> AddAndUpdate(Models.Cidade? regCidade, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CidadeResponse>> Validation(Models.Cidade? regCidade, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CidadeResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CidadeResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<CidadeResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterCidade? filter, string tenantKey = "", CancellationToken token = default);
 }

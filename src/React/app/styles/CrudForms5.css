@@ -1,0 +1,15 @@
+.form-container5 {
+  width: 100%;
+  padding: 5px;
+  min-height: 95%;
+  overflow: hidden;
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  
+}
+

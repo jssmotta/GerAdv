@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITribunalService
 {
-    Task<ResultApi<IEnumerable<TribunalResponseAll>>> Filter(int max, Filters.FilterTribunal filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TribunalResponse>> AddAndUpdate(Models.Tribunal? regTribunal, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TribunalResponse>> Validation(Models.Tribunal? regTribunal, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TribunalResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TribunalResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<TribunalResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTribunal? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TribunalResponseAll>>> Filter(int max, Filters.FilterTribunal filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TribunalResponse>> AddAndUpdate(Models.Tribunal? regTribunal, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TribunalResponse>> Validation(Models.Tribunal? regTribunal, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TribunalResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TribunalResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TribunalResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTribunal? filter, string tenantKey = "", CancellationToken token = default);
 }

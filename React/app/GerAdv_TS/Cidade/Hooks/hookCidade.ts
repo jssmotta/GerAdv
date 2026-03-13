@@ -173,10 +173,10 @@ export const useCidadeList = (
 export function useValidationsCidade() {
   async function runValidation(
     data: ICidade,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const cidadeApi = new CidadeApi(uri ?? "", token ?? "");
+    const cidadeApi = new CidadeApi(tenantKey ?? "", token ?? "");
 
     const result = await cidadeApi.validation(data);
 

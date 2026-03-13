@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TiposAcaoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         if (regTiposAcao == null)
         {
-            _logger.Warn("TiposAcao: BeforeDeleteAsync - regTiposAcao is null for uri = {0}", uri);
+            _logger.Warn("TiposAcao: BeforeDeleteAsync - regTiposAcao is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            TiposAcaoMetrics.RecordNotFound("BeforeDelete", uri, TiposAcaoMetrics.StartTimer());
+            TiposAcaoMetrics.RecordNotFound("BeforeDelete", tenantKey, TiposAcaoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = TiposAcaoMetrics.StartTimer();
-        _logger.Debug("TiposAcao: BeforeDeleteAsync success for Id={0}, uri={1}", regTiposAcao.Id, uri);
+        _logger.Debug("TiposAcao: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regTiposAcao.Id, tenantKey);
         // record successful business layer pre-delete
-        TiposAcaoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        TiposAcaoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = TiposAcaoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("TiposAcao: AfterDeleteAsync - Id={0}, uri={1}", regTiposAcao?.Id ?? 0, uri);
+        _logger.Info("TiposAcao: AfterDeleteAsync - Id={0}, tenantKey={1}", regTiposAcao?.Id ?? 0, tenantKey);
         // record delete metrics
-        TiposAcaoMetrics.RecordDeleted(uri);
-        TiposAcaoMetrics.RecordDeletedByHour(uri);
-        TiposAcaoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        TiposAcaoMetrics.RecordDeleted(tenantKey);
+        TiposAcaoMetrics.RecordDeletedByHour(tenantKey);
+        TiposAcaoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("TiposAcao: DeleteErrorAsync - Id={0}, uri={1}", regTiposAcao?.Id ?? 0, uri);
+        _logger.Error("TiposAcao: DeleteErrorAsync - Id={0}, tenantKey={1}", regTiposAcao?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        TiposAcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TiposAcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TiposAcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TiposAcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<TiposAcaoResponse> AfterCreateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task<TiposAcaoResponse> AfterCreateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = TiposAcaoMetrics.StartTimer();
         var result = regTiposAcao ?? new TiposAcaoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("TiposAcao: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("TiposAcao: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        TiposAcaoMetrics.RecordCreated(uri);
-        TiposAcaoMetrics.RecordCreatedByHour(uri);
-        TiposAcaoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        TiposAcaoMetrics.RecordCreated(tenantKey);
+        TiposAcaoMetrics.RecordCreatedByHour(tenantKey);
+        TiposAcaoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<TiposAcaoResponse> AfterUpdateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task<TiposAcaoResponse> AfterUpdateAsync([FromBody] TiposAcaoResponse? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = TiposAcaoMetrics.StartTimer();
         var result = regTiposAcao ?? new TiposAcaoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("TiposAcao: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        TiposAcaoMetrics.RecordUpdated(uri);
-        TiposAcaoMetrics.RecordUpdatedByHour(uri);
-        TiposAcaoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("TiposAcao: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        TiposAcaoMetrics.RecordUpdated(tenantKey);
+        TiposAcaoMetrics.RecordUpdatedByHour(tenantKey);
+        TiposAcaoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.TiposAcao? regTiposAcao, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.TiposAcao? regTiposAcao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("TiposAcao: AddAndUpdateErrorAsync - Id={0}, uri={1}", regTiposAcao?.Id ?? 0, uri);
+        _logger.Error("TiposAcao: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regTiposAcao?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        TiposAcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TiposAcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TiposAcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TiposAcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

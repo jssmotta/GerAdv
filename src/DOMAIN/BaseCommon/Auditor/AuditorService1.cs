@@ -10,7 +10,7 @@ public class AuditorService : AuditorServiceBase
     {
     }
 
-    public override async Task<bool> CheckAuditor(AuditorRequest request, string uri, CancellationToken cancellationToken)
+    public override async Task<bool> CheckAuditor(AuditorRequest request, string tenantKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -22,7 +22,7 @@ public class AuditorService : AuditorServiceBase
         if (dicInfo is null || !dicInfo.HasAuditor())
             return false;
 
-        using var oCnn = await ConfiguracoesSys.GetConnectionByUriRwAsync(uri);
+        using var oCnn = await ConfiguracoesSys.GetConnectionByUriRwAsync(tenantKey);
 
         var sqlUpdate = $"UPDATE {dicInfo.ITabelaNome().dbo(oCnn)} set {dicInfo.IPrefix()}Visto=1 WHERE {dicInfo.IFieldId()}={request.Id};";
 

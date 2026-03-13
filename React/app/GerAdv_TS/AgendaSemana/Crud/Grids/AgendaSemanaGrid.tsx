@@ -32,6 +32,8 @@ import {
 import { useAgendaSemanaFilter } from "../../Hooks/hookAgendaSemanaFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/AgendaSemana/AgendaSemana.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface AgendaSemanaGridProps {
   selectItem?: (item: IAgendaSemana) => void;
@@ -58,7 +60,10 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
 
   const agendasemanaService = useMemo(() => {
     return new AgendaSemanaService(
-      new AgendaSemanaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new AgendaSemanaApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await agendasemanaService.getAll(
           filtro ?? ({} as FilterAgendaSemana),
-          (onlineData) => {
-            setAgendaSemanaData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setAgendaSemanaData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setAgendaSemanaData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setAgendaSemanaData(processed);
           setLoading(false);
         } else {
           setAgendaSemanaData([]);
@@ -106,6 +117,18 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useAgendaSemanaFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -124,6 +147,11 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (agendasemana: IAgendaSemana) => {
     setSelectedAgendaSemana(agendasemana);
     setShowInc(true);
@@ -135,8 +163,11 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedAgendaSemana(AgendaSemanaEmpty());
+  const handleAdd = async () => {
+    let empty = AgendaSemanaEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -162,8 +193,24 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = agendasemanaData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await agendasemanaService.deleteAgendaSemana(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -196,24 +243,6 @@ const AgendaSemanaGrid: React.FC<AgendaSemanaGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useAgendaSemanaFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

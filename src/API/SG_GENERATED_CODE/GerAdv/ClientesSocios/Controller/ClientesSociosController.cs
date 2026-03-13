@@ -4,7 +4,7 @@
 // Entity:ClientesSocios
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class ClientesSociosController(IClientesSociosService clientessociosService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ClientesSociosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ClientesSociosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.GetAll(max, uri);
+                return await _clientessociosService.GetAll(max, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ClientesSociosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: GetAll failed with exception for uri = {0}", uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ClientesSociosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ClientesSociosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterClientesSocios filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ClientesSociosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterClientesSocios filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            ClientesSociosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.Filter(max, filter, uri);
+                return await _clientessociosService.Filter(max, filter, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ClientesSociosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: Filter failed with exception for uri = {0}", uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ClientesSociosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.GetById(id, uri, token);
+                return await _clientessociosService.GetById(id, tenantKey, token);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ClientesSociosMetrics.RecordReadByHour(uri);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ClientesSociosMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ClientesSociosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: GetById failed with exception for id = {0}, {1}", id, uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ClientesSociosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.GetAuditor(id, uri, token);
+                return await _clientessociosService.GetAuditor(id, tenantKey, token);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientesSocios? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientesSocios? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            ClientesSociosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.GetListN(max, filtro, uri);
+                return await _clientessociosService.GetListN(max, filtro, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ClientesSociosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: GetListN failed with exception for uri = {0}", uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<ClientesSociosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> AddAndUpdate([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> AddAndUpdate([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         var isNew = regClientesSocios.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            ClientesSociosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.AddAndUpdate(regClientesSocios, uri);
+                return await _clientessociosService.AddAndUpdate(regClientesSocios, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                ClientesSociosMetrics.RecordCreated(uri);
-                ClientesSociosMetrics.RecordCreatedByHour(uri);
+                ClientesSociosMetrics.RecordCreated(tenantKey);
+                ClientesSociosMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                ClientesSociosMetrics.RecordUpdated(uri);
-                ClientesSociosMetrics.RecordUpdatedByHour(uri);
+                ClientesSociosMetrics.RecordUpdated(tenantKey);
+                ClientesSociosMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ClientesSociosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: AddAndUpdate failed with exception for uri = {0}", uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ClientesSociosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<ClientesSociosResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<ClientesSociosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.Delete(id, uri);
+                return await _clientessociosService.Delete(id, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                ClientesSociosMetrics.RecordDeleted(uri);
-                ClientesSociosMetrics.RecordDeletedByHour(uri);
+                ClientesSociosMetrics.RecordDeleted(tenantKey);
+                ClientesSociosMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ClientesSociosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            ClientesSociosMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "ClientesSocios: {0} conflito de FK para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "ClientesSocios: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<ClientesSociosResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: Delete failed with exception for id = {0}, {1}", id, uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ClientesSociosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> Validation([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ClientesSociosResponse>>> Validation([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ClientesSociosMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            ClientesSociosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _clientessociosService.Validation(regClientesSocios, uri);
+                return await _clientessociosService.Validation(regClientesSocios, tenantKey);
             });
-            ClientesSociosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ClientesSociosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ClientesSociosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ClientesSociosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("ClientesSocios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ClientesSociosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ClientesSociosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "ClientesSocios: Validation failed with exception for uri = {0}", uri);
+            ClientesSociosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "ClientesSocios: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ClientesSociosResponse>.Fail(ex.Message, 500));
         }
     }

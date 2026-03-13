@@ -4,7 +4,7 @@
 // Entity:DivisaoTribunal
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotribunalService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.GetAll(max, uri);
+                return await _divisaotribunalService.GetAll(max, tenantKey);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            DivisaoTribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            DivisaoTribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: GetAll failed with exception for uri = {0}", uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterDivisaoTribunal filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterDivisaoTribunal filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            DivisaoTribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.Filter(max, filter, uri);
+                return await _divisaotribunalService.Filter(max, filter, tenantKey);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            DivisaoTribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            DivisaoTribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: Filter failed with exception for uri = {0}", uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.GetById(id, uri, token);
+                return await _divisaotribunalService.GetById(id, tenantKey, token);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            DivisaoTribunalMetrics.RecordReadByHour(uri);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            DivisaoTribunalMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<DivisaoTribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: GetById failed with exception for id = {0}, {1}", id, uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.GetAuditor(id, uri, token);
+                return await _divisaotribunalService.GetAuditor(id, tenantKey, token);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -154,14 +154,14 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<DivisaoTribunalResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> AddAndUpdate([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> AddAndUpdate([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         var isNew = regDivisaoTribunal.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            DivisaoTribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -169,32 +169,32 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.AddAndUpdate(regDivisaoTribunal, uri);
+                return await _divisaotribunalService.AddAndUpdate(regDivisaoTribunal, tenantKey);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                DivisaoTribunalMetrics.RecordCreated(uri);
-                DivisaoTribunalMetrics.RecordCreatedByHour(uri);
+                DivisaoTribunalMetrics.RecordCreated(tenantKey);
+                DivisaoTribunalMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                DivisaoTribunalMetrics.RecordUpdated(uri);
-                DivisaoTribunalMetrics.RecordUpdatedByHour(uri);
+                DivisaoTribunalMetrics.RecordUpdated(tenantKey);
+                DivisaoTribunalMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<DivisaoTribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: AddAndUpdate failed with exception for uri = {0}", uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -204,7 +204,7 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<DivisaoTribunalResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<DivisaoTribunalResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "Delete";
@@ -212,33 +212,33 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.Delete(id, uri);
+                return await _divisaotribunalService.Delete(id, tenantKey);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                DivisaoTribunalMetrics.RecordDeleted(uri);
-                DivisaoTribunalMetrics.RecordDeletedByHour(uri);
+                DivisaoTribunalMetrics.RecordDeleted(tenantKey);
+                DivisaoTribunalMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<DivisaoTribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            DivisaoTribunalMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "DivisaoTribunal: {0} conflito de FK para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "DivisaoTribunal: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<DivisaoTribunalResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: Delete failed with exception for id = {0}, {1}", id, uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -246,13 +246,13 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> Validation([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<DivisaoTribunalResponse>>> Validation([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = DivisaoTribunalMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            DivisaoTribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -260,21 +260,21 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _divisaotribunalService.Validation(regDivisaoTribunal, uri);
+                return await _divisaotribunalService.Validation(regDivisaoTribunal, tenantKey);
             });
-            DivisaoTribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            DivisaoTribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            DivisaoTribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("DivisaoTribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<DivisaoTribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            DivisaoTribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "DivisaoTribunal: Validation failed with exception for uri = {0}", uri);
+            DivisaoTribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "DivisaoTribunal: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500));
         }
     }

@@ -1,0 +1,120 @@
+/* Animations for HelpCrud component */
+@keyframes hcFadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes hcFadeIn { from{opacity:0} to{opacity:1} }
+.hc-anim { animation: hcFadeUp .4s cubic-bezier(.16,1,.3,1) both; }
+.hc-detail-anim { animation: hcFadeIn .25s ease both; }
+
+/* Layout */
+.hc-root {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  max-width: 900px; margin: 0 auto;
+  background: #fff;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;  
+  padding: 20px;
+}
+.hc-h1 {
+  text-transform: uppercase !important;
+  display: block !important;
+  font-family: 'Segoe UI', Arial, sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 300 !important;
+  color: #1a365d !important;
+  letter-spacing: 0.35em !important;
+  line-height: 1.15 !important;
+  margin: 0 0 20px 0 !important;
+  text-align: center !important;
+}
+.hc-header { padding: 28px 32px 24px; background: #fff !important; }
+.hc-headerTop { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; }
+.hc-title { margin:0; font-size:26px; font-weight:800; color:var(--kendo-primary-dark); letter-spacing:-0.03em; line-height:1.15 }
+.hc-countBadge { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:32px; padding:0 10px; border-radius:50%; background:var(--kendo-primary); color:#fff; font-size:14px; font-weight:700; line-height:1; margin-bottom:2px }
+.hc-subtitle { display: block; font-size:16px; color:var(--kendo-neutral-110); font-weight:400; margin:10px; margin-left: 20px; line-height:1.5 }
+.hc-infoBox { width: 100%; display:block; min-height: 50px; align-items:flex-start; gap:14px; padding:16px 20px; margin-bottom:22px; border-radius:12px; background:var(--kendo-primary-10); border:1px solid var(--kendo-primary-20); }
+.hc-infoIcon { width:44px; height:44px; border-radius:50%; background:var(--kendo-primary); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0 }
+.hc-infoText { width: 100%;  margin:10px 0 0 0; font-size:14px; line-height:1.7; color:var(--kendo-primary-90); font-weight:400; }
+.hc-controls { display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-start; margin-top:4px }
+
+/* Pills */
+.hc-pill { display:inline-flex; align-items:center; gap:7px; padding:16px 44px; border-radius:6px; font-size:13px; font-weight:500; background:var(--kendo-neutral-10); color:var(--text-color); border:none; cursor:pointer; transition:all .2s ease; font-family:inherit }
+.hc-pill:hover { background:var(--kendo-neutral-20) }
+.hc-pillActive { background:var(--kendo-primary-10); color:var(--kendo-primary); border:1px solid var(--kendo-primary-20) }
+.hc-dot { margin-right: 8px; width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0 }
+.hc-collapseAll { margin-left:auto; padding:10px;  color:var(--kendo-primary); border:none; cursor:pointer; font-family:inherit; font-size:24px; font-weight:400; text-decoration:none; transition:color .15s ease; border: 1px solid rgb(245, 241, 241) !important; }
+.hc-collapseAll:hover { text-decoration:unset; color:var(--kendo-primary-90) }
+
+.hc-divider { height:1px; background:transparent; margin:0 32px }
+.hc-searchWrap { position:relative; padding:20px 32px 16px }
+.hc-searchSvg { position:absolute; left:10px; top:26px; color:var(--kendo-neutral-90); pointer-events:none }
+.hc-searchInput { width:100%; box-sizing:border-box; padding:11px 40px 11px 46px; font-size:14px; border:1px solid var(--kendo-neutral-40); border-radius:8px; background:#fff; color:black !important; outline:none; font-family:inherit; transition:all .2s ease; box-shadow:0 1px 2px rgba(0,0,0,0.05) }
+.hc-searchInput:focus { border-color:var(--kendo-primary); box-shadow:0 0 0 3px rgba(37,99,235,0.12), 0 1px 2px rgba(0,0,0,0.05) }
+/* placeholder mais escuro (suporta vários navegadores e força opacidade) */
+.hc-searchInput::placeholder { color: #000 !important; opacity: 1 !important; }
+.hc-searchInput::-webkit-input-placeholder { color: #181717 !important; opacity: 1 !important; }
+.hc-searchInput::-moz-placeholder { color: #181717 !important; opacity: 1 !important; }
+.hc-searchInput:-ms-input-placeholder { color: #181717 !important; opacity: 1 !important; }
+.hc-searchInput::-ms-input-placeholder { color: #181717 !important; opacity: 1 !important; }
+.hc-clearBtn { position:absolute; right:46px; top:31px; background:transparent; border:none; color:var(--kendo-neutral-90); cursor:pointer; font-size:16px; padding:2px 4px; border-radius:4px; transition:color .15s ease }
+.hc-clearBtn:hover { color:var(--kendo-neutral-120) }
+
+.hc-list { padding:20px 32px 16px; display:flex; flex-direction:column; gap:10px }
+.hc-card { border-radius:10px; overflow:hidden; background:#fff; border:1px solid var(--kendo-neutral-30); box-shadow:0 1px 2px rgba(0,0,0,0.05); transition:all .25s cubic-bezier(.16,1,.3,1) }
+.hc-card:hover { border-color:var(--kendo-neutral-40); box-shadow:0 2px 4px rgba(0,0,0,0.08) }
+.hc-cardOpen { border-color:var(--kendo-primary-60); box-shadow:0 4px 12px rgba(37,99,235,0.10) }
+.hc-cardOpen:hover { border-color:var(--kendo-primary-70) }
+.hc-cardToggle { display:flex; align-items:center; width:100%; padding:16px 20px; background:transparent; border:none; cursor:pointer; gap:12px; font-family:inherit; color:var(--kendo-primary-200); text-align:left; transition:background .15s ease }
+.hc-cardToggle:hover { background:var(--kendo-neutral-10) }
+.hc-toggleIcon { width:28px; height:28px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0; line-height:1; transition:all .18s ease; font-size: 22px; }
+.hc-toggleOpen { background:var(--kendo-primary-20); color:#fff !important; }
+.hc-toggleClosed { background:var(--kendo-neutral-20); color: #fff !important; }
+.hc-fieldNum { font-size:12px; font-weight:600; color:var(--kendo-neutral-90); font-variant-numeric:tabular-nums; flex-shrink:0; min-width:22px }
+.hc-fieldCaption { text-transform: unset; font-size:15px; font-weight:600; line-height:1.4; color:var(--kendo-primary-200); flex:1 }
+.hc-badgeReq { font-size:10px; font-weight:600; text-transform:lowercase; letter-spacing:0; padding:4px 10px; padding-right: 50px; border-radius:5px; background:var(--kendo-error-10); color:var(--error-color); flex-shrink:0; white-space:nowrap }
+.hc-badgeFK { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:4px 9px; border-radius:5px;margin-right: 50px; background:var(--kendo-primary-10); color:var(--kendo-primary); flex-shrink:0 }
+
+.hc-detail { padding:6px 20px 20px 68px; display:flex; flex-direction:column; gap:18px; border-top:1px solid var(--kendo-neutral-20) }
+.hc-row { display:flex; flex-direction:column; gap:6px }
+.hc-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--kendo-neutral-120) }
+.hc-value { font-size:14px; line-height:1.6; color:var(--text-color); font-weight:400 }
+.hc-valueMono { font-size:13px; line-height:1.55; color:var(--kendo-primary-200); font-family:"SF Mono", "Cascadia Code", "Fira Code", "JetBrains Mono", monospace; background:var(--kendo-neutral-10); padding:10px 14px; border-radius:8px; border-left:3px solid var(--kendo-primary) }
+.hc-reqTag { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:7px; font-size:12px; font-weight:600; width:fit-content }
+.hc-reqDot { width:6px; height:6px; border-radius:50%; display:inline-block }
+.hc-tableCode { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:7px; font-size:13px; font-weight:600; background:var(--kendo-primary-10); color:var(--kendo-primary); font-family:"SF Mono", "Cascadia Code", "Fira Code", monospace; border:1px solid var(--kendo-primary-20) }
+.hc-empty { text-align:center; padding:48px 16px; color:var(--kendo-neutral-90); font-size:14px }
+
+.hc-ctaWrap { display:flex; flex-direction:column; align-items:center; gap:14px; padding:28px 32px 32px; background:linear-gradient(180deg, #fff 0%, var(--kendo-neutral-10) 100%) }
+.hc-ctaText { margin:0; font-size:15px; font-weight:600; color:var(--text-color) }
+.hc-ctaBtn { min-width: 195px; display:inline-flex; align-items:center; gap:10px; padding:13px 28px; border-radius:12px; background:var(--success-color); color:#fff; font-size:15px; font-weight:700; text-decoration:none; letter-spacing:-0.01em; box-shadow:0 2px 8px rgba(37,211,102,0.25); transition:all .2s cubic-bezier(.16,1,.3,1) }
+.hc-ctaBtn:hover { background:var(--kendo-success-90); box-shadow:0 4px 12px rgba(37,211,102,0.35) }
+.hc-ctaBtnPrint { display:inline-flex; align-items:center; gap:10px; padding:5px 2px; color:#1033a7; font-size:15px; font-weight:700; text-decoration:none; letter-spacing:-0.01em; box-shadow:0 2px 8px rgba(7, 19, 87, 0.25); transition:all .2s cubic-bezier(.16,1,.3,1) }
+.hc-ctaBtnPrint .k-svg-icon { width: 48px !important; height: 48px !important; }
+.hc-ctaBtnPrint:hover { background:var(--primary-hover); box-shadow:0 4px 12px rgba(37,211,102,0.35) }
+
+
+.hc-footer { display:flex; justify-content:space-between; align-items:center; padding:16px 32px; border-top:1px solid var(--kendo-neutral-30); font-size:13px; color:var(--kendo-neutral-120); font-weight:400; flex-wrap:wrap; gap:8px }
+.hc-footerKbd { display:flex; align-items:center; gap:5px }
+.hc-kbd { display:inline-block; padding:2px 6px; border-radius:5px; background:var(--kendo-neutral-20); border:1px solid var(--kendo-neutral-40); font-size:10px; font-weight:700; color:var(--kendo-neutral-120) }
+
+.hc-svgLink { flex-shrink:0 }
+
+
+.hc-h1 { font-family: 'Segoe UI', Arial, sans-serif; font-size: 28px; font-weight: 300; letter-spacing: 0.35em; color: #1a365d; }
+
+.hc-infoText { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 400; color: #4a5568; line-height: 1.6; }
+
+.hc-pill { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: #2d3748; }
+
+.hc-fieldCaption { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; font-weight: 700; color: #1a202c; }
+
+.hc-fieldNum { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; font-weight: 600; color: #718096; }
+
+.hc-label { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: #718096; }
+
+.hc-value { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 400; color: #2d3748; }
+
+.hc-valueMono { font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace; font-size: 10px; color: #1a365d; }
+
+.hc-badgeReq { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; }
+
+.hc-reqTag { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; font-weight: 600; }

@@ -10,11 +10,11 @@ public partial interface IAdvogadosReader
     AdvogadosResponse? Read(FAdvogados dbRec, MsiSqlConnection? oCnn);
     AdvogadosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AdvogadosResponse? Read(FAdvogados dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     AdvogadosResponseAll? ReadAll(FAdvogados dbRec, IDataRecord dr);
     AdvogadosResponseAll? ReadAll(SG.GerAdv.DBAdvogados dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<AdvogadosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<AdvogadosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

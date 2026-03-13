@@ -175,10 +175,10 @@ export const useAdvogadosList = (
 export function useValidationsAdvogados() {
   async function runValidation(
     data: IAdvogados,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const advogadosApi = new AdvogadosApi(uri ?? "", token ?? "");
+    const advogadosApi = new AdvogadosApi(tenantKey ?? "", token ?? "");
 
     const result = await advogadosApi.validation(data);
 

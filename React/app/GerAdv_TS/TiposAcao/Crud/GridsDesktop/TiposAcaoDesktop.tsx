@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsDesktopHoook.tsx - Versão Refatorada
+// GridsDesktopHoook1.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,7 +39,8 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useTiposAcaoGrid } from "../../Hooks/hookTiposAcaoGrid";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
 import "@/app/styles/grid-desktop-performance.css";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
+import TiposAcaoHelpCrudButton from "../../Help/TiposAcaoHelpCrudButton";
 
 interface TiposAcaoGridProps {
   data: ITiposAcao[];
@@ -373,7 +374,10 @@ export const TiposAcaoGridDesktopComponent = React.memo(
             <GridToolbar>
               {toolbar}
 
-              <PageTitle title="Tipos Acao" />
+              <PageTitle
+                title="Tipos Acao"
+                helpButton={<TiposAcaoHelpCrudButton isMobile={false} />}
+              />
             </GridToolbar>
             {finalGridColumns}
           </Grid>

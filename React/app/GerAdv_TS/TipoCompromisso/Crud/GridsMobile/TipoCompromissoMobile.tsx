@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsMobileHoook.tsx.txt - Versão Refatorada
+// GridsMobileHoook.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,9 +39,10 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useTipoCompromissoGrid } from "../../Hooks/hookTipoCompromissoGrid";
 import "@/app/styles/MobileCrudGrid.css";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import ViewMobile from "@/app/components/Cruds/ViewMobile";
 import ViewMobileContainer from "@/app/components/Cruds/ViewMobileContainer";
+import TipoCompromissoHelpCrudButton from "../../Help/TipoCompromissoHelpCrudButton";
 
 interface TipoCompromissoGridProps {
   data: ITipoCompromisso[];
@@ -323,7 +324,10 @@ export const TipoCompromissoGridMobileComponent = React.memo(
       <>
         {initialized && (
           <>
-            <PageTitle title="Tipo Compromisso" />
+            <PageTitle
+              title="Tipo Compromisso"
+              helpButton={<TipoCompromissoHelpCrudButton isMobile={true} />}
+            />
 
             <ViewMobileContainer
               title="Tipo Compromisso"

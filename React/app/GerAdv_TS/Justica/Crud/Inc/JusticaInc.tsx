@@ -13,11 +13,16 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IJusticaFormProps } from "../../Interfaces/interface.Justica";
+import {
+  IJustica,
+  IJusticaFormProps,
+} from "../../Interfaces/interface.Justica";
 import { JusticaService } from "../../Services/Justica.service";
 import { useJusticaForm, useValidationsJustica } from "../../Hooks/hookJustica";
 import { JusticaEmpty } from "../../../Models/Justica";
 import { JusticaForm } from "../Forms/JusticaForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Justica/Justica.hooks";
 
 const JusticaInc: React.FC<IJusticaFormProps> = ({
   id,
@@ -34,13 +39,38 @@ const JusticaInc: React.FC<IJusticaFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadJustica } = useJusticaForm(
+  const { data, handleChange, setData } = useJusticaForm(
     JusticaEmpty(),
     justicaService,
   );
 
+  const originalRef = useRef<IJustica>(JusticaEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = JusticaEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await justicaService.fetchJusticaById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadJustica(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +84,44 @@ const JusticaInc: React.FC<IJusticaFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedJustica = await justicaService.saveJustica(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedJustica = await justicaService.saveJustica(currentRecord);
 
       if (savedJustica.id) {
         notificationService.showNotification(
@@ -91,7 +158,7 @@ const JusticaInc: React.FC<IJusticaFormProps> = ({
   };
 
   const handleReload = () => {
-    loadJustica(id);
+    handleLoad(id);
   };
 
   return (

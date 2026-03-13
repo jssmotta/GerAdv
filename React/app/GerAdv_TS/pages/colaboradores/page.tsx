@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IColaboradores } from "@/app/GerAdv_TS/Colaboradores/Interfaces/interface.Colaboradores";
 import { ColaboradoresGridAdapter } from "@/app/GerAdv_TS/Colaboradores/Adapter/ColaboradoresGridAdapter";
 import ColaboradoresGridContainer from "@/app/GerAdv_TS/Colaboradores/Components/ColaboradoresGridContainer";

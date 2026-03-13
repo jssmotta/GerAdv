@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IEscritoriosService
 {
-    Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> Filter(int max, Filters.FilterEscritorios filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<EscritoriosResponse>> AddAndUpdate(Models.Escritorios? regEscritorios, string uri = "", CancellationToken token = default);
-    Task<ResultApi<EscritoriosResponse>> Validation(Models.Escritorios? regEscritorios, string uri = "", CancellationToken token = default);
-    Task<ResultApi<EscritoriosResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<EscritoriosResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterEscritorios? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> Filter(int max, Filters.FilterEscritorios filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<EscritoriosResponse>> AddAndUpdate(Models.Escritorios? regEscritorios, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<EscritoriosResponse>> Validation(Models.Escritorios? regEscritorios, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<EscritoriosResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<EscritoriosResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<EscritoriosResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterEscritorios? filter, string tenantKey = "", CancellationToken token = default);
 }

@@ -47,9 +47,9 @@ public static partial class DBTribunalDicInfo
     public const string PTabelaNome = "Tribunal";
 #region PropriedadesDaTabela
     public static DBInfoSystem TriNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tri");
-    public static DBInfoSystem TriArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "tri", isRequired: true); // DBI 11 
-    public static DBInfoSystem TriJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "tri"); // DBI 11 
-    public static DBInfoSystem TriDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tri");
+    public static DBInfoSystem TriArea => new(0, PTabelaNome, CampoCodigo, Area, "Area", "Area", EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "tri", isRequired: true); // DBI 11 
+    public static DBInfoSystem TriJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justica", "Justica", EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "tri"); // DBI 11 
+    public static DBInfoSystem TriDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tri");
     public static DBInfoSystem TriInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, "Instancia", "Instancia", EDataTypeSystemInfo.SystemInfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false, prefixo: "tri"); // DBI 11 
     public static DBInfoSystem TriSigla => new(0, PTabelaNome, CampoCodigo, Sigla, 20, "Sigla", "Sigla", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tri");
     public static DBInfoSystem TriWeb => new(0, PTabelaNome, CampoCodigo, Web, 255, "Web", "Web", EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "tri");

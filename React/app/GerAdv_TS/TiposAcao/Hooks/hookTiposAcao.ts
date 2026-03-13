@@ -175,10 +175,10 @@ export const useTiposAcaoList = (
 export function useValidationsTiposAcao() {
   async function runValidation(
     data: ITiposAcao,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const tiposacaoApi = new TiposAcaoApi(uri ?? "", token ?? "");
+    const tiposacaoApi = new TiposAcaoApi(tenantKey ?? "", token ?? "");
 
     const result = await tiposacaoApi.validation(data);
 

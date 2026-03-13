@@ -102,7 +102,7 @@ public static partial class DBOponentesDicInfo
     public static DBInfoSystem OpoTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "opo", isRequired: true);
     public static DBInfoSystem OpoSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "opo", isRequired: true);
     public static DBInfoSystem OpoCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "opo");
-    public static DBInfoSystem OpoEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "opo");
     public static DBInfoSystem OpoFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "opo");
     public static DBInfoSystem OpoFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "opo");
     public static DBInfoSystem OpoCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "opo"); // DBI 11 

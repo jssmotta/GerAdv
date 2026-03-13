@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBInstancia
 {
-    public const string CadastroGuid = "dcfe71db-0503-411a-8f9d-418d52193ebe";
+    public const string CadastroGuid = "e6dfd4b9-9c4c-4c87-b472-babb4c48d876";
     public const string PTabelaNome = "Instancia";
     public const string CamposSqlX = " Instancia.* ";
     public const string CampoCodigo = "insCodigo";

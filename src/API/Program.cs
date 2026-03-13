@@ -170,7 +170,7 @@ try
     AppSGStartup.ConfigurarMiddlewaresAppSG(app);
 
     // Configurar aplicação usando a classe StartupAppAdvanced genérica
-    StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);
+    StartupAppAdvanced.ConfigurarAplicacao(builder, app, configuracao, logger);
 
     // Enable Developer Exception Page in development for detailed errors
     if (builder.Environment.IsDevelopment())

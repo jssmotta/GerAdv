@@ -32,6 +32,8 @@ import {
 import { useOponentesFilter } from "../../Hooks/hookOponentesFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Oponentes/Oponentes.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface OponentesGridProps {
   selectItem?: (item: IOponentes) => void;
@@ -58,7 +60,10 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
 
   const oponentesService = useMemo(() => {
     return new OponentesService(
-      new OponentesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new OponentesApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await oponentesService.getAll(
           filtro ?? ({} as FilterOponentes),
-          (onlineData) => {
-            setOponentesData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setOponentesData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setOponentesData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setOponentesData(processed);
           setLoading(false);
         } else {
           setOponentesData([]);
@@ -106,6 +117,18 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useOponentesFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (oponentes: IOponentes) => {
     setSelectedOponentes(oponentes);
     setShowInc(true);
@@ -134,8 +162,11 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedOponentes(OponentesEmpty());
+  const handleAdd = async () => {
+    let empty = OponentesEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = oponentesData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await oponentesService.deleteOponentes(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const OponentesGrid: React.FC<OponentesGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useOponentesFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

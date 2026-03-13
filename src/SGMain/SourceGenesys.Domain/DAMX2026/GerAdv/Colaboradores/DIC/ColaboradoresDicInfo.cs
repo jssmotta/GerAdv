@@ -75,7 +75,7 @@ public static partial class DBColaboradoresDicInfo
     public static DBInfoSystem ColRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "col");
     public static DBInfoSystem ColDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "col");
     public static DBInfoSystem ColIdade => new(0, PTabelaNome, CampoCodigo, Idade, "Idade", "Idade", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "col");
-    public static DBInfoSystem ColEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "col");
     public static DBInfoSystem ColBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "col");
     public static DBInfoSystem ColCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "col");
     public static DBInfoSystem ColCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "col"); // DBI 11 

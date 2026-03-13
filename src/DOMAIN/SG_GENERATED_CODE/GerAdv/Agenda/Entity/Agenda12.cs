@@ -31,12 +31,11 @@ public partial class FAgenda : MenphisSI.SG.GerAdv.DBAgenda, IDBAgenda
     {
     }
 
- 
+    
 
     // Factory method for creating instances with parameters
     public static FAgenda CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        //return new FAgenda(parameters, cNome, oCnn, fullSql, sqlWhere, join);
         throw new NotImplementedException();
     }
 

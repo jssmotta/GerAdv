@@ -32,6 +32,8 @@ import {
 import { useJusticaFilter } from "../../Hooks/hookJusticaFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Justica/Justica.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface JusticaGridProps {
   selectItem?: (item: IJustica) => void;
@@ -58,7 +60,10 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
 
   const justicaService = useMemo(() => {
     return new JusticaService(
-      new JusticaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new JusticaApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await justicaService.getAll(
           filtro ?? ({} as FilterJustica),
-          (onlineData) => {
-            setJusticaData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setJusticaData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setJusticaData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setJusticaData(processed);
           setLoading(false);
         } else {
           setJusticaData([]);
@@ -106,6 +117,18 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useJusticaFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (justica: IJustica) => {
     setSelectedJustica(justica);
     setShowInc(true);
@@ -134,8 +162,11 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedJustica(JusticaEmpty());
+  const handleAdd = async () => {
+    let empty = JusticaEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = justicaData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await justicaService.deleteJustica(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const JusticaGrid: React.FC<JusticaGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useJusticaFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

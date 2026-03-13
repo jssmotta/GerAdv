@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsMobileHoook.tsx.txt - Versão Refatorada
+// GridsMobileHoook.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,9 +39,10 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useColaboradoresGrid } from "../../Hooks/hookColaboradoresGrid";
 import "@/app/styles/MobileCrudGrid.css";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import ViewMobile from "@/app/components/Cruds/ViewMobile";
 import ViewMobileContainer from "@/app/components/Cruds/ViewMobileContainer";
+import ColaboradoresHelpCrudButton from "../../Help/ColaboradoresHelpCrudButton";
 
 interface ColaboradoresGridProps {
   data: IColaboradores[];
@@ -297,7 +298,10 @@ export const ColaboradoresGridMobileComponent = React.memo(
       <>
         {initialized && (
           <>
-            <PageTitle title="Colaboradores" />
+            <PageTitle
+              title="Colaboradores"
+              helpButton={<ColaboradoresHelpCrudButton isMobile={true} />}
+            />
 
             <ViewMobileContainer
               title="Colaboradores"

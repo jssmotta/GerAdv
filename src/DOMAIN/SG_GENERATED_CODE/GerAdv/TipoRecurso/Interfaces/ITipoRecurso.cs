@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoRecursoService
 {
-    Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> Filter(int max, Filters.FilterTipoRecurso filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoRecursoResponse>> AddAndUpdate(Models.TipoRecurso? regTipoRecurso, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoRecursoResponse>> Validation(Models.TipoRecurso? regTipoRecurso, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoRecursoResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoRecursoResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoRecurso? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> Filter(int max, Filters.FilterTipoRecurso filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoRecursoResponse>> AddAndUpdate(Models.TipoRecurso? regTipoRecurso, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoRecursoResponse>> Validation(Models.TipoRecurso? regTipoRecurso, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoRecursoResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoRecursoResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoRecurso? filter, string tenantKey = "", CancellationToken token = default);
 }

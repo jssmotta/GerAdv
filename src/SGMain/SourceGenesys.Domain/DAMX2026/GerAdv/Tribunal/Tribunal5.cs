@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBTribunal
 {
-    public const string CadastroGuid = "d1e6620c-cfeb-4368-ba5a-6a437e99e3cc";
+    public const string CadastroGuid = "df1d1d73-78fa-471f-9752-3d55f26597a5";
     public const string PTabelaNome = "Tribunal";
     public const string CamposSqlX = " Tribunal.* ";
     public const string CampoCodigo = "triCodigo";

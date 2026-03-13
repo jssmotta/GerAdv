@@ -3,17 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 public partial class AgendaSemanaService
 {
-    public Task<AgendaSemanaResponse?> GetById(int id, [FromRoute] string uri, CancellationToken token)
+    public Task<AgendaSemanaResponse?> GetById(int id, [FromRoute] string tenantKey, CancellationToken token)
     {
         throw new NotImplementedException();
     }
 #pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
-    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !(await Uris.ValidaUriAsync(uri, _entityService))
+    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string tenantKey) => !(await Uris.ValidaUriAsync(tenantKey, _entityService))
             ? throw new Exception("AgendaSemana: URI inválida")
             : (IEnumerable<AgendaSemanaResponse?>?)await Task.Run(async () =>
             {
 
-                using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+                using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
                 var oCnn = scope.Connection;
                 if (oCnn == null || (data == null))
                 {
@@ -38,9 +38,9 @@ public partial class AgendaSemanaService
             });
 #pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
-    public async Task<IEnumerable<MenuAgendaSemana>?>? Monta(DateTime dataInicial, bool isMobile, string uri)
+    public async Task<IEnumerable<MenuAgendaSemana>?>? Monta(DateTime dataInicial, bool isMobile, string tenantKey)
     {
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
             throw new Exception("AgendaSemana: URI inválida");
         }
@@ -79,7 +79,7 @@ public partial class AgendaSemanaService
     order by YEAR([xxxData]), MONTH([xxxData]), DAY([xxxData]), CONVERT(TIME, [xxxHora]), [xxxFuncionario]";
         ;
 
-        using var oCnn = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
+        using var oCnn = ConfiguracoesSys.GetConnectionByUriAsync(tenantKey).GetAwaiter().GetResult();
         if (oCnn == null)
         {
             return null;

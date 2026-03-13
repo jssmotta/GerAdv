@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
 {
     private readonly IFRitoFactory _ritoFactory = ritoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ritCodigo, ritDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<RitoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ritCodigo, ritDescricao", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<RitoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = RitoDatabaseMetrics.StartTimer();
         var connStopwatch = RitoDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
         {
             RitoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             RitoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBRito.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBRito.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             RitoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class RitoReader(IFRitoFactory ritoFactory) : IRitoReader
         }
     }
 
-    private async Task<IEnumerable<RitoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<RitoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = RitoDatabaseMetrics.StartTimer();
         var result = new List<RitoResponseAll>(max);

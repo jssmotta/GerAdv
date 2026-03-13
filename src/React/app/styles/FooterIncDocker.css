@@ -1,0 +1,231 @@
+/* CSS Agressivo para FooterIncDocker - Força absoluta */
+.footer-inc-docker {
+  position: fixed !important;
+  top: 50% !important;
+  right: 5px !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  z-index: 999999 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.footer-inc-docker * {
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* WhatsApp Button - HARDCODED sempre visível */
+.whatsapp-button-mobile,
+.whatsapp-button-desktop {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.9) 0%, rgba(34, 193, 93, 1) 100%) !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+  overflow: visible !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease-in-out !important;
+  border: none !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.whatsapp-button-mobile:hover,
+.whatsapp-button-desktop:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5) !important;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 1) 0%, rgba(34, 193, 93, 1) 100%) !important;
+}
+
+.whatsapp-button-desktop {
+  position: absolute !important;
+  bottom: 10px !important;
+  right: 10px !important;
+}
+
+/* Botões Mobile - Estilo moderno sem bordas */
+.copy-button-mobile,
+.crud-window-button-mobile,
+.print-button-mobile,
+.auditor-button-mobile,
+.help-button-mobile,
+.delete-button-mobile {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  background-color: var(--bg-white, #ffffff) !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+  overflow: visible !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  transition: var(--transition, all 0.2s ease-in-out) !important;
+  border: none !important;
+}
+
+.print-button-mobile {
+  color: var(--accent-color, #27669c) !important;
+  background: linear-gradient(135deg, rgba(39, 102, 156, 0.08) 0%, rgba(39, 102, 156, 0.15) 100%) !important;
+}
+
+.auditor-button-mobile {
+  color: var(--warning-color, #4488ff) !important;
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.08) 0%, rgba(68, 136, 255, 0.15) 100%) !important;
+}
+
+.copy-button-mobile {
+  color: var(--warning-color, #4488ff) !important;
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.08) 0%, rgba(68, 136, 255, 0.15) 100%) !important;
+}
+
+.crud-window-button-mobile {
+  color: var(--warning-color, #4488ff) !important;
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.08) 0%, rgba(68, 136, 255, 0.15) 100%) !important;
+}
+
+.delete-button-mobile {
+  color: var(--error-color, #264ca4) !important;
+  background: linear-gradient(135deg, rgba(38, 76, 164, 0.08) 0%, rgba(38, 76, 164, 0.15) 100%) !important;
+}
+
+.help-button-mobile {
+  color: var(--error-color, #264ca4) !important;
+  background: linear-gradient(135deg, rgba(38, 76, 164, 0.08) 0%, rgba(38, 76, 164, 0.15) 100%) !important;
+}
+
+.print-button-mobile:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(39, 102, 156, 0.4) !important;
+  background: linear-gradient(135deg, rgba(39, 102, 156, 0.1) 0%, rgba(39, 102, 156, 0.2) 100%) !important;
+}
+
+.auditor-button-mobile:hover, .copy-button-mobile:hover, .crud-window-button-mobile:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(68, 136, 255, 0.4) !important;
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.1) 0%, rgba(68, 136, 255, 0.2) 100%) !important;
+}
+
+.delete-button-mobile:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(38, 76, 164, 0.4) !important;
+  background: linear-gradient(135deg, rgba(38, 76, 164, 0.1) 0%, rgba(38, 76, 164, 0.2) 100%) !important;
+}
+
+.help-button-mobile:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(38, 76, 164, 0.4) !important;
+  background: linear-gradient(135deg, rgba(38, 76, 164, 0.1) 0%, rgba(38, 76, 164, 0.2) 100%) !important;
+}
+/* Força os SVG icons */
+.footer-inc-docker svg {
+  width: 16px !important;
+  height: 16px !important;
+  pointer-events: none !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 0.9 !important;
+  margin: 0 auto !important;
+  transition: var(--transition, all 0.2s ease-in-out) !important;
+}
+
+.print-button-mobile:hover svg,
+.auditor-button-mobile:hover svg,
+.copy-button-mobile:hover svg,
+.crud-window-button-mobile:hover svg,
+.delete-button-mobile:hover svg,
+.help-button-mobile:hover svg {
+  opacity: 1 !important;
+  transform: scale(1.1) !important;
+}
+
+.whatsapp-button-mobile svg,
+.whatsapp-button-desktop svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Força no mobile apenas */
+@media (max-width: 768px) {
+  .footer-inc-docker {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .whatsapp-button-desktop {
+    display: none !important;
+  }
+}
+
+/* Desktop - sem posição fixa para outros botões */
+@media (min-width: 769px) {
+  .footer-inc-docker {
+    position: static !important;
+    transform: none !important;
+    top: auto !important;
+    right: auto !important;
+  }
+  
+  .whatsapp-button-mobile {
+    display: none !important;
+  }
+}
+
+/* Remove qualquer interferência de outros elementos */
+.footer-inc-docker {
+  isolation: isolate !important;
+}
+
+/* Garante que fique sobre modals e outros elementos */
+.footer-inc-docker {
+  z-index: 999999 !important;
+}

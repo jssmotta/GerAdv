@@ -22,12 +22,12 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
     private readonly IAdvogadosService advogadosService = advogadosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IFuncionariosService funcionariosService = funcionariosService;
-    public async Task<ResultApi<IEnumerable<CargosResponseAll>>> Filter(int max, Filters.FilterCargos filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<CargosResponseAll>>> Filter(int max, Filters.FilterCargos filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Cargos: URI inválida");
+            throw new Exception("Cargos: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -41,28 +41,28 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroCargos(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            CargosDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            CargosDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Cargos-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Cargos-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<CargosResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            CargosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<CargosResponseAll>>.Fail($"Cargos - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            CargosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<CargosResponseAll>>.Fail($"Cargos - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
     }
 
-    public async Task<ResultApi<CargosResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<CargosResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -86,20 +86,20 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            CargosDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            CargosDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Cargos-GetById-{id}--{keyCache}", async cancel =>
+            CargosDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            CargosDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Cargos-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                CargosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                CargosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            CargosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<CargosResponse>.NotFound($"Cargos: Registro não encontrado para id {id}");
@@ -110,25 +110,25 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            CargosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            CargosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<CargosResponse>.Fail($"Cargos, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            CargosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            CargosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<CargosResponse>.Fail($"Cargos, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            CargosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            CargosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            CargosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            CargosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<CargosResponse>.Fail($"Cargos - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<CargosResponse>.Fail($"Cargos - {uri}-: GetById: {ex.Message}", 500);
+            CargosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<CargosResponse>.Fail($"Cargos - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<CargosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -136,11 +136,11 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             return ResultApi<AuditorResponse>.Fail("Cargos: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Cargos: Auditor não encontrado para id {id}");
@@ -151,11 +151,11 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         catch (Exception ex)
         {
             _logger.Error(ex, "Cargos: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Cargos - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Cargos - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<CargosResponse>> AddAndUpdate(Models.Cargos? regCargos, string uri, CancellationToken token = default)
+    public async Task<ResultApi<CargosResponse>> AddAndUpdate(Models.Cargos? regCargos, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regCargos == null)
@@ -163,14 +163,14 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             return ResultApi<CargosResponse>.Fail("Cargos: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Cargos: URI inválida");
+            throw new Exception("Cargos: TenantApp inválida");
         }
 
         var connectionStopwatch = CargosDatabaseMetrics.StartTimer();
         var queryStopwatch = CargosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -179,9 +179,9 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
 
         try
         {
-            CargosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            CargosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
+            CargosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            CargosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regCargos, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -189,12 +189,12 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (SGValidationException ex)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -203,16 +203,16 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         {
             using var saved = await writer.WriteAsync(regCargos, operadorId, oCnn);
             string tipoQuery = regCargos.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            CargosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            CargosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regCargos.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regCargos.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -220,14 +220,14 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regCargos, uri);
-            CargosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regCargos, tenantKey);
+            CargosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            CargosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<CargosResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<CargosResponse>> Validation(Models.Cargos? regCargos, string uri, CancellationToken token = default)
+    public async Task<ResultApi<CargosResponse>> Validation(Models.Cargos? regCargos, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regCargos == null)
@@ -235,14 +235,13 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             return ResultApi<CargosResponse>.Fail("Cargos: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Cargos: URI inválida");
+            throw new Exception("Cargos: TenantApp inválida");
         }
 
         var connectionStopwatch = CargosDatabaseMetrics.StartTimer();
-        var queryStopwatch = CargosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -251,9 +250,9 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
 
         try
         {
-            CargosDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            CargosDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
+            CargosDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            CargosDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regCargos, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -261,12 +260,12 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (SGValidationException ex)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -292,7 +291,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
     }
 
-    public async Task<ResultApi<CargosResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<CargosResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -300,13 +299,13 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Cargos: URI inválida");
+            throw new Exception("Cargos: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = CargosDatabaseMetrics.StartTimer();
         var queryStopwatch = CargosDatabaseMetrics.StartTimer();
@@ -317,9 +316,9 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
 
         try
         {
-            CargosDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            CargosDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, advogadosService, colaboradoresService, funcionariosService, uri, oCnn);
+            CargosDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            CargosDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, advogadosService, colaboradoresService, funcionariosService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -327,44 +326,44 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (SGValidationException ex)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<CargosResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<CargosResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var cargos = await reader.ReadAsync(id ?? default, oCnn);
         if (cargos == null)
         {
-            CargosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<CargosResponse>.NotFound($"Cargos: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(cargos, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(cargos, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(cargos, nOperador, oCnn);
-                CargosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                CargosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            CargosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(cargos, uri);
+            CargosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(cargos, tenantKey);
             return ResultApi<CargosResponse>.Ok(cargos);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(cargos, uri);
-            CargosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            CargosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(cargos, tenantKey);
+            CargosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            CargosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<CargosResponse>.Fail(ex.Message, 500);
         }
     }

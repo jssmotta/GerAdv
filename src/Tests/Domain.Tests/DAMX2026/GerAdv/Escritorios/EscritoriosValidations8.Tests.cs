@@ -10,7 +10,7 @@ public class EscritoriosValidationTests : IDisposable
     private readonly Mock<IEscritoriosService> _mockEscritoriosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public EscritoriosValidationTests()
     {
         _validation = new EscritoriosValidation();

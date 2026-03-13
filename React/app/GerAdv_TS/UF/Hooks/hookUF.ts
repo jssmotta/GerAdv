@@ -168,10 +168,10 @@ export const useUFList = (
 export function useValidationsUF() {
   async function runValidation(
     data: IUF,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const ufApi = new UFApi(uri ?? "", token ?? "");
+    const ufApi = new UFApi(tenantKey ?? "", token ?? "");
 
     const result = await ufApi.validation(data);
 

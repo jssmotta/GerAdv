@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoCompromissoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         if (regTipoCompromisso == null)
         {
-            _logger.Warn("TipoCompromisso: BeforeDeleteAsync - regTipoCompromisso is null for uri = {0}", uri);
+            _logger.Warn("TipoCompromisso: BeforeDeleteAsync - regTipoCompromisso is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            TipoCompromissoMetrics.RecordNotFound("BeforeDelete", uri, TipoCompromissoMetrics.StartTimer());
+            TipoCompromissoMetrics.RecordNotFound("BeforeDelete", tenantKey, TipoCompromissoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = TipoCompromissoMetrics.StartTimer();
-        _logger.Debug("TipoCompromisso: BeforeDeleteAsync success for Id={0}, uri={1}", regTipoCompromisso.Id, uri);
+        _logger.Debug("TipoCompromisso: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regTipoCompromisso.Id, tenantKey);
         // record successful business layer pre-delete
-        TipoCompromissoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        TipoCompromissoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoCompromissoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("TipoCompromisso: AfterDeleteAsync - Id={0}, uri={1}", regTipoCompromisso?.Id ?? 0, uri);
+        _logger.Info("TipoCompromisso: AfterDeleteAsync - Id={0}, tenantKey={1}", regTipoCompromisso?.Id ?? 0, tenantKey);
         // record delete metrics
-        TipoCompromissoMetrics.RecordDeleted(uri);
-        TipoCompromissoMetrics.RecordDeletedByHour(uri);
-        TipoCompromissoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        TipoCompromissoMetrics.RecordDeleted(tenantKey);
+        TipoCompromissoMetrics.RecordDeletedByHour(tenantKey);
+        TipoCompromissoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("TipoCompromisso: DeleteErrorAsync - Id={0}, uri={1}", regTipoCompromisso?.Id ?? 0, uri);
+        _logger.Error("TipoCompromisso: DeleteErrorAsync - Id={0}, tenantKey={1}", regTipoCompromisso?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        TipoCompromissoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoCompromissoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoCompromissoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoCompromissoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<TipoCompromissoResponse> AfterCreateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<TipoCompromissoResponse> AfterCreateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoCompromissoMetrics.StartTimer();
         var result = regTipoCompromisso ?? new TipoCompromissoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("TipoCompromisso: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("TipoCompromisso: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        TipoCompromissoMetrics.RecordCreated(uri);
-        TipoCompromissoMetrics.RecordCreatedByHour(uri);
-        TipoCompromissoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        TipoCompromissoMetrics.RecordCreated(tenantKey);
+        TipoCompromissoMetrics.RecordCreatedByHour(tenantKey);
+        TipoCompromissoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<TipoCompromissoResponse> AfterUpdateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<TipoCompromissoResponse> AfterUpdateAsync([FromBody] TipoCompromissoResponse? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoCompromissoMetrics.StartTimer();
         var result = regTipoCompromisso ?? new TipoCompromissoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("TipoCompromisso: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        TipoCompromissoMetrics.RecordUpdated(uri);
-        TipoCompromissoMetrics.RecordUpdatedByHour(uri);
-        TipoCompromissoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("TipoCompromisso: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        TipoCompromissoMetrics.RecordUpdated(tenantKey);
+        TipoCompromissoMetrics.RecordUpdatedByHour(tenantKey);
+        TipoCompromissoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoCompromisso? regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoCompromisso? regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("TipoCompromisso: AddAndUpdateErrorAsync - Id={0}, uri={1}", regTipoCompromisso?.Id ?? 0, uri);
+        _logger.Error("TipoCompromisso: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regTipoCompromisso?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        TipoCompromissoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoCompromissoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoCompromissoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoCompromissoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

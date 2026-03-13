@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class UFReader(IFUFFactory ufFactory) : IUFReader
 {
     private readonly IFUFFactory _ufFactory = ufFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ufCodigo, ufID", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<UFResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ufCodigo, ufID", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<UFResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = UFDatabaseMetrics.StartTimer();
         var connStopwatch = UFDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class UFReader(IFUFFactory ufFactory) : IUFReader
         {
             UFDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             UFDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBUF.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBUF.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             UFDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class UFReader(IFUFFactory ufFactory) : IUFReader
         }
     }
 
-    private async Task<IEnumerable<UFResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<UFResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = UFDatabaseMetrics.StartTimer();
         var result = new List<UFResponseAll>(max);

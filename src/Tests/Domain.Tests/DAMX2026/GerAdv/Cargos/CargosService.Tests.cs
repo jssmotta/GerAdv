@@ -24,7 +24,7 @@ public partial class CargosServiceTests : IDisposable
     private readonly Mock<IEntityService> _mockEntityService;
     private readonly ServiceFilter _serviceS;
     private readonly CargosService _service;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public CargosServiceTests(ITestOutputHelper output)
     {
         _output = output;
@@ -404,7 +404,7 @@ public partial class CargosServiceTests : IDisposable
             Id = 0,
             Nome = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Validation(validCargos, invalidUri));
     }
@@ -477,7 +477,7 @@ public partial class CargosServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.GetAll(max, invalidUri));
     }
@@ -511,7 +511,7 @@ public partial class CargosServiceTests : IDisposable
         // Arrange
         var max = 10;
         var filter = new Filters.FilterCargos();
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, filter, invalidUri));
     }
@@ -614,7 +614,7 @@ public partial class CargosServiceTests : IDisposable
         // Arrange
         var max = 10;
         var filter = new Filters.FilterCargos();
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.GetListN(max, filter, invalidUri, CancellationToken.None));
     }
@@ -638,7 +638,7 @@ public partial class CargosServiceTests : IDisposable
     {
         // Arrange
         var validId = 123;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Delete(validId, invalidUri));
     }
@@ -654,7 +654,7 @@ public partial class CargosServiceTests : IDisposable
             Id = 0,
             Nome = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.AddAndUpdate(validCargos, invalidUri));
     }
@@ -810,7 +810,7 @@ public partial class CargosServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri";
+        var invalidUri = "invalid-tenantKey";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, null !, invalidUri));
     }

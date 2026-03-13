@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBDivisaoTribunal
 {
-    public const string CadastroGuid = "bf0e3ffc-f5f2-4d3b-9328-417674b1fb2c";
+    public const string CadastroGuid = "2276cfae-afc8-4327-80a0-465500272bcd";
     public const string PTabelaNome = "DivisaoTribunal";
     public const string CamposSqlX = " DivisaoTribunal.* ";
     public const string CampoCodigo = "divCodigo";

@@ -6,11 +6,11 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IDivisaoTribunalService
 {
-    Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> Filter(int max, Filters.FilterDivisaoTribunal filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<DivisaoTribunalResponse>> AddAndUpdate(Models.DivisaoTribunal? regDivisaoTribunal, string uri = "", CancellationToken token = default);
-    Task<ResultApi<DivisaoTribunalResponse>> Validation(Models.DivisaoTribunal? regDivisaoTribunal, string uri = "", CancellationToken token = default);
-    Task<ResultApi<DivisaoTribunalResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<DivisaoTribunalResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> Filter(int max, Filters.FilterDivisaoTribunal filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<DivisaoTribunalResponse>> AddAndUpdate(Models.DivisaoTribunal? regDivisaoTribunal, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<DivisaoTribunalResponse>> Validation(Models.DivisaoTribunal? regDivisaoTribunal, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<DivisaoTribunalResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<DivisaoTribunalResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
 }

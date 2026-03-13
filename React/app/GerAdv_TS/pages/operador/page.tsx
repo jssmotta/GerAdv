@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IOperador } from "@/app/GerAdv_TS/Operador/Interfaces/interface.Operador";
 import { OperadorGridAdapter } from "@/app/GerAdv_TS/Operador/Adapter/OperadorGridAdapter";
 import OperadorGridContainer from "@/app/GerAdv_TS/Operador/Components/OperadorGridContainer";

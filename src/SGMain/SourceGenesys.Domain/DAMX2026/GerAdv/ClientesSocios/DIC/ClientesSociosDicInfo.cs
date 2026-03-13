@@ -114,7 +114,7 @@ public static partial class DBClientesSociosDicInfo
     public static DBInfoSystem CscSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "csc");
     public static DBInfoSystem CscRepresentanteLegal => new(0, PTabelaNome, CampoCodigo, RepresentanteLegal, 50, "RepresentanteLegal", "RepresentanteLegal", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
     public static DBInfoSystem CscCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "csc"); // DBI 11 
-    public static DBInfoSystem CscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "csc");
     public static DBInfoSystem CscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "csc");
     public static DBInfoSystem CscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "csc");
     public static DBInfoSystem CscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "csc"); // DBI 11 

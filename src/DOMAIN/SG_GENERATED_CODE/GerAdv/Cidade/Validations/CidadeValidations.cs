@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface ICidadeValidation
 {
-    Task<bool> ValidateReg(Models.Cidade reg, ICidadeService service, IUFReader ufReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEscritoriosService escritoriosService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Cidade reg, ICidadeService service, IUFReader ufReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEscritoriosService escritoriosService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class CidadeValidation : ICidadeValidation
 {
-    public async Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEscritoriosService escritoriosService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEscritoriosService escritoriosService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -33,7 +33,7 @@ public class CidadeValidation : ICidadeValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Cidade reg, ICidadeService service, IUFReader ufReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Cidade reg, ICidadeService service, IUFReader ufReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

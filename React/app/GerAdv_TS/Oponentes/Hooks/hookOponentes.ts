@@ -175,10 +175,10 @@ export const useOponentesList = (
 export function useValidationsOponentes() {
   async function runValidation(
     data: IOponentes,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const oponentesApi = new OponentesApi(uri ?? "", token ?? "");
+    const oponentesApi = new OponentesApi(tenantKey ?? "", token ?? "");
 
     const result = await oponentesApi.validation(data);
 

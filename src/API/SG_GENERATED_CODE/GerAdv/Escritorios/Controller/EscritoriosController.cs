@@ -4,7 +4,7 @@
 // Entity:Escritorios
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class EscritoriosController(IEscritoriosService escritoriosService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<EscritoriosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<EscritoriosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.GetAll(max, uri);
+                return await _escritoriosService.GetAll(max, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: GetAll failed with exception for uri = {0}", uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<EscritoriosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterEscritorios filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<EscritoriosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterEscritorios filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            EscritoriosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.Filter(max, filter, uri);
+                return await _escritoriosService.Filter(max, filter, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: Filter failed with exception for uri = {0}", uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<EscritoriosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.GetById(id, uri, token);
+                return await _escritoriosService.GetById(id, tenantKey, token);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            EscritoriosMetrics.RecordReadByHour(uri);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            EscritoriosMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<EscritoriosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: GetById failed with exception for id = {0}, {1}", id, uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<EscritoriosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.GetAuditor(id, uri, token);
+                return await _escritoriosService.GetAuditor(id, tenantKey, token);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEscritorios? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEscritorios? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            EscritoriosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.GetListN(max, filtro, uri);
+                return await _escritoriosService.GetListN(max, filtro, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            EscritoriosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: GetListN failed with exception for uri = {0}", uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<EscritoriosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> AddAndUpdate([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> AddAndUpdate([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         var isNew = regEscritorios.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            EscritoriosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.AddAndUpdate(regEscritorios, uri);
+                return await _escritoriosService.AddAndUpdate(regEscritorios, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                EscritoriosMetrics.RecordCreated(uri);
-                EscritoriosMetrics.RecordCreatedByHour(uri);
+                EscritoriosMetrics.RecordCreated(tenantKey);
+                EscritoriosMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                EscritoriosMetrics.RecordUpdated(uri);
-                EscritoriosMetrics.RecordUpdatedByHour(uri);
+                EscritoriosMetrics.RecordUpdated(tenantKey);
+                EscritoriosMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<EscritoriosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: AddAndUpdate failed with exception for uri = {0}", uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<EscritoriosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<EscritoriosResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<EscritoriosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.Delete(id, uri);
+                return await _escritoriosService.Delete(id, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                EscritoriosMetrics.RecordDeleted(uri);
-                EscritoriosMetrics.RecordDeletedByHour(uri);
+                EscritoriosMetrics.RecordDeleted(tenantKey);
+                EscritoriosMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<EscritoriosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            EscritoriosMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Escritorios: {0} conflito de FK para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Escritorios: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<EscritoriosResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: Delete failed with exception for id = {0}, {1}", id, uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<EscritoriosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> Validation([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<EscritoriosResponse>>> Validation([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = EscritoriosMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            EscritoriosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _escritoriosService.Validation(regEscritorios, uri);
+                return await _escritoriosService.Validation(regEscritorios, tenantKey);
             });
-            EscritoriosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            EscritoriosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            EscritoriosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            EscritoriosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Escritorios: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<EscritoriosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            EscritoriosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Escritorios: Validation failed with exception for uri = {0}", uri);
+            EscritoriosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Escritorios: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<EscritoriosResponse>.Fail(ex.Message, 500));
         }
     }

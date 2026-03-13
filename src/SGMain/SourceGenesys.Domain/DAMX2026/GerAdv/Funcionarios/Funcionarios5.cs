@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBFuncionarios
 {
-    public const string CadastroGuid = "667da36e-00a2-4542-8820-fa41a39a9fc2";
+    public const string CadastroGuid = "6e8c212e-d5c5-4759-bc93-d8c518b41cec";
     public const string PTabelaNome = "Funcionarios";
     public const string CamposSqlX = " Funcionarios.* ";
     public const string CampoCodigo = "funCodigo";

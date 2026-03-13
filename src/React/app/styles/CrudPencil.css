@@ -1,0 +1,244 @@
+/* ========================================
+   CRUD PENCIL - Ícones de Editar/Adicionar
+   Estilos centralizados para ícones de lápis e plus
+   em ComboBoxes de CRUD (Desktop e Mobile)
+   ======================================== */
+
+/* ========================================
+   DESKTOP - Regras padrão
+   ======================================== */
+
+/* Ícones específicos do ComboBox padrão */
+.input-combobox-action-svg-label-editar,
+.input-combobox-action-svg-label-adicionar {
+  display: block;
+  position: relative; 
+  left: 338px;  
+  min-width: 20px;  
+  width: 20px;
+  height: 20px;  
+  z-index: 50;
+  cursor: pointer;  
+  opacity: 1 !important;
+} 
+ 
+
+/* Ícones genéricos (cargosInput, clientesInput, etc.) */
+[class*="Input-action-svg-label-editar"],
+[class*="Input-action-svg-label-adicionar"] {
+  display: block;
+  position: relative; 
+  left: 283px;  
+  min-width: 20px;  
+  width: 20px;
+  height: 20px;  
+  z-index: 50;
+  cursor: pointer;  
+  opacity: 1 !important;
+}
+
+[class*="Input-action-svg-label-adicionar"] {  
+  top: -35px;  
+}
+
+[class*="Input-action-svg-label-editar"] {  
+  top: -36px;  
+}
+
+/* SVG dentro dos ícones - Desktop */
+.input-combobox-action-svg-label-editar .k-svg-icon,
+.input-combobox-action-svg-label-adicionar .k-svg-icon,
+[class*="Input-action-svg-label-editar"] .k-svg-icon,
+[class*="Input-action-svg-label-adicionar"] .k-svg-icon {
+  display: inline-block !important;  
+  opacity: 1 !important;
+  width: 18px !important;
+  height: 18px !important; 
+}
+
+/* SVG path dentro dos ícones - Desktop */
+.input-combobox-action-svg-label-editar .k-svg-icon svg,
+.input-combobox-action-svg-label-adicionar .k-svg-icon svg,
+[class*="Input-action-svg-label-editar"] .k-svg-icon svg,
+[class*="Input-action-svg-label-adicionar"] .k-svg-icon svg,
+.input-combobox-action-svg-label-editar .k-svg-icon svg path,
+.input-combobox-action-svg-label-adicionar .k-svg-icon svg path,
+[class*="Input-action-svg-label-editar"] .k-svg-icon svg path,
+[class*="Input-action-svg-label-adicionar"] .k-svg-icon svg path {
+  display: block !important;  
+  opacity: 1 !important;
+}
+
+/* ========================================
+   MOBILE - Regras responsivas (max-width: 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+
+  /* Container do ComboBox no grid - usar flexbox */
+  .k-grid-content td .combobox-box-msi {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 2px !important;
+    position: relative !important;
+  }
+
+  /* SOBRESCREVER regras antigas do CrudFormsMobile.css */
+  .input-combobox-action-svg-label-editar,
+  .input-combobox-action-svg-label-adicionar {
+    position: relative !important;
+    display: block !important;    
+    opacity: 1 !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    z-index: 999 !important;
+    pointer-events: auto !important;
+  }
+  
+  .input-combobox-action-svg-label-editar {    
+    top: -28px !important;
+  }
+  
+  .input-combobox-action-svg-label-adicionar {    
+    top: -27px !important;
+  }
+
+  [class*="Input-action-svg-label-editar"],
+  [class*="Input-action-svg-label-adicionar"] {
+    position: relative !important;
+    display: block !important;    
+    opacity: 1 !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    z-index: 999 !important;
+    pointer-events: auto !important;
+  }
+  
+  .input-msi-combobox svg 
+  {
+    margin-top: unset !important;
+  }
+
+  [class*="Input-action-svg-label-editar"] {
+    left: calc(100% - 85px) !important;
+    top: -30px !important;
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  [class*="Input-action-svg-label-adicionar"] {
+    left: calc(100% - 85px) !important;
+    top: -27px !important;
+  }
+
+  /* FORÇAR ícones de editar/adicionar - POSICIONAMENTO INTELIGENTE */
+  /* Usar [class*="action-svg-label"] para pegar todas as variações */
+  .k-grid-content td .combobox-box-msi [class*="action-svg-label-editar"],
+  .k-grid-content td .combobox-box-msi [class*="action-svg-label-adicionar"],
+  .grid-mobile-crud [class*="action-svg-label-editar"],
+  .grid-mobile-crud [class*="action-svg-label-adicionar"],
+  .k-grid-content [class*="action-svg-label-editar"],
+  .k-grid-content [class*="action-svg-label-adicionar"] {
+    display: inline-block !important;    
+    opacity: 1 !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  /* Hover effect nos ícones */
+  .k-grid-content [class*="action-svg-label-editar"]:hover,
+  .k-grid-content [class*="action-svg-label-adicionar"]:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  /* SVG dentro dos ícones de editar/adicionar */
+  .grid-mobile-crud [class*="action-svg-label-editar"] .k-svg-icon,
+  .grid-mobile-crud [class*="action-svg-label-adicionar"] .k-svg-icon,
+  .k-grid-content [class*="action-svg-label-editar"] .k-svg-icon,
+  .k-grid-content [class*="action-svg-label-adicionar"] .k-svg-icon {
+    display: inline-block !important;    
+    opacity: 1 !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* SVG path dentro dos ícones */
+  .k-grid-content [class*="action-svg-label"] .k-svg-icon svg,
+  .k-grid-content [class*="action-svg-label"] .k-svg-icon svg path {
+    display: block !important;    
+    opacity: 1 !important;
+  }
+
+  /* Garantir que spans e buttons de ação apareçam */
+  .k-grid-content td span[class*="action-svg"],
+  .k-grid-content td button[class*="action-svg"],
+  .k-grid-content td label[class*="action-svg"] {
+    display: inline-block !important;    
+    opacity: 1 !important;
+  }
+  
+}
+
+/* ========================================
+   LANDSCAPE MODE - Ajustes adicionais
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .k-grid-content td .combobox-box-msi [class*="action-svg-label"] {
+    min-width: 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 4px !important;
+  }
+}
+
+
+/* === Desktop: Progressive Disclosure === */
+@media (hover: hover) and (pointer: fine) {
+  /* Esconder ícones por padrão em desktop */
+  .k-combobox .k-clear-value,
+  .input-combobox-action-svg-label-editar,
+  .input-combobox-action-svg-label-adicionar,
+  [class*="Input-action-svg-label-editar"],
+  [class*="Input-action-svg-label-adicionar"],
+  [class*="action-svg-label-editar"],
+  [class*="action-svg-label-adicionar"] {
+    visibility: hidden !important;
+  }
+
+  /* Exibir quando o combobox (ou seu container) estiver em hover ou focus */
+  .k-combobox:hover .k-clear-value,
+  .k-combobox.k-focus .k-clear-value,
+  .k-combobox:hover .input-combobox-action-svg-label-editar,
+  .k-combobox.k-focus .input-combobox-action-svg-label-editar,
+  .k-combobox:hover .input-combobox-action-svg-label-adicionar,
+  .k-combobox.k-focus .input-combobox-action-svg-label-adicionar,
+  /* também permitir hover/focus no wrapper que contém o ComboBox + ícone */
+  .combobox-box-msi:hover [class*="action-svg-label-editar"],
+  .combobox-box-msi:focus-within [class*="action-svg-label-editar"],
+  .combobox-box-msi:hover [class*="action-svg-label-adicionar"],
+  .combobox-box-msi:focus-within [class*="action-svg-label-adicionar"],
+  .input-msi-combobox:hover [class*="action-svg-label-editar"],
+  .input-msi-combobox:focus-within [class*="action-svg-label-editar"],
+  .input-msi-combobox:hover [class*="action-svg-label-adicionar"],
+  .input-msi-combobox:focus-within [class*="action-svg-label-adicionar"] {
+    visibility: visible !important;
+  }
+}
+
+/* === Mobile: sempre visível === */
+@media (hover: none) and (pointer: coarse) {
+  .k-combobox .k-clear-value,
+  .input-combobox-action-svg-label-editar,
+  .input-combobox-action-svg-label-adicionar {
+    visibility: visible !important;
+  }
+}

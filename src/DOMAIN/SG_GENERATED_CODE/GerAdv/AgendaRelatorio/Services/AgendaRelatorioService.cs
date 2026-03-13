@@ -17,12 +17,12 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
     private readonly IFAgendaRelatorioFactory agendarelatorioFactory = agendarelatorioFactory;
     private readonly IAgendaRelatorioReader reader = reader;
     private readonly IAgendaRelatorioValidation validation = validation;
-    public async Task<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>> Filter(int max, Filters.FilterAgendaRelatorio filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>> Filter(int max, Filters.FilterAgendaRelatorio filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("AgendaRelatorio: URI inválida");
+            throw new Exception("AgendaRelatorio: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -36,27 +36,27 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroAgendaRelatorio(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            AgendaRelatorioDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
+            AgendaRelatorioDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}-AgendaRelatorio-Filter-{filterHash}";
+            var cacheKey = $"{tenantKey}-{max}-AgendaRelatorio-Filter-{filterHash}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<AgendaRelatorioResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            AgendaRelatorioDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            AgendaRelatorioDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<AgendaRelatorioResponseAll>>.Fail($"AgendaRelatorio - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AgendaRelatorioDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            AgendaRelatorioDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<AgendaRelatorioResponseAll>>.Fail($"AgendaRelatorio - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)

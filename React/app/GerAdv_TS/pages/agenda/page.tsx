@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IAgenda } from "@/app/GerAdv_TS/Agenda/Interfaces/interface.Agenda";
 import { AgendaGridAdapter } from "@/app/GerAdv_TS/Agenda/Adapter/AgendaGridAdapter";
 import AgendaGridContainer from "@/app/GerAdv_TS/Agenda/Components/AgendaGridContainer";

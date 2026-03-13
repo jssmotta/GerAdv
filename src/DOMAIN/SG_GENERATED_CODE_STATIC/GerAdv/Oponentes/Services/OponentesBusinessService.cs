@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OponentesService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string tenantKey)
     {
         if (regOponentes == null)
         {
-            _logger.Warn("Oponentes: BeforeDeleteAsync - regOponentes is null for uri = {0}", uri);
+            _logger.Warn("Oponentes: BeforeDeleteAsync - regOponentes is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            OponentesMetrics.RecordNotFound("BeforeDelete", uri, OponentesMetrics.StartTimer());
+            OponentesMetrics.RecordNotFound("BeforeDelete", tenantKey, OponentesMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = OponentesMetrics.StartTimer();
-        _logger.Debug("Oponentes: BeforeDeleteAsync success for Id={0}, uri={1}", regOponentes.Id, uri);
+        _logger.Debug("Oponentes: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regOponentes.Id, tenantKey);
         // record successful business layer pre-delete
-        OponentesMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        OponentesMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string tenantKey)
     {
         var sw = OponentesMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Oponentes: AfterDeleteAsync - Id={0}, uri={1}", regOponentes?.Id ?? 0, uri);
+        _logger.Info("Oponentes: AfterDeleteAsync - Id={0}, tenantKey={1}", regOponentes?.Id ?? 0, tenantKey);
         // record delete metrics
-        OponentesMetrics.RecordDeleted(uri);
-        OponentesMetrics.RecordDeletedByHour(uri);
-        OponentesMetrics.RecordSuccess("AfterDelete", uri, sw);
+        OponentesMetrics.RecordDeleted(tenantKey);
+        OponentesMetrics.RecordDeletedByHour(tenantKey);
+        OponentesMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Oponentes: DeleteErrorAsync - Id={0}, uri={1}", regOponentes?.Id ?? 0, uri);
+        _logger.Error("Oponentes: DeleteErrorAsync - Id={0}, tenantKey={1}", regOponentes?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        OponentesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        OponentesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        OponentesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        OponentesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<OponentesResponse> AfterCreateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task<OponentesResponse> AfterCreateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string tenantKey)
     {
         var sw = OponentesMetrics.StartTimer();
         var result = regOponentes ?? new OponentesResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Oponentes: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Oponentes: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        OponentesMetrics.RecordCreated(uri);
-        OponentesMetrics.RecordCreatedByHour(uri);
-        OponentesMetrics.RecordSuccess("AfterCreate", uri, sw);
+        OponentesMetrics.RecordCreated(tenantKey);
+        OponentesMetrics.RecordCreatedByHour(tenantKey);
+        OponentesMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<OponentesResponse> AfterUpdateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string uri)
+    public async Task<OponentesResponse> AfterUpdateAsync([FromBody] OponentesResponse? regOponentes, [FromRoute, Required] string tenantKey)
     {
         var sw = OponentesMetrics.StartTimer();
         var result = regOponentes ?? new OponentesResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Oponentes: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        OponentesMetrics.RecordUpdated(uri);
-        OponentesMetrics.RecordUpdatedByHour(uri);
-        OponentesMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Oponentes: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        OponentesMetrics.RecordUpdated(tenantKey);
+        OponentesMetrics.RecordUpdatedByHour(tenantKey);
+        OponentesMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Oponentes? regOponentes, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Oponentes? regOponentes, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Oponentes: AddAndUpdateErrorAsync - Id={0}, uri={1}", regOponentes?.Id ?? 0, uri);
+        _logger.Error("Oponentes: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regOponentes?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        OponentesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        OponentesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        OponentesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        OponentesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

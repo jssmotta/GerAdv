@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ColaboradoresService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         if (regColaboradores == null)
         {
-            _logger.Warn("Colaboradores: BeforeDeleteAsync - regColaboradores is null for uri = {0}", uri);
+            _logger.Warn("Colaboradores: BeforeDeleteAsync - regColaboradores is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            ColaboradoresMetrics.RecordNotFound("BeforeDelete", uri, ColaboradoresMetrics.StartTimer());
+            ColaboradoresMetrics.RecordNotFound("BeforeDelete", tenantKey, ColaboradoresMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = ColaboradoresMetrics.StartTimer();
-        _logger.Debug("Colaboradores: BeforeDeleteAsync success for Id={0}, uri={1}", regColaboradores.Id, uri);
+        _logger.Debug("Colaboradores: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regColaboradores.Id, tenantKey);
         // record successful business layer pre-delete
-        ColaboradoresMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        ColaboradoresMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         var sw = ColaboradoresMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Colaboradores: AfterDeleteAsync - Id={0}, uri={1}", regColaboradores?.Id ?? 0, uri);
+        _logger.Info("Colaboradores: AfterDeleteAsync - Id={0}, tenantKey={1}", regColaboradores?.Id ?? 0, tenantKey);
         // record delete metrics
-        ColaboradoresMetrics.RecordDeleted(uri);
-        ColaboradoresMetrics.RecordDeletedByHour(uri);
-        ColaboradoresMetrics.RecordSuccess("AfterDelete", uri, sw);
+        ColaboradoresMetrics.RecordDeleted(tenantKey);
+        ColaboradoresMetrics.RecordDeletedByHour(tenantKey);
+        ColaboradoresMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Colaboradores: DeleteErrorAsync - Id={0}, uri={1}", regColaboradores?.Id ?? 0, uri);
+        _logger.Error("Colaboradores: DeleteErrorAsync - Id={0}, tenantKey={1}", regColaboradores?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        ColaboradoresMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ColaboradoresMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ColaboradoresMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ColaboradoresMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<ColaboradoresResponse> AfterCreateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse> AfterCreateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         var sw = ColaboradoresMetrics.StartTimer();
         var result = regColaboradores ?? new ColaboradoresResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Colaboradores: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Colaboradores: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        ColaboradoresMetrics.RecordCreated(uri);
-        ColaboradoresMetrics.RecordCreatedByHour(uri);
-        ColaboradoresMetrics.RecordSuccess("AfterCreate", uri, sw);
+        ColaboradoresMetrics.RecordCreated(tenantKey);
+        ColaboradoresMetrics.RecordCreatedByHour(tenantKey);
+        ColaboradoresMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<ColaboradoresResponse> AfterUpdateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse> AfterUpdateAsync([FromBody] ColaboradoresResponse? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         var sw = ColaboradoresMetrics.StartTimer();
         var result = regColaboradores ?? new ColaboradoresResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Colaboradores: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        ColaboradoresMetrics.RecordUpdated(uri);
-        ColaboradoresMetrics.RecordUpdatedByHour(uri);
-        ColaboradoresMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Colaboradores: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        ColaboradoresMetrics.RecordUpdated(tenantKey);
+        ColaboradoresMetrics.RecordUpdatedByHour(tenantKey);
+        ColaboradoresMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Colaboradores? regColaboradores, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Colaboradores? regColaboradores, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Colaboradores: AddAndUpdateErrorAsync - Id={0}, uri={1}", regColaboradores?.Id ?? 0, uri);
+        _logger.Error("Colaboradores: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regColaboradores?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        ColaboradoresMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ColaboradoresMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ColaboradoresMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ColaboradoresMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IDivisaoTribunalValidation
 {
-    Task<bool> ValidateReg(Models.DivisaoTribunal reg, IDivisaoTribunalService service, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.DivisaoTribunal reg, IDivisaoTribunalService service, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 {
-    public async Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -37,7 +37,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.DivisaoTribunal reg, IDivisaoTribunalService service, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.DivisaoTribunal reg, IDivisaoTribunalService service, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

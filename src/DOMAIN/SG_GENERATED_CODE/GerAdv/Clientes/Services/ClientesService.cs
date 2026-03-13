@@ -24,12 +24,12 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IClientesSociosService clientessociosService = clientessociosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IProDespesasService prodespesasService = prodespesasService;
-    public async Task<ResultApi<IEnumerable<ClientesResponseAll>>> Filter(int max, Filters.FilterClientes filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<ClientesResponseAll>>> Filter(int max, Filters.FilterClientes filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Clientes: URI inválida");
+            throw new Exception("Clientes: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -43,28 +43,28 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroClientes(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            ClientesDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            ClientesDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Clientes-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Clientes-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<ClientesResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<ClientesResponseAll>>.Fail($"Clientes - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<ClientesResponseAll>>.Fail($"Clientes - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
     }
 
-    public async Task<ResultApi<ClientesResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<ClientesResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -88,20 +88,20 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            ClientesDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            ClientesDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Clientes-GetById-{id}--{keyCache}", async cancel =>
+            ClientesDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            ClientesDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Clientes-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                ClientesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                ClientesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<ClientesResponse>.NotFound($"Clientes: Registro não encontrado para id {id}");
@@ -112,25 +112,25 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            ClientesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ClientesResponse>.Fail($"Clientes, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            ClientesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ClientesResponse>.Fail($"Clientes, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ClientesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ClientesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<ClientesResponse>.Fail($"Clientes - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ClientesResponse>.Fail($"Clientes - {uri}-: GetById: {ex.Message}", 500);
+            ClientesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ClientesResponse>.Fail($"Clientes - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<ClientesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -138,11 +138,11 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             return ResultApi<AuditorResponse>.Fail("Clientes: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Clientes: Auditor não encontrado para id {id}");
@@ -153,11 +153,11 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         catch (Exception ex)
         {
             _logger.Error(ex, "Clientes: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Clientes - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Clientes - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<ClientesResponse>> AddAndUpdate(Models.Clientes? regClientes, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ClientesResponse>> AddAndUpdate(Models.Clientes? regClientes, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regClientes == null)
@@ -165,14 +165,14 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             return ResultApi<ClientesResponse>.Fail("Clientes: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Clientes: URI inválida");
+            throw new Exception("Clientes: TenantApp inválida");
         }
 
         var connectionStopwatch = ClientesDatabaseMetrics.StartTimer();
         var queryStopwatch = ClientesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -181,9 +181,9 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            ClientesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            ClientesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, uri, oCnn);
+            ClientesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            ClientesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -191,12 +191,12 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (SGValidationException ex)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -205,16 +205,16 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         {
             using var saved = await writer.WriteAsync(regClientes, operadorId, oCnn);
             string tipoQuery = regClientes.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            ClientesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            ClientesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regClientes.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regClientes.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -222,14 +222,14 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regClientes, uri);
-            ClientesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regClientes, tenantKey);
+            ClientesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            ClientesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<ClientesResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<ClientesResponse>> Validation(Models.Clientes? regClientes, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ClientesResponse>> Validation(Models.Clientes? regClientes, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regClientes == null)
@@ -237,14 +237,13 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             return ResultApi<ClientesResponse>.Fail("Clientes: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Clientes: URI inválida");
+            throw new Exception("Clientes: TenantApp inválida");
         }
 
         var connectionStopwatch = ClientesDatabaseMetrics.StartTimer();
-        var queryStopwatch = ClientesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -253,9 +252,9 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            ClientesDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            ClientesDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, uri, oCnn);
+            ClientesDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            ClientesDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -263,12 +262,12 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (SGValidationException ex)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -294,7 +293,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
     }
 
-    public async Task<ResultApi<ClientesResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ClientesResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -302,13 +301,13 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Clientes: URI inválida");
+            throw new Exception("Clientes: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = ClientesDatabaseMetrics.StartTimer();
         var queryStopwatch = ClientesDatabaseMetrics.StartTimer();
@@ -319,9 +318,9 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            ClientesDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            ClientesDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, prodespesasService, uri, oCnn);
+            ClientesDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            ClientesDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, prodespesasService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -329,44 +328,44 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (SGValidationException ex)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ClientesResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ClientesResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var clientes = await reader.ReadAsync(id ?? default, oCnn);
         if (clientes == null)
         {
-            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ClientesResponse>.NotFound($"Clientes: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(clientes, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(clientes, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(clientes, nOperador, oCnn);
-                ClientesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                ClientesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(clientes, uri);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(clientes, tenantKey);
             return ResultApi<ClientesResponse>.Ok(clientes);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(clientes, uri);
-            ClientesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(clientes, tenantKey);
+            ClientesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            ClientesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ClientesResponse>.Fail(ex.Message, 500);
         }
     }

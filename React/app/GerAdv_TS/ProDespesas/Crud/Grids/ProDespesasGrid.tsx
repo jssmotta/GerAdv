@@ -32,6 +32,8 @@ import {
 import { useProDespesasFilter } from "../../Hooks/hookProDespesasFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/ProDespesas/ProDespesas.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface ProDespesasGridProps {
   selectItem?: (item: IProDespesas) => void;
@@ -58,7 +60,10 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
 
   const prodespesasService = useMemo(() => {
     return new ProDespesasService(
-      new ProDespesasApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new ProDespesasApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await prodespesasService.getAll(
           filtro ?? ({} as FilterProDespesas),
-          (onlineData) => {
-            setProDespesasData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setProDespesasData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setProDespesasData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setProDespesasData(processed);
           setLoading(false);
         } else {
           setProDespesasData([]);
@@ -106,6 +117,18 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useProDespesasFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (prodespesas: IProDespesas) => {
     setSelectedProDespesas(prodespesas);
     setShowInc(true);
@@ -134,8 +162,11 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedProDespesas(ProDespesasEmpty());
+  const handleAdd = async () => {
+    let empty = ProDespesasEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = prodespesasData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await prodespesasService.deleteProDespesas(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const ProDespesasGrid: React.FC<ProDespesasGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useProDespesasFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

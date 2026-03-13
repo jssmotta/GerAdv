@@ -182,10 +182,13 @@ export const useAgendaRelatorioList = (
 export function useValidationsAgendaRelatorio() {
   async function runValidation(
     data: IAgendaRelatorio,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const agendarelatorioApi = new AgendaRelatorioApi(uri ?? "", token ?? "");
+    const agendarelatorioApi = new AgendaRelatorioApi(
+      tenantKey ?? "",
+      token ?? "",
+    );
 
     const result = await agendarelatorioApi.validation(data);
 

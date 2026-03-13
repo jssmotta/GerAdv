@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IProDespesas } from "@/app/GerAdv_TS/ProDespesas/Interfaces/interface.ProDespesas";
 import { ProDespesasGridAdapter } from "@/app/GerAdv_TS/ProDespesas/Adapter/ProDespesasGridAdapter";
 import ProDespesasGridContainer from "@/app/GerAdv_TS/ProDespesas/Components/ProDespesasGridContainer";

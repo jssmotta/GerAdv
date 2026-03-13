@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { ITribunalFormProps } from "../../Interfaces/interface.Tribunal";
+import {
+  ITribunal,
+  ITribunalFormProps,
+} from "../../Interfaces/interface.Tribunal";
 import { TribunalService } from "../../Services/Tribunal.service";
 import {
   useTribunalForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookTribunal";
 import { TribunalEmpty } from "../../../Models/Tribunal";
 import { TribunalForm } from "../Forms/TribunalForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Tribunal/Tribunal.hooks";
 
 const TribunalInc: React.FC<ITribunalFormProps> = ({
   id,
@@ -37,13 +42,38 @@ const TribunalInc: React.FC<ITribunalFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadTribunal } = useTribunalForm(
+  const { data, handleChange, setData } = useTribunalForm(
     TribunalEmpty(),
     tribunalService,
   );
 
+  const originalRef = useRef<ITribunal>(TribunalEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = TribunalEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await tribunalService.fetchTribunalById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadTribunal(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +87,44 @@ const TribunalInc: React.FC<ITribunalFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedTribunal = await tribunalService.saveTribunal(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedTribunal = await tribunalService.saveTribunal(currentRecord);
 
       if (savedTribunal.id) {
         notificationService.showNotification(
@@ -94,7 +161,7 @@ const TribunalInc: React.FC<ITribunalFormProps> = ({
   };
 
   const handleReload = () => {
-    loadTribunal(id);
+    handleLoad(id);
   };
 
   return (

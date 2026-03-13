@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoRecursoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         if (regTipoRecurso == null)
         {
-            _logger.Warn("TipoRecurso: BeforeDeleteAsync - regTipoRecurso is null for uri = {0}", uri);
+            _logger.Warn("TipoRecurso: BeforeDeleteAsync - regTipoRecurso is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            TipoRecursoMetrics.RecordNotFound("BeforeDelete", uri, TipoRecursoMetrics.StartTimer());
+            TipoRecursoMetrics.RecordNotFound("BeforeDelete", tenantKey, TipoRecursoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = TipoRecursoMetrics.StartTimer();
-        _logger.Debug("TipoRecurso: BeforeDeleteAsync success for Id={0}, uri={1}", regTipoRecurso.Id, uri);
+        _logger.Debug("TipoRecurso: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regTipoRecurso.Id, tenantKey);
         // record successful business layer pre-delete
-        TipoRecursoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        TipoRecursoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoRecursoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("TipoRecurso: AfterDeleteAsync - Id={0}, uri={1}", regTipoRecurso?.Id ?? 0, uri);
+        _logger.Info("TipoRecurso: AfterDeleteAsync - Id={0}, tenantKey={1}", regTipoRecurso?.Id ?? 0, tenantKey);
         // record delete metrics
-        TipoRecursoMetrics.RecordDeleted(uri);
-        TipoRecursoMetrics.RecordDeletedByHour(uri);
-        TipoRecursoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        TipoRecursoMetrics.RecordDeleted(tenantKey);
+        TipoRecursoMetrics.RecordDeletedByHour(tenantKey);
+        TipoRecursoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("TipoRecurso: DeleteErrorAsync - Id={0}, uri={1}", regTipoRecurso?.Id ?? 0, uri);
+        _logger.Error("TipoRecurso: DeleteErrorAsync - Id={0}, tenantKey={1}", regTipoRecurso?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        TipoRecursoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoRecursoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoRecursoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoRecursoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<TipoRecursoResponse> AfterCreateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse> AfterCreateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoRecursoMetrics.StartTimer();
         var result = regTipoRecurso ?? new TipoRecursoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("TipoRecurso: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("TipoRecurso: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        TipoRecursoMetrics.RecordCreated(uri);
-        TipoRecursoMetrics.RecordCreatedByHour(uri);
-        TipoRecursoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        TipoRecursoMetrics.RecordCreated(tenantKey);
+        TipoRecursoMetrics.RecordCreatedByHour(tenantKey);
+        TipoRecursoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<TipoRecursoResponse> AfterUpdateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse> AfterUpdateAsync([FromBody] TipoRecursoResponse? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoRecursoMetrics.StartTimer();
         var result = regTipoRecurso ?? new TipoRecursoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("TipoRecurso: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        TipoRecursoMetrics.RecordUpdated(uri);
-        TipoRecursoMetrics.RecordUpdatedByHour(uri);
-        TipoRecursoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("TipoRecurso: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        TipoRecursoMetrics.RecordUpdated(tenantKey);
+        TipoRecursoMetrics.RecordUpdatedByHour(tenantKey);
+        TipoRecursoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoRecurso? regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoRecurso? regTipoRecurso, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("TipoRecurso: AddAndUpdateErrorAsync - Id={0}, uri={1}", regTipoRecurso?.Id ?? 0, uri);
+        _logger.Error("TipoRecurso: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regTipoRecurso?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        TipoRecursoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoRecursoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoRecursoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoRecursoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

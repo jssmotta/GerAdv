@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AgendaRelatorioService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         if (regAgendaRelatorio == null)
         {
-            _logger.Warn("AgendaRelatorio: BeforeDeleteAsync - regAgendaRelatorio is null for uri = {0}", uri);
+            _logger.Warn("AgendaRelatorio: BeforeDeleteAsync - regAgendaRelatorio is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            AgendaRelatorioMetrics.RecordNotFound("BeforeDelete", uri, AgendaRelatorioMetrics.StartTimer());
+            AgendaRelatorioMetrics.RecordNotFound("BeforeDelete", tenantKey, AgendaRelatorioMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = AgendaRelatorioMetrics.StartTimer();
-        _logger.Debug("AgendaRelatorio: BeforeDeleteAsync success for Id={0}, uri={1}", regAgendaRelatorio.Id, uri);
+        _logger.Debug("AgendaRelatorio: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regAgendaRelatorio.Id, tenantKey);
         // record successful business layer pre-delete
-        AgendaRelatorioMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        AgendaRelatorioMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaRelatorioMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("AgendaRelatorio: AfterDeleteAsync - Id={0}, uri={1}", regAgendaRelatorio?.Id ?? 0, uri);
+        _logger.Info("AgendaRelatorio: AfterDeleteAsync - Id={0}, tenantKey={1}", regAgendaRelatorio?.Id ?? 0, tenantKey);
         // record delete metrics
-        AgendaRelatorioMetrics.RecordDeleted(uri);
-        AgendaRelatorioMetrics.RecordDeletedByHour(uri);
-        AgendaRelatorioMetrics.RecordSuccess("AfterDelete", uri, sw);
+        AgendaRelatorioMetrics.RecordDeleted(tenantKey);
+        AgendaRelatorioMetrics.RecordDeletedByHour(tenantKey);
+        AgendaRelatorioMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("AgendaRelatorio: DeleteErrorAsync - Id={0}, uri={1}", regAgendaRelatorio?.Id ?? 0, uri);
+        _logger.Error("AgendaRelatorio: DeleteErrorAsync - Id={0}, tenantKey={1}", regAgendaRelatorio?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        AgendaRelatorioMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AgendaRelatorioMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AgendaRelatorioMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AgendaRelatorioMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<AgendaRelatorioResponse> AfterCreateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task<AgendaRelatorioResponse> AfterCreateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaRelatorioMetrics.StartTimer();
         var result = regAgendaRelatorio ?? new AgendaRelatorioResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("AgendaRelatorio: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("AgendaRelatorio: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        AgendaRelatorioMetrics.RecordCreated(uri);
-        AgendaRelatorioMetrics.RecordCreatedByHour(uri);
-        AgendaRelatorioMetrics.RecordSuccess("AfterCreate", uri, sw);
+        AgendaRelatorioMetrics.RecordCreated(tenantKey);
+        AgendaRelatorioMetrics.RecordCreatedByHour(tenantKey);
+        AgendaRelatorioMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<AgendaRelatorioResponse> AfterUpdateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task<AgendaRelatorioResponse> AfterUpdateAsync([FromBody] AgendaRelatorioResponse? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         var sw = AgendaRelatorioMetrics.StartTimer();
         var result = regAgendaRelatorio ?? new AgendaRelatorioResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("AgendaRelatorio: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        AgendaRelatorioMetrics.RecordUpdated(uri);
-        AgendaRelatorioMetrics.RecordUpdatedByHour(uri);
-        AgendaRelatorioMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("AgendaRelatorio: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        AgendaRelatorioMetrics.RecordUpdated(tenantKey);
+        AgendaRelatorioMetrics.RecordUpdatedByHour(tenantKey);
+        AgendaRelatorioMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.AgendaRelatorio? regAgendaRelatorio, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.AgendaRelatorio? regAgendaRelatorio, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("AgendaRelatorio: AddAndUpdateErrorAsync - Id={0}, uri={1}", regAgendaRelatorio?.Id ?? 0, uri);
+        _logger.Error("AgendaRelatorio: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regAgendaRelatorio?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        AgendaRelatorioMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AgendaRelatorioMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AgendaRelatorioMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AgendaRelatorioMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

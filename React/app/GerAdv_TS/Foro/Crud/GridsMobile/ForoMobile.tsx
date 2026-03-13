@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsMobileHoook.tsx.txt - Versão Refatorada
+// GridsMobileHoook.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,9 +39,10 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useForoGrid } from "../../Hooks/hookForoGrid";
 import "@/app/styles/MobileCrudGrid.css";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import ViewMobile from "@/app/components/Cruds/ViewMobile";
 import ViewMobileContainer from "@/app/components/Cruds/ViewMobileContainer";
+import ForoHelpCrudButton from "../../Help/ForoHelpCrudButton";
 
 interface ForoGridProps {
   data: IForo[];
@@ -348,7 +349,10 @@ export const ForoGridMobileComponent = React.memo(
       <>
         {initialized && (
           <>
-            <PageTitle title="Foro" />
+            <PageTitle
+              title="Foro"
+              helpButton={<ForoHelpCrudButton isMobile={true} />}
+            />
 
             <ViewMobileContainer
               title="Foro"

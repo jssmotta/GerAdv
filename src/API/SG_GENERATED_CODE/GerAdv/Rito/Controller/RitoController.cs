@@ -4,7 +4,7 @@
 // Entity:Rito
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class RitoController(IRitoService ritoService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<RitoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<RitoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.GetAll(max, uri);
+                return await _ritoService.GetAll(max, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<RitoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: GetAll failed with exception for uri = {0}", uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<RitoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<RitoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterRito filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<RitoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterRito filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            RitoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            RitoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.Filter(max, filter, uri);
+                return await _ritoService.Filter(max, filter, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<RitoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: Filter failed with exception for uri = {0}", uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<RitoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<RitoResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<RitoResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.GetById(id, uri, token);
+                return await _ritoService.GetById(id, tenantKey, token);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            RitoMetrics.RecordReadByHour(uri);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            RitoMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<RitoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: GetById failed with exception for id = {0}, {1}", id, uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<RitoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.GetAuditor(id, uri, token);
+                return await _ritoService.GetAuditor(id, tenantKey, token);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterRito? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterRito? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            RitoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            RitoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.GetListN(max, filtro, uri);
+                return await _ritoService.GetListN(max, filtro, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            RitoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: GetListN failed with exception for uri = {0}", uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<RitoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<RitoResponse>>> AddAndUpdate([FromBody] Models.Rito regRito, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<RitoResponse>>> AddAndUpdate([FromBody] Models.Rito regRito, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         var isNew = regRito.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            RitoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            RitoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.AddAndUpdate(regRito, uri);
+                return await _ritoService.AddAndUpdate(regRito, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                RitoMetrics.RecordCreated(uri);
-                RitoMetrics.RecordCreatedByHour(uri);
+                RitoMetrics.RecordCreated(tenantKey);
+                RitoMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                RitoMetrics.RecordUpdated(uri);
-                RitoMetrics.RecordUpdatedByHour(uri);
+                RitoMetrics.RecordUpdated(tenantKey);
+                RitoMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<RitoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: AddAndUpdate failed with exception for uri = {0}", uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<RitoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<RitoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<RitoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<RitoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<RitoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.Delete(id, uri);
+                return await _ritoService.Delete(id, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                RitoMetrics.RecordDeleted(uri);
-                RitoMetrics.RecordDeletedByHour(uri);
+                RitoMetrics.RecordDeleted(tenantKey);
+                RitoMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<RitoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            RitoMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Rito: {0} conflito de FK para uri = {1}", operacao, uri);
+            RitoMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Rito: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<RitoResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: Delete failed with exception for id = {0}, {1}", id, uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<RitoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<RitoResponse>>> Validation([FromBody] Models.Rito regRito, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<RitoResponse>>> Validation([FromBody] Models.Rito regRito, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = RitoMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            RitoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            RitoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _ritoService.Validation(regRito, uri);
+                return await _ritoService.Validation(regRito, tenantKey);
             });
-            RitoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            RitoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            RitoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Rito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            RitoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Rito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<RitoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            RitoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Rito: Validation failed with exception for uri = {0}", uri);
+            RitoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Rito: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<RitoResponse>.Fail(ex.Message, 500));
         }
     }

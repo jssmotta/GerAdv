@@ -173,10 +173,10 @@ export const useCargosList = (
 export function useValidationsCargos() {
   async function runValidation(
     data: ICargos,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const cargosApi = new CargosApi(uri ?? "", token ?? "");
+    const cargosApi = new CargosApi(tenantKey ?? "", token ?? "");
 
     const result = await cargosApi.validation(data);
 

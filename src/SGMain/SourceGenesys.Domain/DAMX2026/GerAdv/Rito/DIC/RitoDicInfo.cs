@@ -34,7 +34,7 @@ public static partial class DBRitoDicInfo
     public static string TabelaNome => PTabelaNome;
     public const string PTabelaNome = "Rito";
 #region PropriedadesDaTabela
-    public static DBInfoSystem RitDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 20, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "rit");
+    public static DBInfoSystem RitDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 20, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "rit");
     public static DBInfoSystem RitTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "rit");
     public static DBInfoSystem RitBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "rit", isRequired: true);
     public static DBInfoSystem RitGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "rit");

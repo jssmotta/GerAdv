@@ -17,7 +17,7 @@ public class AgendaValidationTests : IDisposable
     private readonly Mock<IAreaReader> _mockAreaReader;
     private readonly Mock<IJusticaReader> _mockJusticaReader;
     private readonly Mock<IOperadorReader> _mockOperadorReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AgendaValidationTests()
     {
         _validation = new AgendaValidation();

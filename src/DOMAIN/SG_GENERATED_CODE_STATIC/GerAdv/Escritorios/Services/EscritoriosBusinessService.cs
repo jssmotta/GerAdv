@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class EscritoriosService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         if (regEscritorios == null)
         {
-            _logger.Warn("Escritorios: BeforeDeleteAsync - regEscritorios is null for uri = {0}", uri);
+            _logger.Warn("Escritorios: BeforeDeleteAsync - regEscritorios is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            EscritoriosMetrics.RecordNotFound("BeforeDelete", uri, EscritoriosMetrics.StartTimer());
+            EscritoriosMetrics.RecordNotFound("BeforeDelete", tenantKey, EscritoriosMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = EscritoriosMetrics.StartTimer();
-        _logger.Debug("Escritorios: BeforeDeleteAsync success for Id={0}, uri={1}", regEscritorios.Id, uri);
+        _logger.Debug("Escritorios: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regEscritorios.Id, tenantKey);
         // record successful business layer pre-delete
-        EscritoriosMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        EscritoriosMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         var sw = EscritoriosMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Escritorios: AfterDeleteAsync - Id={0}, uri={1}", regEscritorios?.Id ?? 0, uri);
+        _logger.Info("Escritorios: AfterDeleteAsync - Id={0}, tenantKey={1}", regEscritorios?.Id ?? 0, tenantKey);
         // record delete metrics
-        EscritoriosMetrics.RecordDeleted(uri);
-        EscritoriosMetrics.RecordDeletedByHour(uri);
-        EscritoriosMetrics.RecordSuccess("AfterDelete", uri, sw);
+        EscritoriosMetrics.RecordDeleted(tenantKey);
+        EscritoriosMetrics.RecordDeletedByHour(tenantKey);
+        EscritoriosMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Escritorios: DeleteErrorAsync - Id={0}, uri={1}", regEscritorios?.Id ?? 0, uri);
+        _logger.Error("Escritorios: DeleteErrorAsync - Id={0}, tenantKey={1}", regEscritorios?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        EscritoriosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        EscritoriosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        EscritoriosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        EscritoriosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<EscritoriosResponse> AfterCreateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse> AfterCreateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         var sw = EscritoriosMetrics.StartTimer();
         var result = regEscritorios ?? new EscritoriosResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Escritorios: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Escritorios: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        EscritoriosMetrics.RecordCreated(uri);
-        EscritoriosMetrics.RecordCreatedByHour(uri);
-        EscritoriosMetrics.RecordSuccess("AfterCreate", uri, sw);
+        EscritoriosMetrics.RecordCreated(tenantKey);
+        EscritoriosMetrics.RecordCreatedByHour(tenantKey);
+        EscritoriosMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<EscritoriosResponse> AfterUpdateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse> AfterUpdateAsync([FromBody] EscritoriosResponse? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         var sw = EscritoriosMetrics.StartTimer();
         var result = regEscritorios ?? new EscritoriosResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Escritorios: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        EscritoriosMetrics.RecordUpdated(uri);
-        EscritoriosMetrics.RecordUpdatedByHour(uri);
-        EscritoriosMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Escritorios: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        EscritoriosMetrics.RecordUpdated(tenantKey);
+        EscritoriosMetrics.RecordUpdatedByHour(tenantKey);
+        EscritoriosMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Escritorios? regEscritorios, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Escritorios? regEscritorios, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Escritorios: AddAndUpdateErrorAsync - Id={0}, uri={1}", regEscritorios?.Id ?? 0, uri);
+        _logger.Error("Escritorios: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regEscritorios?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        EscritoriosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        EscritoriosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        EscritoriosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        EscritoriosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

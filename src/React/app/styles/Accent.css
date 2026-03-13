@@ -1,0 +1,81 @@
+  body .k-pager .k-button .k-icon,
+  body .k-pager .k-link svg,
+  body .k-pager .k-button svg {
+    color: var(--accent-color) !important;
+    fill: var(--accent-color) !important;
+  }
+  
+   body .k-pager .k-button .k-icon,
+  body .k-pager .k-link svg,
+  body .k-pager .k-button svg {
+    color: var(--accent-color) !important;
+    fill: var(--accent-color) !important;
+  }
+
+  .footer-container .k-item .k-icon,
+.footer-container .k-item svg,
+.footer-container svg,
+.footer-container i,
+.footer-container .icon {
+  color: var(--accent-color) !important;
+  fill: var(--accent-color) !important;
+  stroke: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+.footer-container .k-item .k-icon,
+.footer-container .k-item svg,
+.footer-container svg,
+.footer-container i,
+.footer-container .icon {
+  color: var(--accent-color) !important;
+  fill: var(--accent-color) !important;
+  stroke: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+.footer-container .k-item .k-icon,
+.footer-container .k-item svg,
+.footer-container svg,
+.footer-container i,
+.footer-container .icon {
+  color: var(--accent-color) !important;
+  fill: var(--accent-color) !important;
+  stroke: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+/* Drawer icons */
+.k-drawer .k-drawer-item .k-icon,
+.k-drawer .k-drawer-item svg,
+.k-drawer .k-icon,
+.k-drawer svg,
+.k-drawer i {
+  color: var(--accent-color-drawer) !important;
+  fill: var(--accent-color-drawer) !important;
+  stroke: var(--accent-color-drawer) !important;
+  width: var(--size-drawer-icon) !important;
+  height: var(--size-drawer-icon) !important;
+}
+
+.k-drawer-item.k-selected .k-icon,
+.k-drawer-item.k-selected svg,
+.k-drawer-item:hover .k-icon,
+.k-drawer-item:hover svg {
+  color: var(--accent-color-drawer) !important;
+  fill: var(--accent-color-drawer) !important;
+  stroke: var(--accent-color-drawer) !important;
+  width: var(--size-drawer-icon) !important;
+  height: var(--size-drawer-icon) !important;
+}
+
+.k-drawer-wrapper {
+  min-width: calc(var(--size-drawer-icon) + 32px) !important;
+}
+
+
+.disk-save-mobile > svg, .back-mobile > svg {
+  color: var(--color-menphissi) !important;
+  fill: var(--color-menphissi) !important;
+  stroke: var(--color-menphissi) !important;
+}

@@ -12,7 +12,7 @@ public class InstanciaValidationTests : IDisposable
     private readonly Mock<IAcaoReader> _mockAcaoReader;
     private readonly Mock<IForoReader> _mockForoReader;
     private readonly Mock<ITipoRecursoReader> _mockTipoRecursoReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public InstanciaValidationTests()
     {
         _validation = new InstanciaValidation();

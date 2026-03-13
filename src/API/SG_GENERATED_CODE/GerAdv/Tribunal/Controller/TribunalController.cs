@@ -4,7 +4,7 @@
 // Entity:Tribunal
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class TribunalController(ITribunalService tribunalService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TribunalResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TribunalResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.GetAll(max, uri);
+                return await _tribunalService.GetAll(max, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TribunalResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: GetAll failed with exception for uri = {0}", uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TribunalResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TribunalResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTribunal filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TribunalResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTribunal filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            TribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.Filter(max, filter, uri);
+                return await _tribunalService.Filter(max, filter, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TribunalResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: Filter failed with exception for uri = {0}", uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TribunalResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TribunalResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<TribunalResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.GetById(id, uri, token);
+                return await _tribunalService.GetById(id, tenantKey, token);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TribunalMetrics.RecordReadByHour(uri);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TribunalMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: GetById failed with exception for id = {0}, {1}", id, uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.GetAuditor(id, uri, token);
+                return await _tribunalService.GetAuditor(id, tenantKey, token);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTribunal? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTribunal? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            TribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.GetListN(max, filtro, uri);
+                return await _tribunalService.GetListN(max, filtro, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TribunalMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: GetListN failed with exception for uri = {0}", uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<TribunalResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TribunalResponse>>> AddAndUpdate([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TribunalResponse>>> AddAndUpdate([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         var isNew = regTribunal.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            TribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.AddAndUpdate(regTribunal, uri);
+                return await _tribunalService.AddAndUpdate(regTribunal, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                TribunalMetrics.RecordCreated(uri);
-                TribunalMetrics.RecordCreatedByHour(uri);
+                TribunalMetrics.RecordCreated(tenantKey);
+                TribunalMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                TribunalMetrics.RecordUpdated(uri);
-                TribunalMetrics.RecordUpdatedByHour(uri);
+                TribunalMetrics.RecordUpdated(tenantKey);
+                TribunalMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: AddAndUpdate failed with exception for uri = {0}", uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<TribunalResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<TribunalResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TribunalResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TribunalResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.Delete(id, uri);
+                return await _tribunalService.Delete(id, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                TribunalMetrics.RecordDeleted(uri);
-                TribunalMetrics.RecordDeletedByHour(uri);
+                TribunalMetrics.RecordDeleted(tenantKey);
+                TribunalMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            TribunalMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Tribunal: {0} conflito de FK para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Tribunal: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<TribunalResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: Delete failed with exception for id = {0}, {1}", id, uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TribunalResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TribunalResponse>>> Validation([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TribunalResponse>>> Validation([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TribunalMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            TribunalMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TribunalMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tribunalService.Validation(regTribunal, uri);
+                return await _tribunalService.Validation(regTribunal, tenantKey);
             });
-            TribunalMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TribunalMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TribunalMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TribunalMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Tribunal: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TribunalResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TribunalMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Tribunal: Validation failed with exception for uri = {0}", uri);
+            TribunalMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Tribunal: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TribunalResponse>.Fail(ex.Message, 500));
         }
     }

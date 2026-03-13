@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IAreaFormProps } from "../../Interfaces/interface.Area";
+import { IArea, IAreaFormProps } from "../../Interfaces/interface.Area";
 import { AreaService } from "../../Services/Area.service";
 import { useAreaForm, useValidationsArea } from "../../Hooks/hookArea";
 import { AreaEmpty } from "../../../Models/Area";
 import { AreaForm } from "../Forms/AreaForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Area/Area.hooks";
 
 const AreaInc: React.FC<IAreaFormProps> = ({
   id,
@@ -34,13 +36,35 @@ const AreaInc: React.FC<IAreaFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadArea } = useAreaForm(
-    AreaEmpty(),
-    areaService,
-  );
+  const { data, handleChange, setData } = useAreaForm(AreaEmpty(), areaService);
+
+  const originalRef = useRef<IArea>(AreaEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = AreaEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await areaService.fetchAreaById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
 
   useEffect(() => {
-    loadArea(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +78,44 @@ const AreaInc: React.FC<IAreaFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedArea = await areaService.saveArea(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedArea = await areaService.saveArea(currentRecord);
 
       if (savedArea.id) {
         notificationService.showNotification(
@@ -91,7 +152,7 @@ const AreaInc: React.FC<IAreaFormProps> = ({
   };
 
   const handleReload = () => {
-    loadArea(id);
+    handleLoad(id);
   };
 
   return (

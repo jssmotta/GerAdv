@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class CidadeService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string tenantKey)
     {
         if (regCidade == null)
         {
-            _logger.Warn("Cidade: BeforeDeleteAsync - regCidade is null for uri = {0}", uri);
+            _logger.Warn("Cidade: BeforeDeleteAsync - regCidade is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            CidadeMetrics.RecordNotFound("BeforeDelete", uri, CidadeMetrics.StartTimer());
+            CidadeMetrics.RecordNotFound("BeforeDelete", tenantKey, CidadeMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = CidadeMetrics.StartTimer();
-        _logger.Debug("Cidade: BeforeDeleteAsync success for Id={0}, uri={1}", regCidade.Id, uri);
+        _logger.Debug("Cidade: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regCidade.Id, tenantKey);
         // record successful business layer pre-delete
-        CidadeMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        CidadeMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string tenantKey)
     {
         var sw = CidadeMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Cidade: AfterDeleteAsync - Id={0}, uri={1}", regCidade?.Id ?? 0, uri);
+        _logger.Info("Cidade: AfterDeleteAsync - Id={0}, tenantKey={1}", regCidade?.Id ?? 0, tenantKey);
         // record delete metrics
-        CidadeMetrics.RecordDeleted(uri);
-        CidadeMetrics.RecordDeletedByHour(uri);
-        CidadeMetrics.RecordSuccess("AfterDelete", uri, sw);
+        CidadeMetrics.RecordDeleted(tenantKey);
+        CidadeMetrics.RecordDeletedByHour(tenantKey);
+        CidadeMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Cidade: DeleteErrorAsync - Id={0}, uri={1}", regCidade?.Id ?? 0, uri);
+        _logger.Error("Cidade: DeleteErrorAsync - Id={0}, tenantKey={1}", regCidade?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        CidadeMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        CidadeMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        CidadeMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        CidadeMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<CidadeResponse> AfterCreateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse> AfterCreateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string tenantKey)
     {
         var sw = CidadeMetrics.StartTimer();
         var result = regCidade ?? new CidadeResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Cidade: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Cidade: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        CidadeMetrics.RecordCreated(uri);
-        CidadeMetrics.RecordCreatedByHour(uri);
-        CidadeMetrics.RecordSuccess("AfterCreate", uri, sw);
+        CidadeMetrics.RecordCreated(tenantKey);
+        CidadeMetrics.RecordCreatedByHour(tenantKey);
+        CidadeMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<CidadeResponse> AfterUpdateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse> AfterUpdateAsync([FromBody] CidadeResponse? regCidade, [FromRoute, Required] string tenantKey)
     {
         var sw = CidadeMetrics.StartTimer();
         var result = regCidade ?? new CidadeResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Cidade: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        CidadeMetrics.RecordUpdated(uri);
-        CidadeMetrics.RecordUpdatedByHour(uri);
-        CidadeMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Cidade: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        CidadeMetrics.RecordUpdated(tenantKey);
+        CidadeMetrics.RecordUpdatedByHour(tenantKey);
+        CidadeMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Cidade? regCidade, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Cidade? regCidade, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Cidade: AddAndUpdateErrorAsync - Id={0}, uri={1}", regCidade?.Id ?? 0, uri);
+        _logger.Error("Cidade: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regCidade?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        CidadeMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        CidadeMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        CidadeMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        CidadeMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

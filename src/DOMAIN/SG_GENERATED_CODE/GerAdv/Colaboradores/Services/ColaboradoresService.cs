@@ -22,12 +22,12 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
     private readonly ICargosReader cargosReader = cargosReader;
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    public async Task<ResultApi<IEnumerable<ColaboradoresResponseAll>>> Filter(int max, Filters.FilterColaboradores filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<ColaboradoresResponseAll>>> Filter(int max, Filters.FilterColaboradores filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception("Colaboradores: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -41,28 +41,28 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroColaboradores(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Colaboradores-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Colaboradores-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<ColaboradoresResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<ColaboradoresResponseAll>>.Fail($"Colaboradores - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<ColaboradoresResponseAll>>.Fail($"Colaboradores - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
     }
 
-    public async Task<ResultApi<ColaboradoresResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<ColaboradoresResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -86,20 +86,20 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            ColaboradoresDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Colaboradores-GetById-{id}--{keyCache}", async cancel =>
+            ColaboradoresDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Colaboradores-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                ColaboradoresDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                ColaboradoresDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<ColaboradoresResponse>.NotFound($"Colaboradores: Registro não encontrado para id {id}");
@@ -110,25 +110,25 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ColaboradoresResponse>.Fail($"Colaboradores, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ColaboradoresResponse>.Fail($"Colaboradores, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<ColaboradoresResponse>.Fail($"Colaboradores - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ColaboradoresResponse>.Fail($"Colaboradores - {uri}-: GetById: {ex.Message}", 500);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ColaboradoresResponse>.Fail($"Colaboradores - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<ColaboradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -136,11 +136,11 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             return ResultApi<AuditorResponse>.Fail("Colaboradores: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Colaboradores: Auditor não encontrado para id {id}");
@@ -151,11 +151,11 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         catch (Exception ex)
         {
             _logger.Error(ex, "Colaboradores: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Colaboradores - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Colaboradores - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<ColaboradoresResponse>> AddAndUpdate(Models.Colaboradores? regColaboradores, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ColaboradoresResponse>> AddAndUpdate(Models.Colaboradores? regColaboradores, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regColaboradores == null)
@@ -163,14 +163,14 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             return ResultApi<ColaboradoresResponse>.Fail("Colaboradores: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception("Colaboradores: TenantApp inválida");
         }
 
         var connectionStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
         var queryStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -179,9 +179,9 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            ColaboradoresDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
+            ColaboradoresDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -189,12 +189,12 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (SGValidationException ex)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -203,16 +203,16 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         {
             using var saved = await writer.WriteAsync(regColaboradores, operadorId, oCnn);
             string tipoQuery = regColaboradores.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            ColaboradoresDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            ColaboradoresDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regColaboradores.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regColaboradores.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -220,14 +220,14 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regColaboradores, uri);
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regColaboradores, tenantKey);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<ColaboradoresResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<ColaboradoresResponse>> Validation(Models.Colaboradores? regColaboradores, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ColaboradoresResponse>> Validation(Models.Colaboradores? regColaboradores, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regColaboradores == null)
@@ -235,14 +235,13 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             return ResultApi<ColaboradoresResponse>.Fail("Colaboradores: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception("Colaboradores: TenantApp inválida");
         }
 
         var connectionStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
-        var queryStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -251,9 +250,9 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
+            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -261,12 +260,12 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (SGValidationException ex)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -292,7 +291,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
     }
 
-    public async Task<ResultApi<ColaboradoresResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ColaboradoresResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -300,13 +299,13 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception("Colaboradores: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
         var queryStopwatch = ColaboradoresDatabaseMetrics.StartTimer();
@@ -317,9 +316,9 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            ColaboradoresDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            ColaboradoresDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            ColaboradoresDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -327,44 +326,44 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (SGValidationException ex)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ColaboradoresResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ColaboradoresResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var colaboradores = await reader.ReadAsync(id ?? default, oCnn);
         if (colaboradores == null)
         {
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ColaboradoresResponse>.NotFound($"Colaboradores: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(colaboradores, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(colaboradores, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(colaboradores, nOperador, oCnn);
-                ColaboradoresDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                ColaboradoresDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(colaboradores, uri);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(colaboradores, tenantKey);
             return ResultApi<ColaboradoresResponse>.Ok(colaboradores);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(colaboradores, uri);
-            ColaboradoresDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(colaboradores, tenantKey);
+            ColaboradoresDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            ColaboradoresDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ColaboradoresResponse>.Fail(ex.Message, 500);
         }
     }

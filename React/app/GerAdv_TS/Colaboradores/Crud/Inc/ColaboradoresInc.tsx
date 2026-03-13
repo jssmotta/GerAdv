@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IColaboradoresFormProps } from "../../Interfaces/interface.Colaboradores";
+import {
+  IColaboradores,
+  IColaboradoresFormProps,
+} from "../../Interfaces/interface.Colaboradores";
 import { ColaboradoresService } from "../../Services/Colaboradores.service";
 import {
   useColaboradoresForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookColaboradores";
 import { ColaboradoresEmpty } from "../../../Models/Colaboradores";
 import { ColaboradoresForm } from "../Forms/ColaboradoresForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Colaboradores/Colaboradores.hooks";
 
 const ColaboradoresInc: React.FC<IColaboradoresFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const ColaboradoresInc: React.FC<IColaboradoresFormProps> = ({
   const router = useRouter();
 
   const colaboradoresService = new ColaboradoresService(
-    new ColaboradoresApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new ColaboradoresApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadColaboradores } = useColaboradoresForm(
+  const { data, handleChange, setData } = useColaboradoresForm(
     ColaboradoresEmpty(),
     colaboradoresService,
   );
 
+  const originalRef = useRef<IColaboradores>(ColaboradoresEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = ColaboradoresEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await colaboradoresService.fetchColaboradoresById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadColaboradores(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,8 +90,45 @@ const ColaboradoresInc: React.FC<IColaboradoresFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
       const savedColaboradores =
-        await colaboradoresService.saveColaboradores(data);
+        await colaboradoresService.saveColaboradores(currentRecord);
 
       if (savedColaboradores.id) {
         notificationService.showNotification(
@@ -95,7 +165,7 @@ const ColaboradoresInc: React.FC<IColaboradoresFormProps> = ({
   };
 
   const handleReload = () => {
-    loadColaboradores(id);
+    handleLoad(id);
   };
 
   return (

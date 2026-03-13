@@ -7,7 +7,7 @@
 import { HelpField } from "@/app/components/Cruds/Help/HelpCrud";
 import HelpButton from "@/app/components/Cruds/DockerInc/HelpButton";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Tipo Compromisso";
 export const help_infoDescription =
   "Cadastre os tipos de compromissos para organizar melhor a agenda do sistema.";

@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class PaisesReader(IFPaisesFactory paisesFactory) : IPaisesReader
 {
     private readonly IFPaisesFactory _paisesFactory = paisesFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("paiCodigo, paiNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<PaisesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("paiCodigo, paiNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<PaisesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = PaisesDatabaseMetrics.StartTimer();
         var connStopwatch = PaisesDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class PaisesReader(IFPaisesFactory paisesFactory) : IPaisesReader
         {
             PaisesDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             PaisesDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBPaises.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBPaises.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             PaisesDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class PaisesReader(IFPaisesFactory paisesFactory) : IPaisesReader
         }
     }
 
-    private async Task<IEnumerable<PaisesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<PaisesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = PaisesDatabaseMetrics.StartTimer();
         var result = new List<PaisesResponseAll>(max);

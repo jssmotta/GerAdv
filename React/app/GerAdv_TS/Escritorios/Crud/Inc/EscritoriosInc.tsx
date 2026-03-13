@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IEscritoriosFormProps } from "../../Interfaces/interface.Escritorios";
+import {
+  IEscritorios,
+  IEscritoriosFormProps,
+} from "../../Interfaces/interface.Escritorios";
 import { EscritoriosService } from "../../Services/Escritorios.service";
 import {
   useEscritoriosForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookEscritorios";
 import { EscritoriosEmpty } from "../../../Models/Escritorios";
 import { EscritoriosForm } from "../Forms/EscritoriosForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Escritorios/Escritorios.hooks";
 
 const EscritoriosInc: React.FC<IEscritoriosFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const EscritoriosInc: React.FC<IEscritoriosFormProps> = ({
   const router = useRouter();
 
   const escritoriosService = new EscritoriosService(
-    new EscritoriosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new EscritoriosApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadEscritorios } = useEscritoriosForm(
+  const { data, handleChange, setData } = useEscritoriosForm(
     EscritoriosEmpty(),
     escritoriosService,
   );
 
+  const originalRef = useRef<IEscritorios>(EscritoriosEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = EscritoriosEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await escritoriosService.fetchEscritoriosById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadEscritorios(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +90,45 @@ const EscritoriosInc: React.FC<IEscritoriosFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedEscritorios = await escritoriosService.saveEscritorios(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedEscritorios =
+        await escritoriosService.saveEscritorios(currentRecord);
 
       if (savedEscritorios.id) {
         notificationService.showNotification(
@@ -94,7 +165,7 @@ const EscritoriosInc: React.FC<IEscritoriosFormProps> = ({
   };
 
   const handleReload = () => {
-    loadEscritorios(id);
+    handleLoad(id);
   };
 
   return (

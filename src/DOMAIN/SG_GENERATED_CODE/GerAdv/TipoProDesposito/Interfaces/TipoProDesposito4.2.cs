@@ -12,6 +12,6 @@ public partial interface ITipoProDespositoReader
     TipoProDespositoResponse? Read(FTipoProDesposito dbRec);
     TipoProDespositoResponseAll? ReadAll(FTipoProDesposito dbRec, IDataRecord dr);
     TipoProDespositoResponseAll? ReadAll(SG.GerAdv.DBTipoProDesposito dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<TipoProDespositoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoProDespositoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

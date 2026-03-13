@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ForoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string tenantKey)
     {
         if (regForo == null)
         {
-            _logger.Warn("Foro: BeforeDeleteAsync - regForo is null for uri = {0}", uri);
+            _logger.Warn("Foro: BeforeDeleteAsync - regForo is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            ForoMetrics.RecordNotFound("BeforeDelete", uri, ForoMetrics.StartTimer());
+            ForoMetrics.RecordNotFound("BeforeDelete", tenantKey, ForoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = ForoMetrics.StartTimer();
-        _logger.Debug("Foro: BeforeDeleteAsync success for Id={0}, uri={1}", regForo.Id, uri);
+        _logger.Debug("Foro: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regForo.Id, tenantKey);
         // record successful business layer pre-delete
-        ForoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        ForoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string tenantKey)
     {
         var sw = ForoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Foro: AfterDeleteAsync - Id={0}, uri={1}", regForo?.Id ?? 0, uri);
+        _logger.Info("Foro: AfterDeleteAsync - Id={0}, tenantKey={1}", regForo?.Id ?? 0, tenantKey);
         // record delete metrics
-        ForoMetrics.RecordDeleted(uri);
-        ForoMetrics.RecordDeletedByHour(uri);
-        ForoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        ForoMetrics.RecordDeleted(tenantKey);
+        ForoMetrics.RecordDeletedByHour(tenantKey);
+        ForoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Foro: DeleteErrorAsync - Id={0}, uri={1}", regForo?.Id ?? 0, uri);
+        _logger.Error("Foro: DeleteErrorAsync - Id={0}, tenantKey={1}", regForo?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        ForoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ForoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ForoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ForoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<ForoResponse> AfterCreateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task<ForoResponse> AfterCreateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string tenantKey)
     {
         var sw = ForoMetrics.StartTimer();
         var result = regForo ?? new ForoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Foro: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Foro: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        ForoMetrics.RecordCreated(uri);
-        ForoMetrics.RecordCreatedByHour(uri);
-        ForoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        ForoMetrics.RecordCreated(tenantKey);
+        ForoMetrics.RecordCreatedByHour(tenantKey);
+        ForoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<ForoResponse> AfterUpdateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string uri)
+    public async Task<ForoResponse> AfterUpdateAsync([FromBody] ForoResponse? regForo, [FromRoute, Required] string tenantKey)
     {
         var sw = ForoMetrics.StartTimer();
         var result = regForo ?? new ForoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Foro: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        ForoMetrics.RecordUpdated(uri);
-        ForoMetrics.RecordUpdatedByHour(uri);
-        ForoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Foro: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        ForoMetrics.RecordUpdated(tenantKey);
+        ForoMetrics.RecordUpdatedByHour(tenantKey);
+        ForoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Foro? regForo, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Foro? regForo, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Foro: AddAndUpdateErrorAsync - Id={0}, uri={1}", regForo?.Id ?? 0, uri);
+        _logger.Error("Foro: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regForo?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        ForoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ForoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ForoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ForoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

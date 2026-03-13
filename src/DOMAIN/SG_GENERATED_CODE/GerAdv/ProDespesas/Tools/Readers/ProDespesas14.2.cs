@@ -6,16 +6,16 @@ namespace MenphisSI.GerAdv.WarmUp;
 [ExcludeFromCodeCoverage]
 public partial class ProDespesasWarmUp
 {
-    public async Task WarmReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IConnectionService _connectionService) => await CreateIdx(uri, oCnn, _connectionService);
+    public async Task WarmReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IConnectionService _connectionService) => await CreateIdx(tenantKey, oCnn, _connectionService);
 #pragma warning disable CA1822 // Mark members as static
 
-    private async Task CreateIdx(string uri, MsiSqlConnection? oCnn, IConnectionService _connectionService)
+    private async Task CreateIdx(string tenantKey, MsiSqlConnection? oCnn, IConnectionService _connectionService)
 #pragma warning restore CA1822 // Mark members as static
 
     {
         if (oCnn is null)
             return;
-        Console.WriteLine($"WarmUp ProDespesas: {uri}");
+        Console.WriteLine($"WarmUp ProDespesas: {tenantKey}");
         var testSql = $"SELECT SUM(1) AS TOTAL FROM sys.indexes WHERE name = 'idx_ProDespesas_AuditorDtAtu' AND object_id = OBJECT_ID('[{oCnn?.UseDbo}].[ProDespesas]')";
         using var cmd = new SqlCommand(testSql, oCnn?.InnerConnection);
         var result = $"{await cmd.ExecuteScalarAsync()}";
@@ -24,7 +24,7 @@ public partial class ProDespesasWarmUp
             return;
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnnRw = scope.Connection;
         if (oCnnRw is null)
             return;

@@ -1,0 +1,419 @@
+@media (max-width: 768px) {
+
+  /* ===== FIX SCROLL LATERAL IPHONE ===== */
+  html,
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    -webkit-overflow-scrolling: touch !important;
+    -webkit-text-size-adjust: 100% !important;
+  }
+
+  * {
+    box-sizing: border-box !important;
+  }
+
+  .TitleMobile {
+    display: block;
+  }
+
+  .grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .grid-container {
+    overflow-y: visible;
+    height: auto;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .input-container-check,
+  .input-container,
+  .input-container-x {
+    display: block;
+    float: none;
+    min-height: 55px;
+    padding-right: 5px;
+    padding-left: 8px;
+    width: 100% !important;
+    max-width: calc(100% - 50px) !important;
+    overflow: hidden !important;
+    margin-bottom: 12px !important;
+
+  }
+
+  .input-container,
+  .input-container-x {
+    min-width: 0 !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+    max-width: calc(100% - 50px) !important;
+    box-sizing: border-box;
+  }
+
+  .k-pager-sizes .k-input-inner,
+  .k-pager-sizes .k-input-value-text {
+    width: 60px !important;
+  }
+
+  .input-container .k-input {
+    max-width: calc(100% - 5px) !important;
+    width: 100% !important;
+  }
+
+  /* ===== COMPONENTES KENDO - FIX LARGURA ===== */
+
+
+  .k-input,
+  .k-textbox,
+  .k-input-inner,
+  .k-input-md,
+  .k-textarea,
+  .k-numerictextbox,
+  .k-dropdown,
+  .k-datepicker {
+    width: 100% !important;
+    max-width: calc(100% - 50px) !important;
+    min-width: 100px !important;
+    box-sizing: border-box !important;
+  }
+
+  .k-picker-wrap,
+  .k-numeric-wrap {
+    width: 100% !important;
+    max-width: calc(100% - 5px) !important;
+    min-width: 100px !important;
+    box-sizing: border-box !important;
+  }
+
+
+  .input-msi-combobox {
+    width: calc(100% - 50px) !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ===== FLOATING LABELS ===== */
+  .k-floating-label {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .inputMemo {
+    width: 100% !important;
+    max-width: calc(100% - 30px) !important;
+  }
+
+
+
+  .form-container {
+    width: 95%;
+    min-height: auto;
+    padding: 5px;
+    overflow: visible;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .form-container5 {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  body,
+  form {
+    margin: 0;
+    padding: 0;
+    min-height: auto;
+    height: auto;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .form-container {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .form-spacer {
+    height: 80px;
+    background: none;
+    border: none;
+  }
+
+  .formInputCadInc {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    background: none;
+    gap: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .formInputCadInc {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  .buttons-container-mobile {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .buttons-container {
+    display: block;
+    float: right;
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+    order: 2;
+  }
+
+  .buttonCrudOkMobile {
+    width: 100px !important;
+    background-color: var(--kendo-primary-130) !important;
+    color: rgb(161, 36, 36) !important;
+    text-transform: uppercase !important;
+  }
+
+  .formInputCadInc .grid-container {
+    order: 1;
+  }
+
+  .formInputCadInc .buttons-container-mobile {
+    order: 999;
+  }
+
+  body,
+  form {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .buttonCrudOk {
+    background-color: var(--color-menphissi) !important;
+    width: 80%;
+    min-width: 200px;
+    color: white !important;
+  }
+
+  /* Ícones de ação em comboboxes - MOVIDO PARA CrudPencil.css */
+
+  .input-container-textarea {
+    min-height: 180px !important;
+  }
+
+  .input-container {
+    margin-top: 10px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .input-msi-combobox {
+    margin-top: 22px !important;
+    margin-bottom: 22px !important;
+  }
+
+  .input-container-timepicker {
+    margin-top: 22px !important;
+    margin-bottom: 22px !important;
+  }
+
+  .pageContainer {
+    min-height: 135vh;
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .custom-dialog-confirmation {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    width: 85vw !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 120px !important;
+    max-height: 200px !important;
+    margin: 0 !important;
+    z-index: 10000 !important;
+  }
+
+  /* Específico para iOS Safari */
+  @supports (-webkit-touch-callout: none) {
+    .custom-dialog-confirmation {
+      position: fixed !important;
+      top: 50vh !important;
+      left: 50vw !important;
+      transform: translate(-50%, -50%) !important;
+      -webkit-transform: translate(-50%, -50%) !important;
+    }
+  }
+
+  .custom-dialog-confirmation .k-dialog-content {
+    padding: 0 !important;
+  }
+
+  .custom-dialog-confirmation .k-dialog-actions {
+    padding: 8px 15px 15px 15px !important;
+    justify-content: space-between !important;
+  }
+
+  .custom-dialog-confirmation .k-button {
+    height: 35px !important;
+    min-height: 35px !important;
+    font-size: 14px !important;
+    flex: 1 !important;
+    margin: 0 5px !important;
+  }
+
+
+  .button-delete-inc,
+  .button-auditor-inc,
+  .button-bottom-inc {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 120px !important;
+  }
+
+  .button-copy-clipboard {
+    max-width: 100% !important;
+  }
+
+  .qrCode {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .qr-code-mobile {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .delete-button, .help-button {
+    background-color: var(--kendo-error-170) !important;
+  }
+
+  .k-window-title {
+    height: 40px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .k-window-content {
+    padding-left: 2px !important;
+  }
+
+
+  /* 
+       .k-window.modal-window-fixed {
+              height: calc(100vh - 68px) !important;
+              max-height: calc(100vh - 68px) !important;
+              bottom: 68px !important;
+            }
+            
+            .k-window.modal-window-fixed .k-window-content {
+              height: calc(100% - 30px) !important;
+              overflow-y: auto !important;
+              
+            background-color: red !important;
+            }
+
+            .k-window[style*="height"] {
+            height: calc(100vh - 68px) !important;
+          }
+
+          .k-window[data-role="window"][aria-modal="true"] {
+            height: calc(100vh - 68px) !important;
+            max-height: calc(100vh - 68px) !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 68px !important;
+          } */
+
+  html,
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .form-container,
+  .form-container5 {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .formInputCadInc {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .k-floating-label-container {
+    width: 100% !important;
+    max-width: calc(100% - 5px) !important;
+    overflow-x: hidden !important;
+  }
+
+  .k-textbox,
+  .k-input-inner,
+  .k-input-md,
+  .k-textarea,
+  .k-numerictextbox,
+  .k-datepicker .k-input,
+  .k-combobox .k-input,
+  .k-dropdown .k-dropdown-wrap,
+  .k-autocomplete .k-input,
+  .k-multiselect .k-multiselect-wrap,
+  .k-dropdownlist .k-input,
+  .k-picker-wrap,
+  .k-dropdown-wrap,
+  .k-numeric-wrap,
+  .k-multiselect-wrap {
+
+    min-width: calc(100% - 50px);
+    width: calc(100% - 50px);
+
+  }
+
+  .k-top-header .k-input-inner {
+
+    min-width: 160px !important;
+    width: 180px !important;
+    color: #fff !important;
+  } 
+
+  .crud-mobile-title .grid-container .title-page-cad {
+    display: none !important;
+  }  
+
+}
+

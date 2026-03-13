@@ -38,9 +38,9 @@ public class EscritoriosControllerTests
                 Id = 2
             }
         };
-        _mockService.Setup(x => x.GetAll(max, "test-uri", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
+        _mockService.Setup(x => x.GetAll(max, "test-tenantKey", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.GetAll(max, "test-uri");
+        var actionResult = await _controller.GetAll(max, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -48,7 +48,7 @@ public class EscritoriosControllerTests
         var resultApi = objectResult?.Value as ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>;
         resultApi?.Success.Should().BeTrue();
         resultApi?.Data.Should().BeEquivalentTo(expectedData);
-        _mockService.Verify(x => x.GetAll(max, "test-uri", It.IsAny<CancellationToken>()), Times.Once);
+        _mockService.Verify(x => x.GetAll(max, "test-tenantKey", It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -57,9 +57,9 @@ public class EscritoriosControllerTests
         // Arrange
         var max = 0;
         var expectedData = new List<RespAll.EscritoriosResponseAll>();
-        _mockService.Setup(x => x.GetAll(max, "test-uri", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
+        _mockService.Setup(x => x.GetAll(max, "test-tenantKey", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.GetAll(max, "test-uri");
+        var actionResult = await _controller.GetAll(max, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -83,9 +83,9 @@ public class EscritoriosControllerTests
                 Id = 1
             }
         };
-        _mockService.Setup(x => x.Filter(max, filter, "test-uri")).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
+        _mockService.Setup(x => x.Filter(max, filter, "test-tenantKey")).ReturnsAsync(ResultApi<IEnumerable<RespAll.EscritoriosResponseAll>>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.Filter(max, filter, "test-uri");
+        var actionResult = await _controller.Filter(max, filter, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -101,7 +101,7 @@ public class EscritoriosControllerTests
         _controller.ModelState.AddModelError("test", "Test error");
         var filter = new Filters.FilterEscritorios();
         // Act
-        var actionResult = await _controller.Filter(10, filter, "test-uri");
+        var actionResult = await _controller.Filter(10, filter, "test-tenantKey");
         // Assert
         actionResult.Result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -115,9 +115,9 @@ public class EscritoriosControllerTests
         {
             Id = id
         };
-        _mockService.Setup(x => x.GetById(id, "test-uri", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedData));
+        _mockService.Setup(x => x.GetById(id, "test-tenantKey", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.GetById(id, "test-uri");
+        var actionResult = await _controller.GetById(id, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -131,9 +131,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         int id = 999;
-        _mockService.Setup(x => x.GetById(id, "test-uri", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.NotFound($"Registro não encontrado para id {id}"));
+        _mockService.Setup(x => x.GetById(id, "test-tenantKey", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.NotFound($"Registro não encontrado para id {id}"));
         // Act
-        var actionResult = await _controller.GetById(id, "test-uri");
+        var actionResult = await _controller.GetById(id, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -149,9 +149,9 @@ public class EscritoriosControllerTests
         int id = 1;
         var cts = new CancellationTokenSource();
         cts.Cancel();
-        _mockService.Setup(x => x.GetById(id, "test-uri", It.IsAny<CancellationToken>())).ThrowsAsync(new OperationCanceledException());
+        _mockService.Setup(x => x.GetById(id, "test-tenantKey", It.IsAny<CancellationToken>())).ThrowsAsync(new OperationCanceledException());
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(() => _controller.GetById(id, "test-uri", cts.Token));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => _controller.GetById(id, "test-tenantKey", cts.Token));
     }
 
     [Fact]
@@ -168,9 +168,9 @@ public class EscritoriosControllerTests
                 Nome = "Teste"
             }
         };
-        _mockService.Setup(x => x.GetListN(max, filter, "test-uri", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<NomeID>>.Ok(expectedData));
+        _mockService.Setup(x => x.GetListN(max, filter, "test-tenantKey", It.IsAny<CancellationToken>())).ReturnsAsync(ResultApi<IEnumerable<NomeID>>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.GetListN(max, filter, "test-uri");
+        var actionResult = await _controller.GetListN(max, filter, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -192,9 +192,9 @@ public class EscritoriosControllerTests
         {
             Id = 1
         };
-        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Created(expectedResult));
+        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Created(expectedResult));
         // Act
-        var actionResult = await _controller.AddAndUpdate(model, "test-uri");
+        var actionResult = await _controller.AddAndUpdate(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -210,7 +210,7 @@ public class EscritoriosControllerTests
         _controller.ModelState.AddModelError("test", "Test error");
         var model = new Models.Escritorios();
         // Act
-        var actionResult = await _controller.AddAndUpdate(model, "test-uri");
+        var actionResult = await _controller.AddAndUpdate(model, "test-tenantKey");
         // Assert
         actionResult.Result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -220,9 +220,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         var model = new Models.Escritorios();
-        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Fail("Falha ao processar", 400));
+        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Fail("Falha ao processar", 400));
         // Act
-        var actionResult = await _controller.AddAndUpdate(model, "test-uri");
+        var actionResult = await _controller.AddAndUpdate(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -236,9 +236,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         var model = new Models.Escritorios();
-        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-uri")).ThrowsAsync(new Exception("Test exception"));
+        _mockService.Setup(x => x.AddAndUpdate(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ThrowsAsync(new Exception("Test exception"));
         // Act
-        var actionResult = await _controller.AddAndUpdate(model, "test-uri");
+        var actionResult = await _controller.AddAndUpdate(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -257,9 +257,9 @@ public class EscritoriosControllerTests
         {
             Id = id
         };
-        _mockService.Setup(x => x.Delete(id, "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedResult));
+        _mockService.Setup(x => x.Delete(id, "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedResult));
         // Act
-        var actionResult = await _controller.Delete(id, "test-uri");
+        var actionResult = await _controller.Delete(id, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -273,9 +273,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         int id = 999;
-        _mockService.Setup(x => x.Delete(id, "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.NotFound("Registro não encontrado"));
+        _mockService.Setup(x => x.Delete(id, "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.NotFound("Registro não encontrado"));
         // Act
-        var actionResult = await _controller.Delete(id, "test-uri");
+        var actionResult = await _controller.Delete(id, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -289,9 +289,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         int id = 1;
-        _mockService.Setup(x => x.Delete(id, "test-uri")).ThrowsAsync(new Exception("Delete failed"));
+        _mockService.Setup(x => x.Delete(id, "test-tenantKey")).ThrowsAsync(new Exception("Delete failed"));
         // Act
-        var actionResult = await _controller.Delete(id, "test-uri");
+        var actionResult = await _controller.Delete(id, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -313,9 +313,9 @@ public class EscritoriosControllerTests
         {
             Id = 1
         };
-        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedResult));
+        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Ok(expectedResult));
         // Act
-        var actionResult = await _controller.Validation(model, "test-uri");
+        var actionResult = await _controller.Validation(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -331,7 +331,7 @@ public class EscritoriosControllerTests
         _controller.ModelState.AddModelError("test", "Test error");
         var model = new Models.Escritorios();
         // Act
-        var actionResult = await _controller.Validation(model, "test-uri");
+        var actionResult = await _controller.Validation(model, "test-tenantKey");
         // Assert
         actionResult.Result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -341,9 +341,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         var model = new Models.Escritorios();
-        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-uri")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Fail("Falha na validação", 400));
+        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ReturnsAsync(ResultApi<Resp.EscritoriosResponse>.Fail("Falha na validação", 400));
         // Act
-        var actionResult = await _controller.Validation(model, "test-uri");
+        var actionResult = await _controller.Validation(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -357,9 +357,9 @@ public class EscritoriosControllerTests
     {
         // Arrange
         var model = new Models.Escritorios();
-        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-uri")).ThrowsAsync(new Exception("Validation error"));
+        _mockService.Setup(x => x.Validation(It.IsAny<Models.Escritorios>(), "test-tenantKey")).ThrowsAsync(new Exception("Validation error"));
         // Act
-        var actionResult = await _controller.Validation(model, "test-uri");
+        var actionResult = await _controller.Validation(model, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();

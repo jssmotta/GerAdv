@@ -10,7 +10,7 @@ import HelpCargos from "@/app/GerAdv_TS/Cargos/Help/HelpCargos";
 import HelpFuncao from "@/app/GerAdv_TS/Funcao/Help/HelpFuncao";
 import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Colaborador";
 export const help_infoDescription =
   "Cadastre os colaboradores do escritório/empresa/consultório, para criar um operador é preciso associar com o colaborador, para que o sistema possa controlar o acesso e as atividades de cada usuário.";
@@ -35,7 +35,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `funCargo`,
     caption: `Cargos`,
-    description: `Cargos relacionado a Colaborador`,
+    description: `Cargos relacionado à entidade Colaborador`,
     acceptedValues: `Cadastrados em Cargos`,
     required: false,
     relatedTable: (
@@ -48,7 +48,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `funFuncao`,
     caption: `Função`,
-    description: `Função relacionado a Colaborador`,
+    description: `Função relacionado à entidade Colaborador`,
     acceptedValues: `Cadastrados em Função`,
     required: false,
     relatedTable: (
@@ -125,7 +125,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `funCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Colaborador`,
+    description: `Cidade relacionado à entidade Colaborador`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (

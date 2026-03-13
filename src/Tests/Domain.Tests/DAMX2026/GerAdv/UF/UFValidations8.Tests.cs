@@ -10,7 +10,7 @@ public class UFValidationTests : IDisposable
     private readonly Mock<IUFService> _mockUFService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IPaisesReader> _mockPaisesReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public UFValidationTests()
     {
         _validation = new UFValidation();

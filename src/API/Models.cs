@@ -38,9 +38,9 @@
 
 //public class Reader
 //{
-//    public Agenda Read(int id, string uri)
+//    public Agenda Read(int id, string tenantKey)
 //    {
-//        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+//        using var oCnn = Configuracoes.GetConnectionByUri(tenantKey);
 
 //        var dbRec = new DBAgenda(id, oCnn);
 //        var agenda = new Agenda

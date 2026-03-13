@@ -20,12 +20,12 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
     private readonly IPaisesValidation validation = validation;
     private readonly IPaisesWriter writer = writer;
     private readonly IUFService ufService = ufService;
-    public async Task<ResultApi<IEnumerable<PaisesResponseAll>>> Filter(int max, Filters.FilterPaises filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<PaisesResponseAll>>> Filter(int max, Filters.FilterPaises filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Paises: URI inválida");
+            throw new Exception("Paises: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -39,28 +39,28 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroPaises(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            PaisesDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            PaisesDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Paises-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Paises-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<PaisesResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<PaisesResponseAll>>.Fail($"Paises - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<PaisesResponseAll>>.Fail($"Paises - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
     }
 
-    public async Task<ResultApi<PaisesResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<PaisesResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -84,20 +84,20 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            PaisesDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            PaisesDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Paises-GetById-{id}--{keyCache}", async cancel =>
+            PaisesDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            PaisesDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Paises-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                PaisesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                PaisesDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<PaisesResponse>.NotFound($"Paises: Registro não encontrado para id {id}");
@@ -108,25 +108,25 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            PaisesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<PaisesResponse>.Fail($"Paises, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            PaisesDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<PaisesResponse>.Fail($"Paises, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            PaisesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            PaisesDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<PaisesResponse>.Fail($"Paises - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<PaisesResponse>.Fail($"Paises - {uri}-: GetById: {ex.Message}", 500);
+            PaisesDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<PaisesResponse>.Fail($"Paises - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<PaisesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -134,11 +134,11 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
             return ResultApi<AuditorResponse>.Fail("Paises: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Paises: Auditor não encontrado para id {id}");
@@ -149,11 +149,11 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         catch (Exception ex)
         {
             _logger.Error(ex, "Paises: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Paises - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Paises - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<PaisesResponse>> AddAndUpdate(Models.Paises? regPaises, string uri, CancellationToken token = default)
+    public async Task<ResultApi<PaisesResponse>> AddAndUpdate(Models.Paises? regPaises, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regPaises == null)
@@ -161,14 +161,14 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
             return ResultApi<PaisesResponse>.Fail("Paises: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Paises: URI inválida");
+            throw new Exception("Paises: TenantApp inválida");
         }
 
         var connectionStopwatch = PaisesDatabaseMetrics.StartTimer();
         var queryStopwatch = PaisesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -177,9 +177,9 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
 
         try
         {
-            PaisesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            PaisesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regPaises, this, uri, oCnn);
+            PaisesDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            PaisesDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regPaises, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -187,12 +187,12 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
         catch (SGValidationException ex)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -201,16 +201,16 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         {
             using var saved = await writer.WriteAsync(regPaises, operadorId, oCnn);
             string tipoQuery = regPaises.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            PaisesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            PaisesDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regPaises.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regPaises.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -218,14 +218,14 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regPaises, uri);
-            PaisesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regPaises, tenantKey);
+            PaisesDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            PaisesDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<PaisesResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<PaisesResponse>> Validation(Models.Paises? regPaises, string uri, CancellationToken token = default)
+    public async Task<ResultApi<PaisesResponse>> Validation(Models.Paises? regPaises, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regPaises == null)
@@ -233,14 +233,13 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
             return ResultApi<PaisesResponse>.Fail("Paises: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Paises: URI inválida");
+            throw new Exception("Paises: TenantApp inválida");
         }
 
         var connectionStopwatch = PaisesDatabaseMetrics.StartTimer();
-        var queryStopwatch = PaisesDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -249,9 +248,9 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
 
         try
         {
-            PaisesDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            PaisesDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regPaises, this, uri, oCnn);
+            PaisesDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            PaisesDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regPaises, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -259,12 +258,12 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
         catch (SGValidationException ex)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -290,7 +289,7 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
     }
 
-    public async Task<ResultApi<PaisesResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<PaisesResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -298,13 +297,13 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Paises: URI inválida");
+            throw new Exception("Paises: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = PaisesDatabaseMetrics.StartTimer();
         var queryStopwatch = PaisesDatabaseMetrics.StartTimer();
@@ -315,9 +314,9 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
 
         try
         {
-            PaisesDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            PaisesDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, ufService, uri, oCnn);
+            PaisesDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            PaisesDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, ufService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -325,44 +324,44 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IFPaisesFa
         }
         catch (SGValidationException ex)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<PaisesResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<PaisesResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var paises = await reader.ReadAsync(id ?? default, oCnn);
         if (paises == null)
         {
-            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<PaisesResponse>.NotFound($"Paises: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(paises, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(paises, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(paises, nOperador, oCnn);
-                PaisesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                PaisesDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(paises, uri);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(paises, tenantKey);
             return ResultApi<PaisesResponse>.Ok(paises);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(paises, uri);
-            PaisesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(paises, tenantKey);
+            PaisesDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            PaisesDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<PaisesResponse>.Fail(ex.Message, 500);
         }
     }

@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { ITipoProDespositoFormProps } from "../../Interfaces/interface.TipoProDesposito";
+import {
+  ITipoProDesposito,
+  ITipoProDespositoFormProps,
+} from "../../Interfaces/interface.TipoProDesposito";
 import { TipoProDespositoService } from "../../Services/TipoProDesposito.service";
 import {
   useTipoProDespositoForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookTipoProDesposito";
 import { TipoProDespositoEmpty } from "../../../Models/TipoProDesposito";
 import { TipoProDespositoForm } from "../Forms/TipoProDespositoForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/TipoProDesposito/TipoProDesposito.hooks";
 
 const TipoProDespositoInc: React.FC<ITipoProDespositoFormProps> = ({
   id,
@@ -40,13 +45,39 @@ const TipoProDespositoInc: React.FC<ITipoProDespositoFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadTipoProDesposito } = useTipoProDespositoForm(
+  const { data, handleChange, setData } = useTipoProDespositoForm(
     TipoProDespositoEmpty(),
     tipoprodespositoService,
   );
 
+  const originalRef = useRef<ITipoProDesposito>(TipoProDespositoEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = TipoProDespositoEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record =
+        await tipoprodespositoService.fetchTipoProDespositoById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadTipoProDesposito(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,8 +91,45 @@ const TipoProDespositoInc: React.FC<ITipoProDespositoFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
       const savedTipoProDesposito =
-        await tipoprodespositoService.saveTipoProDesposito(data);
+        await tipoprodespositoService.saveTipoProDesposito(currentRecord);
 
       if (savedTipoProDesposito.id) {
         notificationService.showNotification(
@@ -98,7 +166,7 @@ const TipoProDespositoInc: React.FC<ITipoProDespositoFormProps> = ({
   };
 
   const handleReload = () => {
-    loadTipoProDesposito(id);
+    handleLoad(id);
   };
 
   return (

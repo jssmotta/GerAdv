@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOponentesReader
 {
     private readonly IFOponentesFactory _oponentesFactory = oponentesFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opoCodigo, opoNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<OponentesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opoCodigo, opoNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<OponentesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = OponentesDatabaseMetrics.StartTimer();
         var connStopwatch = OponentesDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             OponentesDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             OponentesDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBOponentes.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBOponentes.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             OponentesDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         }
     }
 
-    private async Task<IEnumerable<OponentesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<OponentesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = OponentesDatabaseMetrics.StartTimer();
         var result = new List<OponentesResponseAll>(max);

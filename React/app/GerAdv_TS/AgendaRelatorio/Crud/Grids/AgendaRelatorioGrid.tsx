@@ -32,6 +32,8 @@ import {
 import { useAgendaRelatorioFilter } from "../../Hooks/hookAgendaRelatorioFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/AgendaRelatorio/AgendaRelatorio.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface AgendaRelatorioGridProps {
   selectItem?: (item: IAgendaRelatorio) => void;
@@ -92,15 +94,21 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
       try {
         const offlineData = await agendarelatorioService.getAll(
           filtro ?? ({} as FilterAgendaRelatorio),
-          (onlineData) => {
-            setAgendaRelatorioData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setAgendaRelatorioData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setAgendaRelatorioData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setAgendaRelatorioData(processed);
           setLoading(false);
         } else {
           setAgendaRelatorioData([]);
@@ -113,6 +121,18 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useAgendaRelatorioFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -131,6 +151,11 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (agendarelatorio: IAgendaRelatorio) => {
     setSelectedAgendaRelatorio(agendarelatorio);
     setShowInc(true);
@@ -142,8 +167,11 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedAgendaRelatorio(AgendaRelatorioEmpty());
+  const handleAdd = async () => {
+    let empty = AgendaRelatorioEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -169,8 +197,24 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = agendarelatorioData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await agendarelatorioService.deleteAgendaRelatorio(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -203,24 +247,6 @@ const AgendaRelatorioGrid: React.FC<AgendaRelatorioGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useAgendaRelatorioFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

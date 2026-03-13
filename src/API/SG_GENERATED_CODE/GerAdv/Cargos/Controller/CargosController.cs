@@ -4,7 +4,7 @@
 // Entity:Cargos
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class CargosController(ICargosService cargosService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<CargosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<CargosResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.GetAll(max, uri);
+                return await _cargosService.GetAll(max, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<CargosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: GetAll failed with exception for uri = {0}", uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<CargosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<CargosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterCargos filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<CargosResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterCargos filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            CargosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CargosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.Filter(max, filter, uri);
+                return await _cargosService.Filter(max, filter, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<CargosResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: Filter failed with exception for uri = {0}", uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<CargosResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<CargosResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<CargosResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.GetById(id, uri, token);
+                return await _cargosService.GetById(id, tenantKey, token);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CargosMetrics.RecordReadByHour(uri);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CargosMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CargosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: GetById failed with exception for id = {0}, {1}", id, uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<CargosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.GetAuditor(id, uri, token);
+                return await _cargosService.GetAuditor(id, tenantKey, token);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCargos? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCargos? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            CargosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CargosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.GetListN(max, filtro, uri);
+                return await _cargosService.GetListN(max, filtro, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CargosMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: GetListN failed with exception for uri = {0}", uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<CargosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<CargosResponse>>> AddAndUpdate([FromBody] Models.Cargos regCargos, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CargosResponse>>> AddAndUpdate([FromBody] Models.Cargos regCargos, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         var isNew = regCargos.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            CargosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CargosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.AddAndUpdate(regCargos, uri);
+                return await _cargosService.AddAndUpdate(regCargos, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                CargosMetrics.RecordCreated(uri);
-                CargosMetrics.RecordCreatedByHour(uri);
+                CargosMetrics.RecordCreated(tenantKey);
+                CargosMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                CargosMetrics.RecordUpdated(uri);
-                CargosMetrics.RecordUpdatedByHour(uri);
+                CargosMetrics.RecordUpdated(tenantKey);
+                CargosMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CargosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: AddAndUpdate failed with exception for uri = {0}", uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<CargosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<CargosResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<CargosResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<CargosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CargosResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.Delete(id, uri);
+                return await _cargosService.Delete(id, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                CargosMetrics.RecordDeleted(uri);
-                CargosMetrics.RecordDeletedByHour(uri);
+                CargosMetrics.RecordDeleted(tenantKey);
+                CargosMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CargosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            CargosMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Cargos: {0} conflito de FK para uri = {1}", operacao, uri);
+            CargosMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Cargos: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<CargosResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: Delete failed with exception for id = {0}, {1}", id, uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<CargosResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class CargosController(ICargosService cargosService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<CargosResponse>>> Validation([FromBody] Models.Cargos regCargos, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CargosResponse>>> Validation([FromBody] Models.Cargos regCargos, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CargosMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            CargosMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CargosMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class CargosController(ICargosService cargosService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cargosService.Validation(regCargos, uri);
+                return await _cargosService.Validation(regCargos, tenantKey);
             });
-            CargosMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CargosMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CargosMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CargosMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cargos: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CargosResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CargosMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cargos: Validation failed with exception for uri = {0}", uri);
+            CargosMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cargos: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<CargosResponse>.Fail(ex.Message, 500));
         }
     }

@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IEscritorios } from "@/app/GerAdv_TS/Escritorios/Interfaces/interface.Escritorios";
 import { EscritoriosGridAdapter } from "@/app/GerAdv_TS/Escritorios/Adapter/EscritoriosGridAdapter";
 import EscritoriosGridContainer from "@/app/GerAdv_TS/Escritorios/Components/EscritoriosGridContainer";

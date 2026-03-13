@@ -32,6 +32,8 @@ import {
 import { useTipoCompromissoFilter } from "../../Hooks/hookTipoCompromissoFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/TipoCompromisso/TipoCompromisso.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface TipoCompromissoGridProps {
   selectItem?: (item: ITipoCompromisso) => void;
@@ -92,15 +94,21 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
       try {
         const offlineData = await tipocompromissoService.getAll(
           filtro ?? ({} as FilterTipoCompromisso),
-          (onlineData) => {
-            setTipoCompromissoData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setTipoCompromissoData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setTipoCompromissoData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setTipoCompromissoData(processed);
           setLoading(false);
         } else {
           setTipoCompromissoData([]);
@@ -113,6 +121,18 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useTipoCompromissoFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -131,6 +151,11 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (tipocompromisso: ITipoCompromisso) => {
     setSelectedTipoCompromisso(tipocompromisso);
     setShowInc(true);
@@ -142,8 +167,11 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedTipoCompromisso(TipoCompromissoEmpty());
+  const handleAdd = async () => {
+    let empty = TipoCompromissoEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -169,8 +197,24 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = tipocompromissoData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await tipocompromissoService.deleteTipoCompromisso(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -203,24 +247,6 @@ const TipoCompromissoGrid: React.FC<TipoCompromissoGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useTipoCompromissoFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

@@ -12,7 +12,7 @@ public class ColaboradoresValidationTests : IDisposable
     private readonly Mock<ICargosReader> _mockCargosReader;
     private readonly Mock<IClientesReader> _mockClientesReader;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public ColaboradoresValidationTests()
     {
         _validation = new ColaboradoresValidation();

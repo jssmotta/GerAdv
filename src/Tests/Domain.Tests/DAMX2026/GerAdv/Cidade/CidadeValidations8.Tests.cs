@@ -10,7 +10,7 @@ public class CidadeValidationTests : IDisposable
     private readonly Mock<ICidadeService> _mockCidadeService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IUFReader> _mockUFReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public CidadeValidationTests()
     {
         _validation = new CidadeValidation();

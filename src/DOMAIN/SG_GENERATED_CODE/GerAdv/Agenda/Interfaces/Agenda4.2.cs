@@ -10,10 +10,10 @@ public partial interface IAgendaReader
     AgendaResponse? Read(FAgenda dbRec, MsiSqlConnection? oCnn);
     AgendaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AgendaResponse? Read(FAgenda dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     AgendaResponseAll? ReadAll(FAgenda dbRec, IDataRecord dr);
     AgendaResponseAll? ReadAll(SG.GerAdv.DBAgenda dbRec, DataRow dr);
-    Task<IEnumerable<AgendaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<AgendaResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

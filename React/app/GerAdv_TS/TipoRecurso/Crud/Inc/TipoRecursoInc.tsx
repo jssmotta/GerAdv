@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { ITipoRecursoFormProps } from "../../Interfaces/interface.TipoRecurso";
+import {
+  ITipoRecurso,
+  ITipoRecursoFormProps,
+} from "../../Interfaces/interface.TipoRecurso";
 import { TipoRecursoService } from "../../Services/TipoRecurso.service";
 import {
   useTipoRecursoForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookTipoRecurso";
 import { TipoRecursoEmpty } from "../../../Models/TipoRecurso";
 import { TipoRecursoForm } from "../Forms/TipoRecursoForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/TipoRecurso/TipoRecurso.hooks";
 
 const TipoRecursoInc: React.FC<ITipoRecursoFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const TipoRecursoInc: React.FC<ITipoRecursoFormProps> = ({
   const router = useRouter();
 
   const tiporecursoService = new TipoRecursoService(
-    new TipoRecursoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new TipoRecursoApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadTipoRecurso } = useTipoRecursoForm(
+  const { data, handleChange, setData } = useTipoRecursoForm(
     TipoRecursoEmpty(),
     tiporecursoService,
   );
 
+  const originalRef = useRef<ITipoRecurso>(TipoRecursoEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = TipoRecursoEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await tiporecursoService.fetchTipoRecursoById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadTipoRecurso(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +90,45 @@ const TipoRecursoInc: React.FC<ITipoRecursoFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedTipoRecurso = await tiporecursoService.saveTipoRecurso(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedTipoRecurso =
+        await tiporecursoService.saveTipoRecurso(currentRecord);
 
       if (savedTipoRecurso.id) {
         notificationService.showNotification(
@@ -94,7 +165,7 @@ const TipoRecursoInc: React.FC<ITipoRecursoFormProps> = ({
   };
 
   const handleReload = () => {
-    loadTipoRecurso(id);
+    handleLoad(id);
   };
 
   return (

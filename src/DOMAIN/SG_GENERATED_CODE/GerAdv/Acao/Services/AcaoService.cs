@@ -22,12 +22,12 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IAreaReader areaReader = areaReader;
     private readonly IInstanciaService instanciaService = instanciaService;
-    public async Task<ResultApi<IEnumerable<AcaoResponseAll>>> Filter(int max, Filters.FilterAcao filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AcaoResponseAll>>> Filter(int max, Filters.FilterAcao filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Acao: URI inválida");
+            throw new Exception("Acao: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -41,28 +41,28 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroAcao(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            AcaoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            AcaoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Acao-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Acao-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<AcaoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<AcaoResponseAll>>.Fail($"Acao - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<AcaoResponseAll>>.Fail($"Acao - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
     }
 
-    public async Task<ResultApi<AcaoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AcaoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -86,20 +86,20 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            AcaoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            AcaoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Acao-GetById-{id}--{keyCache}", async cancel =>
+            AcaoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            AcaoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Acao-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                AcaoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                AcaoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<AcaoResponse>.NotFound($"Acao: Registro não encontrado para id {id}");
@@ -110,25 +110,25 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            AcaoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AcaoResponse>.Fail($"Acao, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            AcaoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AcaoResponse>.Fail($"Acao, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AcaoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AcaoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<AcaoResponse>.Fail($"Acao - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AcaoResponse>.Fail($"Acao - {uri}-: GetById: {ex.Message}", 500);
+            AcaoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AcaoResponse>.Fail($"Acao - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<AcaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -136,11 +136,11 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             return ResultApi<AuditorResponse>.Fail("Acao: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Acao: Auditor não encontrado para id {id}");
@@ -151,11 +151,11 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         catch (Exception ex)
         {
             _logger.Error(ex, "Acao: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Acao - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Acao - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<AcaoResponse>> AddAndUpdate(Models.Acao? regAcao, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AcaoResponse>> AddAndUpdate(Models.Acao? regAcao, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regAcao == null)
@@ -163,14 +163,14 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             return ResultApi<AcaoResponse>.Fail("Acao: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Acao: URI inválida");
+            throw new Exception("Acao: TenantApp inválida");
         }
 
         var connectionStopwatch = AcaoDatabaseMetrics.StartTimer();
         var queryStopwatch = AcaoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -179,9 +179,9 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
 
         try
         {
-            AcaoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            AcaoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
+            AcaoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            AcaoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -189,12 +189,12 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (SGValidationException ex)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -203,16 +203,16 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         {
             using var saved = await writer.WriteAsync(regAcao, operadorId, oCnn);
             string tipoQuery = regAcao.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            AcaoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            AcaoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regAcao.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regAcao.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -220,14 +220,14 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regAcao, uri);
-            AcaoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regAcao, tenantKey);
+            AcaoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            AcaoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<AcaoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<AcaoResponse>> Validation(Models.Acao? regAcao, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AcaoResponse>> Validation(Models.Acao? regAcao, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regAcao == null)
@@ -235,14 +235,13 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             return ResultApi<AcaoResponse>.Fail("Acao: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Acao: URI inválida");
+            throw new Exception("Acao: TenantApp inválida");
         }
 
         var connectionStopwatch = AcaoDatabaseMetrics.StartTimer();
-        var queryStopwatch = AcaoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -251,9 +250,9 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
 
         try
         {
-            AcaoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            AcaoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
+            AcaoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            AcaoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -261,12 +260,12 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (SGValidationException ex)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -292,7 +291,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
     }
 
-    public async Task<ResultApi<AcaoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AcaoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -300,13 +299,13 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Acao: URI inválida");
+            throw new Exception("Acao: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = AcaoDatabaseMetrics.StartTimer();
         var queryStopwatch = AcaoDatabaseMetrics.StartTimer();
@@ -317,9 +316,9 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
 
         try
         {
-            AcaoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            AcaoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, instanciaService, uri, oCnn);
+            AcaoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            AcaoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, instanciaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -327,44 +326,44 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (SGValidationException ex)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AcaoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AcaoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var acao = await reader.ReadAsync(id ?? default, oCnn);
         if (acao == null)
         {
-            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AcaoResponse>.NotFound($"Acao: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(acao, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(acao, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(acao, nOperador, oCnn);
-                AcaoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                AcaoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(acao, uri);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(acao, tenantKey);
             return ResultApi<AcaoResponse>.Ok(acao);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(acao, uri);
-            AcaoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(acao, tenantKey);
+            AcaoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            AcaoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AcaoResponse>.Fail(ex.Message, 500);
         }
     }

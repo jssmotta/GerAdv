@@ -4,7 +4,7 @@
 // Entity:AgendaRelatorio
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class AgendaRelatorioController(IAgendaRelatorioService agendarelatorioService) : ControllerBase
@@ -14,13 +14,13 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AgendaRelatorioResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaRelatorioMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            AgendaRelatorioMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AgendaRelatorioMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -28,22 +28,22 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendarelatorioService.Filter(max, filter, uri);
+                return await _agendarelatorioService.Filter(max, filter, tenantKey);
             });
-            AgendaRelatorioMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AgendaRelatorioMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AgendaRelatorioMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AgendaRelatorioMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaRelatorioMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("AgendaRelatorio: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaRelatorioMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("AgendaRelatorio: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AgendaRelatorioResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaRelatorioMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "AgendaRelatorio: Filter failed with exception for uri = {0}", uri);
+            AgendaRelatorioMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "AgendaRelatorio: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AgendaRelatorioResponseAll>>.Fail(ex.Message, 500));
         }
     }

@@ -9,39 +9,39 @@ namespace MenphisSI.GerAdv.WarmUp;
 [ExcludeFromCodeCoverage]
 public class InitializeWarmUp
 {
-    public static async Task WarmUpAuditor(string uri, IConnectionService _connectionService)
+    public static async Task WarmUpAuditor(string tenantKey, IConnectionService _connectionService)
     {
-        if (string.IsNullOrEmpty(uri))
+        if (string.IsNullOrEmpty(tenantKey))
             return;
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection;
         if (oCnn == null)
             return;
-        await new AcaoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new AdvogadosWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new AgendaWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new AreaWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new CargosWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new CidadeWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new ClientesWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new ClientesSociosWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new ColaboradoresWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new DivisaoTribunalWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new EscritoriosWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new ForoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new FuncaoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new FuncionariosWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new InstanciaWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new JusticaWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new OperadorWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new OponentesWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new PaisesWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new ProDespesasWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new RitoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new TipoCompromissoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new TipoRecursoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new TiposAcaoWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new TribunalWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
-        await new UFWarmUp().WarmReadStringAuditorAsync(uri, oCnn, _connectionService);
+        await new AcaoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new AdvogadosWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new AgendaWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new AreaWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new CargosWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new CidadeWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new ClientesWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new ClientesSociosWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new ColaboradoresWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new DivisaoTribunalWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new EscritoriosWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new ForoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new FuncaoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new FuncionariosWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new InstanciaWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new JusticaWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new OperadorWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new OponentesWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new PaisesWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new ProDespesasWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new RitoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new TipoCompromissoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new TipoRecursoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new TiposAcaoWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new TribunalWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
+        await new UFWarmUp().WarmReadStringAuditorAsync(tenantKey, oCnn, _connectionService);
     }
 }

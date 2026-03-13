@@ -173,10 +173,10 @@ export const useAgendaList = (
 export function useValidationsAgenda() {
   async function runValidation(
     data: IAgenda,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const agendaApi = new AgendaApi(uri ?? "", token ?? "");
+    const agendaApi = new AgendaApi(tenantKey ?? "", token ?? "");
 
     const result = await agendaApi.validation(data);
 

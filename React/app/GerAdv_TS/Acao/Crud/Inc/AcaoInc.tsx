@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IAcaoFormProps } from "../../Interfaces/interface.Acao";
+import { IAcao, IAcaoFormProps } from "../../Interfaces/interface.Acao";
 import { AcaoService } from "../../Services/Acao.service";
 import { useAcaoForm, useValidationsAcao } from "../../Hooks/hookAcao";
 import { AcaoEmpty } from "../../../Models/Acao";
 import { AcaoForm } from "../Forms/AcaoForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Acao/Acao.hooks";
 
 const AcaoInc: React.FC<IAcaoFormProps> = ({
   id,
@@ -34,13 +36,35 @@ const AcaoInc: React.FC<IAcaoFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadAcao } = useAcaoForm(
-    AcaoEmpty(),
-    acaoService,
-  );
+  const { data, handleChange, setData } = useAcaoForm(AcaoEmpty(), acaoService);
+
+  const originalRef = useRef<IAcao>(AcaoEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = AcaoEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await acaoService.fetchAcaoById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
 
   useEffect(() => {
-    loadAcao(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +78,44 @@ const AcaoInc: React.FC<IAcaoFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedAcao = await acaoService.saveAcao(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedAcao = await acaoService.saveAcao(currentRecord);
 
       if (savedAcao.id) {
         notificationService.showNotification(
@@ -91,7 +152,7 @@ const AcaoInc: React.FC<IAcaoFormProps> = ({
   };
 
   const handleReload = () => {
-    loadAcao(id);
+    handleLoad(id);
   };
 
   return (

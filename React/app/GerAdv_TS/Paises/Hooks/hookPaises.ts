@@ -173,10 +173,10 @@ export const usePaisesList = (
 export function useValidationsPaises() {
   async function runValidation(
     data: IPaises,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const paisesApi = new PaisesApi(uri ?? "", token ?? "");
+    const paisesApi = new PaisesApi(tenantKey ?? "", token ?? "");
 
     const result = await paisesApi.validation(data);
 

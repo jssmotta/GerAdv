@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoProDespositoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         if (regTipoProDesposito == null)
         {
-            _logger.Warn("TipoProDesposito: BeforeDeleteAsync - regTipoProDesposito is null for uri = {0}", uri);
+            _logger.Warn("TipoProDesposito: BeforeDeleteAsync - regTipoProDesposito is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            TipoProDespositoMetrics.RecordNotFound("BeforeDelete", uri, TipoProDespositoMetrics.StartTimer());
+            TipoProDespositoMetrics.RecordNotFound("BeforeDelete", tenantKey, TipoProDespositoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = TipoProDespositoMetrics.StartTimer();
-        _logger.Debug("TipoProDesposito: BeforeDeleteAsync success for Id={0}, uri={1}", regTipoProDesposito.Id, uri);
+        _logger.Debug("TipoProDesposito: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regTipoProDesposito.Id, tenantKey);
         // record successful business layer pre-delete
-        TipoProDespositoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        TipoProDespositoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoProDespositoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("TipoProDesposito: AfterDeleteAsync - Id={0}, uri={1}", regTipoProDesposito?.Id ?? 0, uri);
+        _logger.Info("TipoProDesposito: AfterDeleteAsync - Id={0}, tenantKey={1}", regTipoProDesposito?.Id ?? 0, tenantKey);
         // record delete metrics
-        TipoProDespositoMetrics.RecordDeleted(uri);
-        TipoProDespositoMetrics.RecordDeletedByHour(uri);
-        TipoProDespositoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        TipoProDespositoMetrics.RecordDeleted(tenantKey);
+        TipoProDespositoMetrics.RecordDeletedByHour(tenantKey);
+        TipoProDespositoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("TipoProDesposito: DeleteErrorAsync - Id={0}, uri={1}", regTipoProDesposito?.Id ?? 0, uri);
+        _logger.Error("TipoProDesposito: DeleteErrorAsync - Id={0}, tenantKey={1}", regTipoProDesposito?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        TipoProDespositoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoProDespositoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoProDespositoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoProDespositoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<TipoProDespositoResponse> AfterCreateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<TipoProDespositoResponse> AfterCreateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoProDespositoMetrics.StartTimer();
         var result = regTipoProDesposito ?? new TipoProDespositoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("TipoProDesposito: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("TipoProDesposito: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        TipoProDespositoMetrics.RecordCreated(uri);
-        TipoProDespositoMetrics.RecordCreatedByHour(uri);
-        TipoProDespositoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        TipoProDespositoMetrics.RecordCreated(tenantKey);
+        TipoProDespositoMetrics.RecordCreatedByHour(tenantKey);
+        TipoProDespositoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<TipoProDespositoResponse> AfterUpdateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<TipoProDespositoResponse> AfterUpdateAsync([FromBody] TipoProDespositoResponse? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         var sw = TipoProDespositoMetrics.StartTimer();
         var result = regTipoProDesposito ?? new TipoProDespositoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("TipoProDesposito: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        TipoProDespositoMetrics.RecordUpdated(uri);
-        TipoProDespositoMetrics.RecordUpdatedByHour(uri);
-        TipoProDespositoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("TipoProDesposito: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        TipoProDespositoMetrics.RecordUpdated(tenantKey);
+        TipoProDespositoMetrics.RecordUpdatedByHour(tenantKey);
+        TipoProDespositoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoProDesposito? regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.TipoProDesposito? regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("TipoProDesposito: AddAndUpdateErrorAsync - Id={0}, uri={1}", regTipoProDesposito?.Id ?? 0, uri);
+        _logger.Error("TipoProDesposito: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regTipoProDesposito?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        TipoProDespositoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        TipoProDespositoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        TipoProDespositoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        TipoProDespositoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

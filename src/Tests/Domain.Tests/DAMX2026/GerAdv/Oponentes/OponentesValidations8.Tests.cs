@@ -10,7 +10,7 @@ public class OponentesValidationTests : IDisposable
     private readonly Mock<IOponentesService> _mockOponentesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public OponentesValidationTests()
     {
         _validation = new OponentesValidation();

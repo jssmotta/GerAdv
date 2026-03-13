@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ITipoCompromisso } from "@/app/GerAdv_TS/TipoCompromisso/Interfaces/interface.TipoCompromisso";
 import { TipoCompromissoGridAdapter } from "@/app/GerAdv_TS/TipoCompromisso/Adapter/TipoCompromissoGridAdapter";
 import TipoCompromissoGridContainer from "@/app/GerAdv_TS/TipoCompromisso/Components/TipoCompromissoGridContainer";

@@ -32,6 +32,8 @@ import {
 import { useTiposAcaoFilter } from "../../Hooks/hookTiposAcaoFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/TiposAcao/TiposAcao.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface TiposAcaoGridProps {
   selectItem?: (item: ITiposAcao) => void;
@@ -58,7 +60,10 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
 
   const tiposacaoService = useMemo(() => {
     return new TiposAcaoService(
-      new TiposAcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new TiposAcaoApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await tiposacaoService.getAll(
           filtro ?? ({} as FilterTiposAcao),
-          (onlineData) => {
-            setTiposAcaoData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setTiposAcaoData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setTiposAcaoData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setTiposAcaoData(processed);
           setLoading(false);
         } else {
           setTiposAcaoData([]);
@@ -106,6 +117,18 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useTiposAcaoFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (tiposacao: ITiposAcao) => {
     setSelectedTiposAcao(tiposacao);
     setShowInc(true);
@@ -134,8 +162,11 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedTiposAcao(TiposAcaoEmpty());
+  const handleAdd = async () => {
+    let empty = TiposAcaoEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = tiposacaoData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await tiposacaoService.deleteTiposAcao(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const TiposAcaoGrid: React.FC<TiposAcaoGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useTiposAcaoFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

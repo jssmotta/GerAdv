@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { ICargosFormProps } from "../../Interfaces/interface.Cargos";
+import { ICargos, ICargosFormProps } from "../../Interfaces/interface.Cargos";
 import { CargosService } from "../../Services/Cargos.service";
 import { useCargosForm, useValidationsCargos } from "../../Hooks/hookCargos";
 import { CargosEmpty } from "../../../Models/Cargos";
 import { CargosForm } from "../Forms/CargosForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Cargos/Cargos.hooks";
 
 const CargosInc: React.FC<ICargosFormProps> = ({
   id,
@@ -34,13 +36,38 @@ const CargosInc: React.FC<ICargosFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadCargos } = useCargosForm(
+  const { data, handleChange, setData } = useCargosForm(
     CargosEmpty(),
     cargosService,
   );
 
+  const originalRef = useRef<ICargos>(CargosEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = CargosEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await cargosService.fetchCargosById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadCargos(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +81,44 @@ const CargosInc: React.FC<ICargosFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedCargos = await cargosService.saveCargos(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedCargos = await cargosService.saveCargos(currentRecord);
 
       if (savedCargos.id) {
         notificationService.showNotification(
@@ -91,7 +155,7 @@ const CargosInc: React.FC<ICargosFormProps> = ({
   };
 
   const handleReload = () => {
-    loadCargos(id);
+    handleLoad(id);
   };
 
   return (

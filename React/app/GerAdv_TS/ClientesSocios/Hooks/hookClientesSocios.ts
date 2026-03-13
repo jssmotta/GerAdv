@@ -179,10 +179,13 @@ export const useClientesSociosList = (
 export function useValidationsClientesSocios() {
   async function runValidation(
     data: IClientesSocios,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const clientessociosApi = new ClientesSociosApi(uri ?? "", token ?? "");
+    const clientessociosApi = new ClientesSociosApi(
+      tenantKey ?? "",
+      token ?? "",
+    );
 
     const result = await clientessociosApi.validation(data);
 

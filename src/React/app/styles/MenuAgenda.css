@@ -1,0 +1,43 @@
+/* Correção para o menu do Kendo UI aparecer corretamente */
+
+/* Container principal do menu - manter z-index moderado */
+.k-menu {
+  z-index: 1001;
+  position: relative;
+}
+
+/* Quando o menu está no AppBar */
+.k-appbar .k-menu {
+  z-index: inherit;
+}
+
+
+.k-popup.k-menu-popup {
+  z-index: 20002 !important;
+}
+
+.k-animation-container {
+  z-index: 20002 !important;
+}
+
+/* Garantir que os itens do menu sejam clicáveis */
+.k-menu-popup .k-item {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1003;
+}
+
+/* Correção específica para menus dentro do AppBar */
+.k-appbar .k-animation-container {
+  z-index: 1050 !important;
+}
+
+/* Garantir que o overlay não bloqueie */
+.k-menu .k-menu-popup {
+  pointer-events: auto;
+}
+
+/* Remover qualquer interferência de elementos pais */
+.k-appbar-section {
+  overflow: visible;
+}

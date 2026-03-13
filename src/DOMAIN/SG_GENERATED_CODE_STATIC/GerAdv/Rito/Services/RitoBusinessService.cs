@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class RitoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string tenantKey)
     {
         if (regRito == null)
         {
-            _logger.Warn("Rito: BeforeDeleteAsync - regRito is null for uri = {0}", uri);
+            _logger.Warn("Rito: BeforeDeleteAsync - regRito is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            RitoMetrics.RecordNotFound("BeforeDelete", uri, RitoMetrics.StartTimer());
+            RitoMetrics.RecordNotFound("BeforeDelete", tenantKey, RitoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = RitoMetrics.StartTimer();
-        _logger.Debug("Rito: BeforeDeleteAsync success for Id={0}, uri={1}", regRito.Id, uri);
+        _logger.Debug("Rito: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regRito.Id, tenantKey);
         // record successful business layer pre-delete
-        RitoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        RitoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string tenantKey)
     {
         var sw = RitoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Rito: AfterDeleteAsync - Id={0}, uri={1}", regRito?.Id ?? 0, uri);
+        _logger.Info("Rito: AfterDeleteAsync - Id={0}, tenantKey={1}", regRito?.Id ?? 0, tenantKey);
         // record delete metrics
-        RitoMetrics.RecordDeleted(uri);
-        RitoMetrics.RecordDeletedByHour(uri);
-        RitoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        RitoMetrics.RecordDeleted(tenantKey);
+        RitoMetrics.RecordDeletedByHour(tenantKey);
+        RitoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Rito: DeleteErrorAsync - Id={0}, uri={1}", regRito?.Id ?? 0, uri);
+        _logger.Error("Rito: DeleteErrorAsync - Id={0}, tenantKey={1}", regRito?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        RitoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        RitoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        RitoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        RitoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<RitoResponse> AfterCreateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task<RitoResponse> AfterCreateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string tenantKey)
     {
         var sw = RitoMetrics.StartTimer();
         var result = regRito ?? new RitoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Rito: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Rito: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        RitoMetrics.RecordCreated(uri);
-        RitoMetrics.RecordCreatedByHour(uri);
-        RitoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        RitoMetrics.RecordCreated(tenantKey);
+        RitoMetrics.RecordCreatedByHour(tenantKey);
+        RitoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<RitoResponse> AfterUpdateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string uri)
+    public async Task<RitoResponse> AfterUpdateAsync([FromBody] RitoResponse? regRito, [FromRoute, Required] string tenantKey)
     {
         var sw = RitoMetrics.StartTimer();
         var result = regRito ?? new RitoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Rito: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        RitoMetrics.RecordUpdated(uri);
-        RitoMetrics.RecordUpdatedByHour(uri);
-        RitoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Rito: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        RitoMetrics.RecordUpdated(tenantKey);
+        RitoMetrics.RecordUpdatedByHour(tenantKey);
+        RitoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Rito? regRito, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Rito? regRito, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Rito: AddAndUpdateErrorAsync - Id={0}, uri={1}", regRito?.Id ?? 0, uri);
+        _logger.Error("Rito: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regRito?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        RitoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        RitoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        RitoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        RitoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ITribunal } from "@/app/GerAdv_TS/Tribunal/Interfaces/interface.Tribunal";
 import { TribunalGridAdapter } from "@/app/GerAdv_TS/Tribunal/Adapter/TribunalGridAdapter";
 import TribunalGridContainer from "@/app/GerAdv_TS/Tribunal/Components/TribunalGridContainer";

@@ -62,7 +62,7 @@ public static partial class DBForoDicInfo
     public static DBInfoSystem ForUnico => new(0, PTabelaNome, CampoCodigo, Unico, "Unico", "Unico", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "for", isRequired: true);
     public static DBInfoSystem ForCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "for"); // DBI 11 
     public static DBInfoSystem ForSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "for");
-    public static DBInfoSystem ForEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "for");
     public static DBInfoSystem ForBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 255, "Bairro", "Bairro", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "for");
     public static DBInfoSystem ForFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "for");
     public static DBInfoSystem ForFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "for");

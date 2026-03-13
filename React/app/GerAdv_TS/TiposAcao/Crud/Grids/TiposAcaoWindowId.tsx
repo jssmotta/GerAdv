@@ -31,7 +31,10 @@ const TiposAcaoWindowId: React.FC<TiposAcaoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const tiposacaoService = useMemo(() => {
     return new TiposAcaoService(
-      new TiposAcaoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new TiposAcaoApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

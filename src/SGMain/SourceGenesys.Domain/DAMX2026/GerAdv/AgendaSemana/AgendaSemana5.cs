@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBAgendaSemana
 {
-    public const string CadastroGuid = "23e35851-bf0e-4721-83ad-1f8a1444a19b";
+    public const string CadastroGuid = "42c9c84c-d129-4dd2-a78f-71ffb0ba147d";
     public const string PTabelaNome = "AgendaSemana";
     public const string CamposSqlX = " AgendaSemana.* ";
     public const string CampoCodigo = "xxxCodigo";

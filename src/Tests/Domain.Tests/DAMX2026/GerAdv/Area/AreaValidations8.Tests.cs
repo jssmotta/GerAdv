@@ -9,7 +9,7 @@ public class AreaValidationTests : IDisposable
     private readonly AreaValidation _validation;
     private readonly Mock<IAreaService> _mockAreaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AreaValidationTests()
     {
         _validation = new AreaValidation();

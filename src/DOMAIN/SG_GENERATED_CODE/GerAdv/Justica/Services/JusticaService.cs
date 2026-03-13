@@ -24,12 +24,12 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly ITipoRecursoService tiporecursoService = tiporecursoService;
     private readonly ITribunalService tribunalService = tribunalService;
-    public async Task<ResultApi<IEnumerable<JusticaResponseAll>>> Filter(int max, Filters.FilterJustica filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<JusticaResponseAll>>> Filter(int max, Filters.FilterJustica filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Justica: URI inválida");
+            throw new Exception("Justica: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -43,28 +43,28 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroJustica(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            JusticaDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            JusticaDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Justica-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Justica-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<JusticaResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<JusticaResponseAll>>.Fail($"Justica - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<JusticaResponseAll>>.Fail($"Justica - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
     }
 
-    public async Task<ResultApi<JusticaResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<JusticaResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -88,20 +88,20 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            JusticaDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            JusticaDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Justica-GetById-{id}--{keyCache}", async cancel =>
+            JusticaDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            JusticaDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Justica-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                JusticaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                JusticaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<JusticaResponse>.NotFound($"Justica: Registro não encontrado para id {id}");
@@ -112,25 +112,25 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            JusticaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<JusticaResponse>.Fail($"Justica, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            JusticaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<JusticaResponse>.Fail($"Justica, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            JusticaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            JusticaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<JusticaResponse>.Fail($"Justica - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<JusticaResponse>.Fail($"Justica - {uri}-: GetById: {ex.Message}", 500);
+            JusticaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<JusticaResponse>.Fail($"Justica - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<JusticaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -138,11 +138,11 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             return ResultApi<AuditorResponse>.Fail("Justica: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Justica: Auditor não encontrado para id {id}");
@@ -153,11 +153,11 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         catch (Exception ex)
         {
             _logger.Error(ex, "Justica: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Justica - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Justica - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<JusticaResponse>> AddAndUpdate(Models.Justica? regJustica, string uri, CancellationToken token = default)
+    public async Task<ResultApi<JusticaResponse>> AddAndUpdate(Models.Justica? regJustica, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regJustica == null)
@@ -165,14 +165,14 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             return ResultApi<JusticaResponse>.Fail("Justica: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Justica: URI inválida");
+            throw new Exception("Justica: TenantApp inválida");
         }
 
         var connectionStopwatch = JusticaDatabaseMetrics.StartTimer();
         var queryStopwatch = JusticaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -181,9 +181,9 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         try
         {
-            JusticaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            JusticaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regJustica, this, uri, oCnn);
+            JusticaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            JusticaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regJustica, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -191,12 +191,12 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (SGValidationException ex)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -205,16 +205,16 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         {
             using var saved = await writer.WriteAsync(regJustica, operadorId, oCnn);
             string tipoQuery = regJustica.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            JusticaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            JusticaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regJustica.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regJustica.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -222,14 +222,14 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regJustica, uri);
-            JusticaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regJustica, tenantKey);
+            JusticaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            JusticaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<JusticaResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<JusticaResponse>> Validation(Models.Justica? regJustica, string uri, CancellationToken token = default)
+    public async Task<ResultApi<JusticaResponse>> Validation(Models.Justica? regJustica, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regJustica == null)
@@ -237,14 +237,13 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             return ResultApi<JusticaResponse>.Fail("Justica: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Justica: URI inválida");
+            throw new Exception("Justica: TenantApp inválida");
         }
 
         var connectionStopwatch = JusticaDatabaseMetrics.StartTimer();
-        var queryStopwatch = JusticaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -253,9 +252,9 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         try
         {
-            JusticaDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            JusticaDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regJustica, this, uri, oCnn);
+            JusticaDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            JusticaDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regJustica, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -263,12 +262,12 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (SGValidationException ex)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -294,7 +293,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
     }
 
-    public async Task<ResultApi<JusticaResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<JusticaResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -302,13 +301,13 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Justica: URI inválida");
+            throw new Exception("Justica: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = JusticaDatabaseMetrics.StartTimer();
         var queryStopwatch = JusticaDatabaseMetrics.StartTimer();
@@ -319,9 +318,9 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         try
         {
-            JusticaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            JusticaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, tiporecursoService, tribunalService, uri, oCnn);
+            JusticaDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            JusticaDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, tiporecursoService, tribunalService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -329,44 +328,44 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (SGValidationException ex)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<JusticaResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<JusticaResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var justica = await reader.ReadAsync(id ?? default, oCnn);
         if (justica == null)
         {
-            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<JusticaResponse>.NotFound($"Justica: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(justica, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(justica, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(justica, nOperador, oCnn);
-                JusticaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                JusticaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(justica, uri);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(justica, tenantKey);
             return ResultApi<JusticaResponse>.Ok(justica);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(justica, uri);
-            JusticaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(justica, tenantKey);
+            JusticaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            JusticaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<JusticaResponse>.Fail(ex.Message, 500);
         }
     }

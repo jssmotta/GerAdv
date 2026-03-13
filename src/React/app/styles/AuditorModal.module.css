@@ -1,0 +1,135 @@
+
+.container{
+  padding: 12px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  color:var(--auditor-foreground);
+  animation: modalFadeIn 220ms ease-out;
+  max-width: 100%;
+  height: 95%;
+  overflow: hidden;
+}
+
+.row{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:4px;
+}
+
+.label{
+  flex-basis:38%;
+  min-width:110px;
+  font-weight:700;
+  color:var(--auditor-foreground);
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.value{
+  flex:1;
+  color:var(--auditor-muted);
+  font-size:13px;
+  word-break:break-word;
+  overflow-wrap: break-word;
+}
+
+.sep{
+  height:1px;
+  background: linear-gradient(90deg, rgba(34,50,84,0.08), rgba(34,50,84,0.02));
+  border-radius:2px;
+  margin:6px 0 8px;
+}
+
+.okButtonWrap{
+  padding:12px 16px;
+  display:flex;
+  justify-content:center;
+  width:100%;
+}
+
+.okButton{
+  display:inline-flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  border-radius:8px;
+  max-width:100%;
+}
+
+.kIcon{
+  vertical-align:middle;
+  color:var(--auditor-accent);
+  font-size:16px; /* Kendo icons base sizing */
+  line-height:16px;
+  display:inline-block;
+}
+
+.svgIcon{
+  width:16px;
+  height:16px;
+  vertical-align:middle;
+  fill: currentColor; /* inherit color */
+  display:inline-block;
+}
+
+.haValue{
+  color: var(--kendo-color-error, var(--kendo-error-160, #c64541));
+  font-weight: 600;
+}
+
+.you{
+  color: var(--auditor-you, #f5b400); /* themed yellow fallback */
+  font-weight: 700;
+  margin-left:6px;
+}
+
+@keyframes modalFadeIn{
+  from{ transform: translateY(6px) scale(.995); opacity:0 }
+  to{ transform: translateY(0) scale(1); opacity:1 }
+}
+
+@media (max-width:480px){
+  .label{ flex-basis:40%; font-size:13px }
+  .value{ font-size:13px }
+  .container{ padding:12px }
+}
+
+/* Fix para o Dialog não extrapolar e mostrar o X de fechar */
+.container :global(.k-dialog) {
+  max-width: 400px !important;
+  overflow: visible !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  height: 100% !important;
+}
+
+.container :global(.k-dialog .k-window-titlebar) {
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.container :global(.k-dialog .k-dialog-titlebar) {
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.container :global(.k-dialog-title) {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex: 1 !important;
+  padding-right: 40px !important;
+}

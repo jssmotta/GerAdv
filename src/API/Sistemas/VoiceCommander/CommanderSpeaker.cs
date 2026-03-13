@@ -3,7 +3,7 @@
 
 //namespace API.Sistemas.VoiceCommander;
 
-//[Route("api/v{version:apiVersion}/{uri}/[controller]")]
+//[Route("api/v{version:apiVersion}/{tenantKey}/[controller]")]
 //[ApiController]
 //[ApiVersion("1.0")]
 //[ExcludeFromCodeCoverage]
@@ -19,21 +19,21 @@
 
 //    [HttpPost]
 //    [Microsoft.AspNetCore.Authorization.Authorize]
-//    public async Task<IActionResult> CommandSpeaker([FromBody] CommandSpeakerRequest request, [FromRoute, Required] string uri, CancellationToken cancellationToken = default)
+//    public async Task<IActionResult> CommandSpeaker([FromBody] CommandSpeakerRequest request, [FromRoute, Required] string tenantKey, CancellationToken cancellationToken = default)
 //    {
-//        _logger.Info("CommanderSpeaker: Received message from {0}, Message: {1}", uri, request?.Message);
+//        _logger.Info("CommanderSpeaker: Received message from {0}, Message: {1}", tenantKey, request?.Message);
 
 //        try
 //        {
 //            // Validate request
 //            if (request == null || string.IsNullOrWhiteSpace(request.Message))
 //            {
-//                _logger.Warn("CommanderSpeaker: Invalid or empty message received from {0}", uri);
+//                _logger.Warn("CommanderSpeaker: Invalid or empty message received from {0}", tenantKey);
 //                return BadRequest(new { error = "Message is required and cannot be empty" });
 //            }
 
 //            // Log the received voice command
-//            _logger.Info("CommanderSpeaker: Processing voice command from {0}: '{1}'", uri, request.Message);
+//            _logger.Info("CommanderSpeaker: Processing voice command from {0}: '{1}'", tenantKey, request.Message);
 
 //            // Process voice command using the service with correct context for the system's name structure
 //            var dataAtual = DateTime.Now.ToString("dd/MM/yyyy (dddd)", new System.Globalization.CultureInfo("pt-BR"));
@@ -108,7 +108,7 @@
 
 //";
 
-//            var agendaResponse = await _commandSpeakerService.ProcessVoiceCommandAsync(context, request.Message, uri);
+//            var agendaResponse = await _commandSpeakerService.ProcessVoiceCommandAsync(context, request.Message, tenantKey);
             
 //            if (agendaResponse != null)
 //            {
@@ -118,14 +118,14 @@
 //                    Message = "Compromisso agendado com sucesso",
 //                    ProcessedCommand = request.Message,
 //                    Timestamp = DateTime.UtcNow,
-//                    Uri = uri,
+//                    Uri = tenantKey,
 //                    AgendaId = agendaResponse.Id,
 //                    AgendaData = agendaResponse.Data,
 //                    AgendaHora = agendaResponse.Hora,
 //                    AgendaCompromisso = agendaResponse.Compromisso
 //                };
 
-//                _logger.Info("CommanderSpeaker: Successfully created appointment {0} for {1}", agendaResponse.Id, uri);
+//                _logger.Info("CommanderSpeaker: Successfully created appointment {0} for {1}", agendaResponse.Id, tenantKey);
 //                return Ok(response);
 //            }
 //            else
@@ -136,16 +136,16 @@
 //                    Message = "Não foi possível processar o comando de voz e criar o compromisso",
 //                    ProcessedCommand = request.Message,
 //                    Timestamp = DateTime.UtcNow,
-//                    Uri = uri
+//                    Uri = tenantKey
 //                };
 
-//                _logger.Warn("CommanderSpeaker: Failed to create appointment for {0}", uri);
+//                _logger.Warn("CommanderSpeaker: Failed to create appointment for {0}", tenantKey);
 //                return Ok(response);
 //            }
 //        }
 //        catch (Exception ex)
 //        {
-//            _logger.Error(ex, "CommanderSpeaker: Error processing command from {0}", uri);
+//            _logger.Error(ex, "CommanderSpeaker: Error processing command from {0}", tenantKey);
 //            return StatusCode(500, new { error = "Internal server error while processing voice command" });
 //        }
 //    }
@@ -170,7 +170,7 @@
 //    [JsonPropertyName("timestamp")]
 //    public DateTime Timestamp { get; set; }
 
-//    [JsonPropertyName("uri")]
+//    [JsonPropertyName("tenantKey")]
 //    public string Uri { get; set; } = string.Empty;
 
 //    [JsonPropertyName("agendaId")]

@@ -168,10 +168,10 @@ export const useRitoList = (
 export function useValidationsRito() {
   async function runValidation(
     data: IRito,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const ritoApi = new RitoApi(uri ?? "", token ?? "");
+    const ritoApi = new RitoApi(tenantKey ?? "", token ?? "");
 
     const result = await ritoApi.validation(data);
 

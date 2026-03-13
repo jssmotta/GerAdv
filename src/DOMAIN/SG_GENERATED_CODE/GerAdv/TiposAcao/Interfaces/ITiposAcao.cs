@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITiposAcaoService
 {
-    Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> Filter(int max, Filters.FilterTiposAcao filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TiposAcaoResponse>> AddAndUpdate(Models.TiposAcao? regTiposAcao, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TiposAcaoResponse>> Validation(Models.TiposAcao? regTiposAcao, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TiposAcaoResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TiposAcaoResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTiposAcao? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> Filter(int max, Filters.FilterTiposAcao filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TiposAcaoResponse>> AddAndUpdate(Models.TiposAcao? regTiposAcao, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TiposAcaoResponse>> Validation(Models.TiposAcao? regTiposAcao, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TiposAcaoResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TiposAcaoResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TiposAcaoResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTiposAcao? filter, string tenantKey = "", CancellationToken token = default);
 }

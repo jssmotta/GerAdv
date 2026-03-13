@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IOperadorService
 {
-    Task<ResultApi<IEnumerable<OperadorResponseAll>>> Filter(int max, Filters.FilterOperador filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<OperadorResponse>> AddAndUpdate(Models.Operador? regOperador, string uri = "", CancellationToken token = default);
-    Task<ResultApi<OperadorResponse>> Validation(Models.Operador? regOperador, string uri = "", CancellationToken token = default);
-    Task<ResultApi<OperadorResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<OperadorResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<OperadorResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterOperador? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<OperadorResponseAll>>> Filter(int max, Filters.FilterOperador filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<OperadorResponse>> AddAndUpdate(Models.Operador? regOperador, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<OperadorResponse>> Validation(Models.Operador? regOperador, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<OperadorResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<OperadorResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<OperadorResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterOperador? filter, string tenantKey = "", CancellationToken token = default);
 }

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBTipoCompromisso
 {
-    public const string CadastroGuid = "907644e7-bef9-4001-bbcf-ba865bc1df39";
+    public const string CadastroGuid = "512e287c-8c33-4d79-a0fd-419137c68dd8";
     public const string PTabelaNome = "TipoCompromisso";
     public const string CamposSqlX = " TipoCompromisso.* ";
     public const string CampoCodigo = "tipCodigo";

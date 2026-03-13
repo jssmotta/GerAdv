@@ -4,7 +4,7 @@
 // Entity:Area
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class AreaController(IAreaService areaService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AreaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AreaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.GetAll(max, uri);
+                return await _areaService.GetAll(max, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AreaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: GetAll failed with exception for uri = {0}", uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AreaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AreaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterArea filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AreaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterArea filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            AreaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AreaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.Filter(max, filter, uri);
+                return await _areaService.Filter(max, filter, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AreaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: Filter failed with exception for uri = {0}", uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AreaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AreaResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AreaResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.GetById(id, uri, token);
+                return await _areaService.GetById(id, tenantKey, token);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AreaMetrics.RecordReadByHour(uri);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AreaMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AreaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: GetById failed with exception for id = {0}, {1}", id, uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AreaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.GetAuditor(id, uri, token);
+                return await _areaService.GetAuditor(id, tenantKey, token);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterArea? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterArea? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            AreaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AreaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.GetListN(max, filtro, uri);
+                return await _areaService.GetListN(max, filtro, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AreaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: GetListN failed with exception for uri = {0}", uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<AreaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<AreaResponse>>> AddAndUpdate([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AreaResponse>>> AddAndUpdate([FromBody] Models.Area regArea, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         var isNew = regArea.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            AreaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AreaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.AddAndUpdate(regArea, uri);
+                return await _areaService.AddAndUpdate(regArea, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                AreaMetrics.RecordCreated(uri);
-                AreaMetrics.RecordCreatedByHour(uri);
+                AreaMetrics.RecordCreated(tenantKey);
+                AreaMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                AreaMetrics.RecordUpdated(uri);
-                AreaMetrics.RecordUpdatedByHour(uri);
+                AreaMetrics.RecordUpdated(tenantKey);
+                AreaMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AreaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: AddAndUpdate failed with exception for uri = {0}", uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<AreaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<AreaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<AreaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<AreaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AreaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.Delete(id, uri);
+                return await _areaService.Delete(id, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                AreaMetrics.RecordDeleted(uri);
-                AreaMetrics.RecordDeletedByHour(uri);
+                AreaMetrics.RecordDeleted(tenantKey);
+                AreaMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AreaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            AreaMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Area: {0} conflito de FK para uri = {1}", operacao, uri);
+            AreaMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Area: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<AreaResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: Delete failed with exception for id = {0}, {1}", id, uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AreaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AreaResponse>>> Validation([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AreaResponse>>> Validation([FromBody] Models.Area regArea, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AreaMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            AreaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AreaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _areaService.Validation(regArea, uri);
+                return await _areaService.Validation(regArea, tenantKey);
             });
-            AreaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AreaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AreaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Area: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AreaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Area: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AreaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AreaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Area: Validation failed with exception for uri = {0}", uri);
+            AreaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Area: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<AreaResponse>.Fail(ex.Message, 500));
         }
     }

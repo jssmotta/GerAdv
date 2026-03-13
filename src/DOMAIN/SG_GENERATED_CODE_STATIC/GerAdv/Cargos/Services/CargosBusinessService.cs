@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class CargosService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string tenantKey)
     {
         if (regCargos == null)
         {
-            _logger.Warn("Cargos: BeforeDeleteAsync - regCargos is null for uri = {0}", uri);
+            _logger.Warn("Cargos: BeforeDeleteAsync - regCargos is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            CargosMetrics.RecordNotFound("BeforeDelete", uri, CargosMetrics.StartTimer());
+            CargosMetrics.RecordNotFound("BeforeDelete", tenantKey, CargosMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = CargosMetrics.StartTimer();
-        _logger.Debug("Cargos: BeforeDeleteAsync success for Id={0}, uri={1}", regCargos.Id, uri);
+        _logger.Debug("Cargos: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regCargos.Id, tenantKey);
         // record successful business layer pre-delete
-        CargosMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        CargosMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string tenantKey)
     {
         var sw = CargosMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Cargos: AfterDeleteAsync - Id={0}, uri={1}", regCargos?.Id ?? 0, uri);
+        _logger.Info("Cargos: AfterDeleteAsync - Id={0}, tenantKey={1}", regCargos?.Id ?? 0, tenantKey);
         // record delete metrics
-        CargosMetrics.RecordDeleted(uri);
-        CargosMetrics.RecordDeletedByHour(uri);
-        CargosMetrics.RecordSuccess("AfterDelete", uri, sw);
+        CargosMetrics.RecordDeleted(tenantKey);
+        CargosMetrics.RecordDeletedByHour(tenantKey);
+        CargosMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Cargos: DeleteErrorAsync - Id={0}, uri={1}", regCargos?.Id ?? 0, uri);
+        _logger.Error("Cargos: DeleteErrorAsync - Id={0}, tenantKey={1}", regCargos?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        CargosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        CargosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        CargosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        CargosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<CargosResponse> AfterCreateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task<CargosResponse> AfterCreateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string tenantKey)
     {
         var sw = CargosMetrics.StartTimer();
         var result = regCargos ?? new CargosResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Cargos: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Cargos: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        CargosMetrics.RecordCreated(uri);
-        CargosMetrics.RecordCreatedByHour(uri);
-        CargosMetrics.RecordSuccess("AfterCreate", uri, sw);
+        CargosMetrics.RecordCreated(tenantKey);
+        CargosMetrics.RecordCreatedByHour(tenantKey);
+        CargosMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<CargosResponse> AfterUpdateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string uri)
+    public async Task<CargosResponse> AfterUpdateAsync([FromBody] CargosResponse? regCargos, [FromRoute, Required] string tenantKey)
     {
         var sw = CargosMetrics.StartTimer();
         var result = regCargos ?? new CargosResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Cargos: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        CargosMetrics.RecordUpdated(uri);
-        CargosMetrics.RecordUpdatedByHour(uri);
-        CargosMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Cargos: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        CargosMetrics.RecordUpdated(tenantKey);
+        CargosMetrics.RecordUpdatedByHour(tenantKey);
+        CargosMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Cargos? regCargos, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Cargos? regCargos, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Cargos: AddAndUpdateErrorAsync - Id={0}, uri={1}", regCargos?.Id ?? 0, uri);
+        _logger.Error("Cargos: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regCargos?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        CargosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        CargosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        CargosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        CargosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

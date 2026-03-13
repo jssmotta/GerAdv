@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IRitoService
 {
-    Task<ResultApi<IEnumerable<RitoResponseAll>>> Filter(int max, Filters.FilterRito filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<RitoResponse>> AddAndUpdate(Models.Rito? regRito, string uri = "", CancellationToken token = default);
-    Task<ResultApi<RitoResponse>> Validation(Models.Rito? regRito, string uri = "", CancellationToken token = default);
-    Task<ResultApi<RitoResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<RitoResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<RitoResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterRito? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<RitoResponseAll>>> Filter(int max, Filters.FilterRito filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<RitoResponse>> AddAndUpdate(Models.Rito? regRito, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<RitoResponse>> Validation(Models.Rito? regRito, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<RitoResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<RitoResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<RitoResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterRito? filter, string tenantKey = "", CancellationToken token = default);
 }

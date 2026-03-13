@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IRito } from "@/app/GerAdv_TS/Rito/Interfaces/interface.Rito";
 import { RitoGridAdapter } from "@/app/GerAdv_TS/Rito/Adapter/RitoGridAdapter";
 import RitoGridContainer from "@/app/GerAdv_TS/Rito/Components/RitoGridContainer";

@@ -31,12 +31,11 @@ public partial class FProDespesas : MenphisSI.SG.GerAdv.DBProDespesas, IDBProDes
     {
     }
 
-    
+ 
 
     // Factory method for creating instances with parameters
     public static FProDespesas CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        //return new FProDespesas(parameters, cNome, oCnn, fullSql, sqlWhere, join);
         throw new NotImplementedException();
     }
 

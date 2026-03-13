@@ -4,7 +4,7 @@
 // Entity:TipoCompromisso
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class TipoCompromissoController(ITipoCompromissoService tipocompromissoService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TipoCompromissoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TipoCompromissoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.GetAll(max, uri);
+                return await _tipocompromissoService.GetAll(max, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: GetAll failed with exception for uri = {0}", uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TipoCompromissoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoCompromisso filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TipoCompromissoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoCompromisso filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            TipoCompromissoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.Filter(max, filter, uri);
+                return await _tipocompromissoService.Filter(max, filter, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: Filter failed with exception for uri = {0}", uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.GetById(id, uri, token);
+                return await _tipocompromissoService.GetById(id, tenantKey, token);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoCompromissoMetrics.RecordReadByHour(uri);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoCompromissoMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoCompromissoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: GetById failed with exception for id = {0}, {1}", id, uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.GetAuditor(id, uri, token);
+                return await _tipocompromissoService.GetAuditor(id, tenantKey, token);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            TipoCompromissoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.GetListN(max, filtro, uri);
+                return await _tipocompromissoService.GetListN(max, filtro, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoCompromissoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: GetListN failed with exception for uri = {0}", uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<TipoCompromissoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> AddAndUpdate([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> AddAndUpdate([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         var isNew = regTipoCompromisso.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            TipoCompromissoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.AddAndUpdate(regTipoCompromisso, uri);
+                return await _tipocompromissoService.AddAndUpdate(regTipoCompromisso, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                TipoCompromissoMetrics.RecordCreated(uri);
-                TipoCompromissoMetrics.RecordCreatedByHour(uri);
+                TipoCompromissoMetrics.RecordCreated(tenantKey);
+                TipoCompromissoMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                TipoCompromissoMetrics.RecordUpdated(uri);
-                TipoCompromissoMetrics.RecordUpdatedByHour(uri);
+                TipoCompromissoMetrics.RecordUpdated(tenantKey);
+                TipoCompromissoMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoCompromissoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: AddAndUpdate failed with exception for uri = {0}", uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<TipoCompromissoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<TipoCompromissoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.Delete(id, uri);
+                return await _tipocompromissoService.Delete(id, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                TipoCompromissoMetrics.RecordDeleted(uri);
-                TipoCompromissoMetrics.RecordDeletedByHour(uri);
+                TipoCompromissoMetrics.RecordDeleted(tenantKey);
+                TipoCompromissoMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoCompromissoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            TipoCompromissoMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "TipoCompromisso: {0} conflito de FK para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "TipoCompromisso: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<TipoCompromissoResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: Delete failed with exception for id = {0}, {1}", id, uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> Validation([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoCompromissoResponse>>> Validation([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoCompromissoMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            TipoCompromissoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipocompromissoService.Validation(regTipoCompromisso, uri);
+                return await _tipocompromissoService.Validation(regTipoCompromisso, tenantKey);
             });
-            TipoCompromissoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoCompromissoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoCompromissoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoCompromisso: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoCompromissoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoCompromissoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoCompromisso: Validation failed with exception for uri = {0}", uri);
+            TipoCompromissoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoCompromisso: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500));
         }
     }

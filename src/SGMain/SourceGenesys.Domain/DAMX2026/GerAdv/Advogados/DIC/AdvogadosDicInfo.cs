@@ -115,7 +115,7 @@ public static partial class DBAdvogadosDicInfo
     public static DBInfoSystem AdvEstagiario => new(0, PTabelaNome, CampoCodigo, Estagiario, "Estagiario", "Estagiario", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "adv", isRequired: true);
     public static DBInfoSystem AdvOAB => new(0, PTabelaNome, CampoCodigo, OAB, 12, "OAB", "OAB", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
     public static DBInfoSystem AdvNomeCompleto => new(0, PTabelaNome, CampoCodigo, NomeCompleto, 50, "NomeCompleto", "NomeCompleto", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
-    public static DBInfoSystem AdvEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "adv");
     public static DBInfoSystem AdvCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "adv"); // DBI 11 
     public static DBInfoSystem AdvCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "adv");
     public static DBInfoSystem AdvSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "adv", isRequired: true);

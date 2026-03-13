@@ -22,12 +22,12 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IInstanciaService instanciaService = instanciaService;
-    public async Task<ResultApi<IEnumerable<ForoResponseAll>>> Filter(int max, Filters.FilterForo filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<ForoResponseAll>>> Filter(int max, Filters.FilterForo filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Foro: URI inválida");
+            throw new Exception("Foro: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -41,28 +41,28 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroForo(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            ForoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            ForoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Foro-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Foro-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<ForoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            ForoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<ForoResponseAll>>.Fail($"Foro - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            ForoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<ForoResponseAll>>.Fail($"Foro - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
     }
 
-    public async Task<ResultApi<ForoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<ForoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -86,20 +86,20 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            ForoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            ForoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Foro-GetById-{id}--{keyCache}", async cancel =>
+            ForoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            ForoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Foro-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                ForoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                ForoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            ForoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<ForoResponse>.NotFound($"Foro: Registro não encontrado para id {id}");
@@ -110,25 +110,25 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            ForoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            ForoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ForoResponse>.Fail($"Foro, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            ForoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            ForoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ForoResponse>.Fail($"Foro, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ForoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            ForoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ForoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            ForoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<ForoResponse>.Fail($"Foro - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ForoResponse>.Fail($"Foro - {uri}-: GetById: {ex.Message}", 500);
+            ForoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ForoResponse>.Fail($"Foro - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<ForoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -136,11 +136,11 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             return ResultApi<AuditorResponse>.Fail("Foro: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Foro: Auditor não encontrado para id {id}");
@@ -151,11 +151,11 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         catch (Exception ex)
         {
             _logger.Error(ex, "Foro: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Foro - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Foro - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<ForoResponse>> AddAndUpdate(Models.Foro? regForo, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ForoResponse>> AddAndUpdate(Models.Foro? regForo, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regForo == null)
@@ -163,14 +163,14 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             return ResultApi<ForoResponse>.Fail("Foro: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Foro: URI inválida");
+            throw new Exception("Foro: TenantApp inválida");
         }
 
         var connectionStopwatch = ForoDatabaseMetrics.StartTimer();
         var queryStopwatch = ForoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -179,9 +179,9 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
 
         try
         {
-            ForoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            ForoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
+            ForoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            ForoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regForo, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -189,12 +189,12 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (SGValidationException ex)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -203,16 +203,16 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         {
             using var saved = await writer.WriteAsync(regForo, operadorId, oCnn);
             string tipoQuery = regForo.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            ForoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            ForoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regForo.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regForo.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -220,14 +220,14 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regForo, uri);
-            ForoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regForo, tenantKey);
+            ForoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            ForoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<ForoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<ForoResponse>> Validation(Models.Foro? regForo, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ForoResponse>> Validation(Models.Foro? regForo, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regForo == null)
@@ -235,14 +235,13 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             return ResultApi<ForoResponse>.Fail("Foro: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Foro: URI inválida");
+            throw new Exception("Foro: TenantApp inválida");
         }
 
         var connectionStopwatch = ForoDatabaseMetrics.StartTimer();
-        var queryStopwatch = ForoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -251,9 +250,9 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
 
         try
         {
-            ForoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            ForoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
+            ForoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            ForoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regForo, this, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -261,12 +260,12 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (SGValidationException ex)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -292,7 +291,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
     }
 
-    public async Task<ResultApi<ForoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ForoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -300,13 +299,13 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Foro: URI inválida");
+            throw new Exception("Foro: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = ForoDatabaseMetrics.StartTimer();
         var queryStopwatch = ForoDatabaseMetrics.StartTimer();
@@ -317,9 +316,9 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
 
         try
         {
-            ForoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            ForoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, instanciaService, uri, oCnn);
+            ForoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            ForoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, instanciaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -327,44 +326,44 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (SGValidationException ex)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ForoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ForoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var foro = await reader.ReadAsync(id ?? default, oCnn);
         if (foro == null)
         {
-            ForoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ForoResponse>.NotFound($"Foro: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(foro, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(foro, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(foro, nOperador, oCnn);
-                ForoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                ForoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            ForoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(foro, uri);
+            ForoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(foro, tenantKey);
             return ResultApi<ForoResponse>.Ok(foro);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(foro, uri);
-            ForoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            ForoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(foro, tenantKey);
+            ForoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            ForoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ForoResponse>.Fail(ex.Message, 500);
         }
     }

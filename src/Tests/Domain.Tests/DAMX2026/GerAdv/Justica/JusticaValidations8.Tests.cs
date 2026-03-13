@@ -9,7 +9,7 @@ public class JusticaValidationTests : IDisposable
     private readonly JusticaValidation _validation;
     private readonly Mock<IJusticaService> _mockJusticaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public JusticaValidationTests()
     {
         _validation = new JusticaValidation();

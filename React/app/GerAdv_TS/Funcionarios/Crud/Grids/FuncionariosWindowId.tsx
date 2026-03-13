@@ -31,7 +31,10 @@ const FuncionariosWindowId: React.FC<FuncionariosWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const funcionariosService = useMemo(() => {
     return new FuncionariosService(
-      new FuncionariosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new FuncionariosApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

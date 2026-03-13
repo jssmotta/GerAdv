@@ -1,0 +1,321 @@
+@media (max-width: 768px) {
+  /* CSS genérico para todos os grids mobile de CRUD */
+  .grid-mobile-crud {
+    /* Container principal do grid */
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important; 
+    margin-bottom: 60px !important; /* Espaço para o footer */
+  }
+
+  /* PAGER - Controles de navegação */
+  .grid-mobile-crud .k-pager {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 12px 8px !important;
+    min-height: 60px !important;
+    background-color: #ffffff !important;
+    border-top: 2px solid #e0e0e0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+        /* Proteção contra interferência de scroll fallback */
+    touch-action: auto !important;
+    -webkit-touch-callout: initial !important;
+    -webkit-user-select: auto !important;
+    user-select: auto !important;
+  }
+
+  /* Navegação do pager (botões anterior/próximo) */
+  .grid-mobile-crud .k-pager .k-pager-nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    order: 1 !important;
+  }
+
+  /* Números das páginas */
+  .grid-mobile-crud .k-pager .k-pager-numbers {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-wrap: wrap !important;
+    order: 2 !important;
+    margin: 0 8px !important;
+  }
+
+  /* Seletor de tamanho de página */
+  .grid-mobile-crud .k-pager .k-pager-sizes {
+    display: flex !important;
+    align-items: center !important;
+    order: 3 !important;
+    margin: 4px 8px !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Informações do pager */
+  .grid-mobile-crud .k-pager .k-pager-info {
+    font-size: 12px !important;
+    text-align: center !important;
+    order: 4 !important;
+    flex-basis: 100% !important;
+    margin-top: 8px !important;
+    color: #666 !important;
+  }
+
+  /* Botões do pager */
+  .grid-mobile-crud .k-pager .k-button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+    margin: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: all 0.2s ease !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Botões ativos */
+  .grid-mobile-crud .k-pager .k-button:not(.k-state-disabled) {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    color: #495057 !important;
+    cursor: pointer !important;
+  }
+
+  /* Hover nos botões */
+  .grid-mobile-crud .k-pager .k-button:not(.k-state-disabled):hover {
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Botão selecionado */
+  .grid-mobile-crud .k-pager .k-button.k-state-selected {
+    background-color: var(--primary-color, #007bff) !important;
+    border-color: var(--primary-color, #007bff) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+
+  /* Botões desabilitados */
+  .grid-mobile-crud .k-pager .k-button.k-state-disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+  }
+
+  /* Dropdown de tamanho de página */
+  .grid-mobile-crud .k-pager .k-pager-sizes .k-dropdown {
+    min-width: 70px !important;
+    min-height: 44px !important;
+    margin-left: 8px !important;
+  }
+
+  /* HEADER DO GRID */
+  .grid-mobile-crud .k-grid-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #e0e0e0 !important;
+  }
+
+  /* CONTEÚDO DO GRID */
+  .grid-mobile-crud .k-grid-content {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-height: calc(100vh - 200px) !important;
+  }
+
+  /* Tabela do grid */
+  .grid-mobile-crud .k-grid-content table {
+    min-width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  /* Células do grid */
+  .grid-mobile-crud .k-grid-content td {
+    padding: 8px 4px !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    min-width: 80px !important;
+    vertical-align: middle !important;
+  }
+
+
+
+  /* Células que contêm ComboBox - FORÇA O COMBOBOX A OCUPAR ESPAÇO */
+  .grid-mobile-crud .k-grid-content td .k-combobox,
+  .grid-mobile-crud .k-grid-content td .k-dropdown {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 160px !important;
+    max-width: 220px !important;
+    vertical-align: middle !important;
+    margin-right: 0 !important;
+  }
+
+  /* Container da célula com ComboBox */
+  .grid-mobile-crud .k-grid-content td:has(.k-combobox),
+  .grid-mobile-crud .k-grid-content td:has(.k-dropdown) {
+    min-width: 200px !important;
+    max-width: none !important;
+    padding: 8px 4px !important;
+    width: auto !important;
+    white-space: nowrap !important;
+  }
+
+  /* Ícones de ação nas células - FORÇAR APARECIMENTO */
+  .grid-mobile-crud .k-grid-content td .k-svg-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    cursor: pointer !important;
+    padding: 2px !important;
+    border-radius: 4px !important;
+    transition: background-color 0.2s ease !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    margin: 0 2px !important;
+    vertical-align: middle !important;
+    z-index: 99 !important;
+    pointer-events: auto !important;
+  }
+
+  .grid-mobile-crud .k-grid-content td .k-svg-icon:hover {
+    background-color: #f8f9fa !important;
+  }
+
+  /* SVG dentro dos ícones */
+  .grid-mobile-crud .k-grid-content td .k-svg-icon svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Células de ação (com ícones) - aplicar apenas às células de comando */
+  .grid-mobile-crud .k-grid-content td.k-command-cell {
+    min-width: 44px !important;
+    width: 44px !important;
+    max-width: 44px !important;
+    padding: 4px !important;
+    text-align: center !important;
+  }
+
+  /* Container flex para células com múltiplos elementos - INLINE TUDO */
+  .grid-mobile-crud .k-grid-content td > div {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    vertical-align: middle !important;
+  }
+
+  /* Todos os elementos dentro da célula ficam inline */
+  .grid-mobile-crud .k-grid-content td > * {
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+
+  /* FILTROS */
+  .grid-mobile-crud .k-grid-header .k-filtercell {
+    padding: 8px 4px !important;
+  }
+
+  .grid-mobile-crud .k-grid-header .k-filtercell .k-textbox {
+    min-height: 36px !important;
+    font-size: 14px !important;
+    padding: 8px !important;
+    border-radius: 4px !important;
+  }
+
+  /* Garantir que o pager não seja afetado por transformações */
+  .grid-mobile-crud .k-pager {
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
+  }
+
+  /* Específico para iOS */
+  @supports (-webkit-touch-callout: none) {
+    .grid-mobile-crud .k-pager {
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0)) !important;
+    }
+    
+    .grid-mobile-crud {
+      margin-bottom: calc(100px + env(safe-area-inset-bottom, 0)) !important;
+    }
+  }
+
+  /* Melhorar a responsividade para telas muito pequenas */
+  @media (max-width: 480px) {
+    .grid-mobile-crud .k-pager .k-pager-numbers {
+      flex-basis: 100% !important;
+      justify-content: center !important;
+      margin: 8px 0 !important;
+    }
+
+    .grid-mobile-crud .k-pager .k-pager-sizes {
+      flex-basis: 100% !important;
+      justify-content: center !important;
+      margin: 4px 0 !important;
+    }
+
+    .grid-mobile-crud .k-pager .k-button {
+      min-width: 40px !important;
+      min-height: 40px !important;
+      padding: 8px !important;
+      font-size: 12px !important;
+    }
+  }
+
+
+}
+
+/* Correções adicionais para landscape em mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .grid-mobile-crud {
+    max-height: calc(100vh - 120px) !important;
+  }
+
+  .grid-mobile-crud .k-grid-content {
+    max-height: calc(100vh - 180px) !important;
+  }
+
+  .grid-mobile-crud .k-pager {
+    min-height: 50px !important;
+    padding: 8px 4px !important;
+  }
+
+  .grid-mobile-crud .k-pager .k-button {
+    min-width: 36px !important;
+    min-height: 36px !important;
+    padding: 6px !important;
+    font-size: 12px !important;
+  }
+}

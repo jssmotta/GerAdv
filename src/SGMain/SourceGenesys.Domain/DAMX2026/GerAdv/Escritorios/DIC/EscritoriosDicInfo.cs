@@ -75,7 +75,7 @@ public static partial class DBEscritoriosDicInfo
     public static DBInfoSystem EscParceria => new(0, PTabelaNome, CampoCodigo, Parceria, "Parceria", "Parceria", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc", isRequired: true);
     public static DBInfoSystem EscNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "esc");
     public static DBInfoSystem EscOAB => new(0, PTabelaNome, CampoCodigo, OAB, 15, "OAB", "OAB", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "esc");
-    public static DBInfoSystem EscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereço", "Endereço", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereco", "Endereco", EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "esc");
     public static DBInfoSystem EscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "esc"); // DBI 11 
     public static DBInfoSystem EscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 30, "Bairro", "Bairro", EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "esc");
     public static DBInfoSystem EscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "esc");

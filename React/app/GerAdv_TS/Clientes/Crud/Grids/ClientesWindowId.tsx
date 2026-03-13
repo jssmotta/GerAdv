@@ -31,7 +31,10 @@ const ClientesWindowId: React.FC<ClientesWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const clientesService = useMemo(() => {
     return new ClientesService(
-      new ClientesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new ClientesApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBTipoProDesposito
 {
-    public const string CadastroGuid = "194bfa71-9726-47f2-b55f-6396d58c29c3";
+    public const string CadastroGuid = "c9b6927e-1a51-49d5-b4b5-ee44af36631f";
     public const string PTabelaNome = "TipoProDesposito";
     public const string CamposSqlX = " TipoProDesposito.* ";
     public const string CampoCodigo = "tpdCodigo";

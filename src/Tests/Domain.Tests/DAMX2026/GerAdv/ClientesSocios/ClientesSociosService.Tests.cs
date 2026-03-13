@@ -23,7 +23,7 @@ public partial class ClientesSociosServiceTests : IDisposable
     private readonly Mock<IEntityService> _mockEntityService;
     private readonly ServiceFilter _serviceS;
     private readonly ClientesSociosService _service;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public ClientesSociosServiceTests(ITestOutputHelper output)
     {
         _output = output;
@@ -402,7 +402,7 @@ public partial class ClientesSociosServiceTests : IDisposable
             Id = 0,
             Nome = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Validation(validClientesSocios, invalidUri));
     }
@@ -475,7 +475,7 @@ public partial class ClientesSociosServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.GetAll(max, invalidUri));
     }
@@ -509,7 +509,7 @@ public partial class ClientesSociosServiceTests : IDisposable
         // Arrange
         var max = 10;
         var filter = new Filters.FilterClientesSocios();
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, filter, invalidUri));
     }
@@ -612,7 +612,7 @@ public partial class ClientesSociosServiceTests : IDisposable
         // Arrange
         var max = 10;
         var filter = new Filters.FilterClientesSocios();
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.GetListN(max, filter, invalidUri, CancellationToken.None));
     }
@@ -636,7 +636,7 @@ public partial class ClientesSociosServiceTests : IDisposable
     {
         // Arrange
         var validId = 123;
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Delete(validId, invalidUri));
     }
@@ -652,7 +652,7 @@ public partial class ClientesSociosServiceTests : IDisposable
             Id = 0,
             Nome = "Test"
         };
-        var invalidUri = "invalid-uri-test";
+        var invalidUri = "invalid-tenantKey-test";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.AddAndUpdate(validClientesSocios, invalidUri));
     }
@@ -808,7 +808,7 @@ public partial class ClientesSociosServiceTests : IDisposable
     {
         // Arrange
         var max = 10;
-        var invalidUri = "invalid-uri";
+        var invalidUri = "invalid-tenantKey";
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _service.Filter(max, null !, invalidUri));
     }

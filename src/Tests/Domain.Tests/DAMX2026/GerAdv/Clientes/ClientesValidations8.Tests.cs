@@ -10,7 +10,7 @@ public class ClientesValidationTests : IDisposable
     private readonly Mock<IClientesService> _mockClientesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public ClientesValidationTests()
     {
         _validation = new ClientesValidation();

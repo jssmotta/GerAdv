@@ -1,0 +1,828 @@
+ .input-container-check {
+   padding-top: 10px;
+ }
+
+ /* Remove todas as bordas padrão dos inputs Kendo e mantém apenas a linha inferior */
+ .k-textbox,
+ .k-input,
+ .k-input-inner,
+ .k-input-md,
+ .k-textarea,
+ .k-numerictextbox,
+ .k-datepicker .k-input,
+ .k-combobox .k-input,
+ .k-dropdown .k-dropdown-wrap,
+ .k-autocomplete .k-input,
+ .k-multiselect .k-multiselect-wrap,
+ .k-dropdownlist .k-input,
+ .k-picker-wrap,
+ .k-dropdown-wrap,
+ .k-numeric-wrap,
+ .k-multiselect-wrap {
+   border: none !important;
+   border-radius: 0 !important;
+   border-bottom: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+   transition: border-color 0.3s ease;
+ }
+
+ /* Estilo para quando o input estiver em foco - apenas linha inferior azul do Windows 11 */
+ .k-textbox:focus,
+ .k-input:focus,
+ .k-input-md:focus,
+ .k-textarea:focus,
+ .k-numerictextbox.k-state-focused,
+ .k-datepicker.k-state-focused .k-input,
+ .k-combobox.k-state-focused .k-input,
+ .k-dropdown.k-state-focused .k-dropdown-wrap,
+ .k-autocomplete.k-state-focused .k-input,
+ .k-multiselect.k-state-focused .k-multiselect-wrap,
+ .k-dropdownlist.k-state-focused .k-input,
+ .k-picker-wrap.k-state-focused,
+ .k-dropdown-wrap.k-state-focused,
+ .k-numeric-wrap.k-state-focused,
+ .k-multiselect-wrap.k-state-focused {
+   border: none !important;
+   outline: none !important;
+   /* Cor azul do Windows 11 */
+ }
+
+
+
+ /* Garantir que nenhuma outra borda apareça quando em foco */
+ .k-state-focused,
+ .k-focus,
+ *:focus {
+   outline: none !important;
+   box-shadow: none !important;
+ }
+
+ /* Remover bordas do contêiner flutuante (popup) */
+ .k-popup,
+ .k-list-container {
+   border-radius: 4px !important;
+   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1) !important;
+   border: 1px solid #e0e0e0 !important;
+ }
+
+
+ .k-textbox,
+ .k-input-inner,
+ .k-input-md,
+ .k-textarea,
+ .k-numerictextbox,
+ .k-datepicker .k-input,
+ .k-combobox .k-input,
+ .k-dropdown .k-dropdown-wrap,
+ .k-autocomplete .k-input,
+ .k-multiselect .k-multiselect-wrap,
+ .k-dropdownlist .k-input,
+ .k-picker-wrap,
+ .k-dropdown-wrap,
+ .k-numeric-wrap,
+ .k-multiselect-wrap {
+   border: none !important;
+   border-top: none !important;
+   /* <-- Adicione esta linha */
+   border-radius: 0 !important;
+   border-bottom: 1px solid #ccc !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+   transition: border-color 0.3s ease;
+ }
+
+ .k-combobox,
+ .k-combobox *,
+ .k-dropdown,
+ .k-dropdown *,
+ .k-datepicker,
+ .k-datepicker *,
+ .k-numerictextbox,
+ .k-numerictextbox * {
+   border-top: none !important;
+   box-shadow: none !important;
+ }
+
+ .k-combobox::before,
+ .k-combobox::after,
+ .k-dropdown::before,
+ .k-dropdown::after,
+ .k-datepicker::before,
+ .k-datepicker::after,
+ .k-numerictextbox::before,
+ .k-numerictextbox::after {
+   border-top: none !important;
+   background: none !important;
+   height: 0 !important;
+   content: none !important;
+ }
+
+ /* Reset completo para componentes Kendo - solução final */
+
+ /* Aplicar estilo diretamente ao elemento span.k-combobox que vemos no HTML */
+ span.k-combobox {
+   border: none !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+
+ /* Este é o elemento que realmente precisa da borda inferior */
+ span.k-combobox span.k-dropdown-wrap {
+   border: none !important;
+   border-bottom: 1px solid #ccc !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+
+
+ /* Forçar borda em todos os componentes semelhantes */
+ .k-dropdown span.k-dropdown-wrap,
+ .k-datepicker span.k-picker-wrap,
+ .k-numerictextbox span.k-numeric-wrap {
+   border: none !important;
+   border-bottom: 1px solid #ccc !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+
+
+
+ /* Remover estilos indesejados de todos os elementos internos */
+ .k-input-inner,
+ .k-select,
+ .k-input-button {
+   border: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+   background-color: transparent !important;
+ }
+
+ /* Solução específica para ComboBox na sua aplicação */
+ .k-combobox span.k-dropdown-wrap,
+ .input-msi-combobox .k-combobox span.k-dropdown-wrap {
+   border: none !important;
+   border-bottom: 1px solid #ccc !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+
+
+
+ /* Abordagem extrema para garantir a linha inferior */
+ .k-combobox::after,
+ .k-dropdown::after,
+ .k-datepicker::after,
+ .k-numerictextbox::after {
+   content: "";
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   height: 1px;
+   background-color: #ccc;
+   z-index: 9999;
+   pointer-events: none;
+ }
+
+
+
+
+
+ .k-combobox,
+ .k-combobox *,
+ .k-dropdown,
+ .k-dropdown *,
+ .k-datepicker,
+ .k-datepicker *,
+ .k-numerictextbox,
+ .k-numerictextbox * {
+   border-top: none !important;
+   box-shadow: none !important;
+ }
+
+ /* Border bottom genérico para todos os ComboBox, Dropdown, DatePicker e NumericTextbox do Kendo */
+ .k-combobox .k-dropdown-wrap,
+ .k-dropdown .k-dropdown-wrap,
+ .k-datepicker .k-picker-wrap,
+ .k-numerictextbox .k-numeric-wrap {
+   border: none !important;
+   border-bottom: 1px solid #ccc !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+   transition: border-color 0.3s;
+ }
+
+
+
+ /* .k-combobox .k-dropdown-wrap,
+.k-dropdown .k-dropdown-wrap,
+.k-datepicker .k-picker-wrap,
+.k-numerictextbox .k-numeric-wrap {
+  border-bottom: 1px solid #ccc !important;
+} */
+
+ /* Remove bordas internas e outline */
+ .k-input-inner,
+ .k-select,
+ .k-input-button {
+   border: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+   background-color: transparent !important;
+ }
+
+ /* Remove borda superior de todos os componentes */
+ .k-combobox,
+ .k-combobox *,
+ .k-dropdown,
+ .k-dropdown *,
+ .k-datepicker,
+ .k-datepicker *,
+ .k-numerictextbox,
+ .k-numerictextbox *,
+ textarea {
+   border-top: none !important;
+   border-bottom: none !important;
+   box-shadow: none !important;
+ }
+
+
+
+ /* Estilo específico para textarea */
+ .k-textarea .k-input-inner:focus,
+ .k-textarea.k-state-focused .k-input-inner {
+   border: none !important;
+   border-top: none !important;
+   border-left: none !important;
+   border-right: none !important;
+   border-bottom: 1px solid #cecece !important;
+   box-shadow: none !important;
+   outline: none !important;
+ }
+
+
+
+ /* Garantir que o container do textarea não tenha bordas indesejadas */
+ .k-textarea.k-state-focused {
+   border: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+ }
+
+ /* Para garantir que o textarea tenha apenas borda inferior */
+ .k-textarea .k-input-inner {
+   border: none !important;
+   border-bottom: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+ }
+
+ .k-textarea {
+   resize: none !important;
+ }
+
+ input,
+ .k-input,
+ .k-textbox {
+   font-size: 16px !important;
+ }
+
+
+ /* .k-input,
+.k-textbox {
+  min-width: 300px !important;
+} */
+ /* .k-datepicker .k-input,
+.k-datepicker input.k-input { 
+  min-width: 270px !important;
+} */
+
+
+ .k-datepicker input,
+ .k-datepicker input:focus {
+   border: none !important;
+   border-bottom: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+   background: transparent !important;
+ }
+
+ .input-container-date {
+   border-bottom: solid 1px #ccc !important;
+ }
+
+
+
+ .input-container-yes-no {
+   min-height: 55px;
+   border-bottom: 1px solid #ccc !important;
+   margin-top: 5px;
+ }
+
+
+
+ .input-container,
+ .input-container-date {
+   position: relative;
+   max-width: 360px !important;
+ }
+
+
+
+
+ /* Ajuste para inputs com ícone (evita sobreposição do ícone sobre o texto) */
+ .input-container-icon .k-input,
+ .input-container-icon input,
+ .input-container-icon .k-textbox,
+ .input-container-icon .k-input-inner,
+ .input-container-icon .k-combobox {
+   padding-left: 40px !important;
+   /* ajuste este valor conforme o tamanho do ícone */
+ }
+
+ .input-container-icon2 .k-input {
+   padding-left: 40px !important;
+   /* ajuste este valor conforme o tamanho do ícone */
+ }
+
+
+
+ /* garante que o ícone fique na frente e não receba eventos */
+ .input-container-icon .input-icon,
+ .input-container-icon .input-icon-text {
+   z-index: 20 !important;
+   pointer-events: none;
+ }
+
+ /* pequenas variações para telas pequenas (opcional) */
+ @media (max-width: 480px) {
+
+   .input-container-icon .k-input,
+   .input-container-icon input,
+   .input-container-icon .k-combobox {
+     padding-left: 36px !important;
+   }
+ }
+
+ .input-label {
+   display: block;
+ }
+
+ /* Ajustes para inputs com ícone (ComboBox / Sexo) */
+ .input-container-icon {
+   position: relative;
+ }
+
+ /* Evita que o label seja coberto pelo ícone */
+ .input-container-icon .input-label {
+   display: block;
+   padding-left: 32px;
+   /* espaço reservado para o ícone (ajustado) */
+   margin-bottom: 6px;
+   line-height: 1;
+ }
+
+ /* Força fundo transparente no ComboBox e no input interno */
+ .input-container-icon .k-combobox,
+ .input-container-icon .k-combobox .k-dropdown-wrap,
+ .input-container-icon .k-combobox .k-input,
+ .input-container-icon .k-combobox .k-input-inner,
+ .input-container-icon .k-combobox input.k-input {
+   background: transparent !important;
+   box-shadow: none !important;
+ }
+
+
+
+ /* Espaço à esquerda do texto do combo/input para não sobrepor o ícone */
+ .input-container-icon .k-combobox .k-input,
+ .input-container-icon .k-combobox input.k-input,
+ .input-container-icon .k-combobox .k-input-inner {
+   padding-left: 2px !important;
+   /* ajustar se mudar o tamanho do ícone */
+   padding-right: 44px !important;
+   /* reserva para clear button/drop arrow */
+ }
+
+ /* Posicionamento do ícone alinhado com a linha do input (ajuste top se necessário) */
+ .input-container-icon .input-icon,
+ .input-container-icon .input-icon-text {
+   left: 12px;
+   bottom: 6px;
+   /* posiciona o ícone mais próximo à linha inferior do input */
+   font-size: 16px;
+   z-index: 20 !important;
+   pointer-events: none;
+ }
+
+ .input-msi-combobox svg {
+   margin-top: 14px;
+ }
+
+ /* Responsivo: reduz o padding em telas pequenas */
+ @media (max-width: 480px) {
+   .input-container-icon .input-label {
+     padding-left: 36px;
+   }
+
+   .input-container-icon .k-combobox .k-input,
+   .input-container-icon .k-combobox input.k-input {
+     padding-left: 36px !important;
+   }
+
+   .input-container-icon .input-icon,
+   .input-container-icon .input-icon-text {
+     left: 10px;
+   }
+ }
+
+ .input-msi-combobox {
+   border-bottom: solid 1px #ccc !important;
+ }
+
+
+
+ .input-msi-combobox {
+   min-height: 63px !important;
+   max-height: 63px !important;
+ }
+
+ .input-container-date-icon {
+   padding-left: 40px !important;
+   /* ajuste este valor conforme o tamanho do ícone */
+ }
+
+ .input-container-input-date-icon {
+   max-width: 90% !important;
+ }
+
+ @media screen and (min-width: 768px) {
+
+
+   .input-container-checkbox-icon .input-icon {
+     padding-top: 14px;
+   }
+
+   .input-container-checkbox-icon {
+     max-width: 300px;
+     padding-left: 40px !important;
+     /* ajuste este valor conforme o tamanho do ícone */
+   }
+
+ }
+
+
+ textarea {
+   border-bottom: none !important;
+ }
+
+ .k-textarea .k-input-inner:focus,
+ .k-textarea.k-state-focused .k-input-inner {
+   border: none !important;
+   border-top: none !important;
+   border-left: none !important;
+   border-right: none !important;
+   border-bottom: none !important;
+   box-shadow: none !important;
+   outline: none !important;
+ }
+
+ .input-container-textarea {
+    min-height: 100px !important;
+    margin-bottom: 20px !important;
+  }
+
+  
+ /* Borda vermelha para inputs obrigatórios */
+ .input-container:has(input[required]),
+ .input-container:has(.k-input[required]),
+ .input-container-date:has(input[required]),
+ .input-msi-combobox:has(input[required]),
+ .input-container-icon:has(input[required]),
+ .input-container-textarea:has(textarea[required]) {
+   border-bottom: 1px solid var(--error-color, #f00) !important;
+ }
+
+ /* Remover borda dos inputs internos quando required para evitar linha dupla */
+ .input-container:has(input[required]) .k-input,
+ .input-container:has(input[required]) .k-textbox,
+ .input-container:has(input[required]) input,
+ .input-container:has(input[required]) .k-input-inner,
+ .input-container-date:has(input[required]) .k-input,
+ .input-container-date:has(input[required]) input,
+ .input-container-icon:has(input[required]) .k-input,
+ .input-container-icon:has(input[required]) input,
+ .input-msi-combobox:has(input[required]) .k-input,
+ .input-msi-combobox:has(input[required]) input,
+ .input-msi-combobox:has(input[required]) .k-dropdown-wrap,
+ .input-container-textarea:has(textarea[required]) textarea {
+   border-bottom: none !important;
+ }
+
+ /* Manter borda vermelha mesmo quando em foco */
+ .input-container:has(input[required]:focus),
+ .input-container:has(.k-input[required]:focus),
+ .input-container-date:has(input[required]:focus),
+ .input-msi-combobox:has(input[required]:focus),
+ .input-container-icon:has(input[required]:focus),
+ .input-container-textarea:has(textarea[required]:focus),
+ .input-container:focus-within:has(input[required]),
+ .input-container-date:focus-within:has(input[required]),
+ .input-msi-combobox:focus-within:has(input[required]),
+ .input-container-icon:focus-within:has(input[required]),
+ .input-container-textarea:focus-within:has(textarea[required]) {
+   border-bottom: 1px solid var(--error-color, #f00) !important;
+ }
+
+ /* Borda vermelha para Fields do Kendo Form com required */
+ .k-form-field:has(input[required]) .k-input,
+ .k-form-field:has(input[required]) .k-textbox,
+ .k-form-field:has(input[required]) input,
+ .k-form-fieldset:has(input[required]) .k-input,
+ .k-form-fieldset:has(input[required]) .k-textbox,
+ .k-form-fieldset:has(input[required]) input {
+   border-bottom: 1px solid var(--error-color, #f00) !important;
+ }
+
+ /* Borda vermelha para Fields do Kendo Form com required quando em foco */
+ .k-form-field:has(input[required]:focus) .k-input,
+ .k-form-field:has(input[required]:focus) .k-textbox,
+ .k-form-field:has(input[required]:focus) input,
+ .k-form-field:focus-within:has(input[required]) .k-input,
+ .k-form-field:focus-within:has(input[required]) .k-textbox,
+ .k-form-field:focus-within:has(input[required]) input {
+   border-bottom: 1px solid var(--error-color, #f00) !important;
+ }
+
+ /* Borda verde quando input obrigatório tem valor preenchido */
+ .input-container:has(input[required]:not(:placeholder-shown)),
+ .input-container-date:has(input[required]:not(:placeholder-shown)),
+ .input-msi-combobox:has(input[required]:not(:placeholder-shown)),
+ .input-container-icon:has(input[required]:not(:placeholder-shown)),
+ .input-container-textarea:has(textarea[required]:not(:placeholder-shown)) {
+   border-bottom: 1px solid var(--success-color, #00ff00) !important;
+ }
+
+ /* Borda verde para Fields do Kendo Form - aplicar apenas no input específico que tem valor */
+ .k-form-field:has(> input[required]:not(:placeholder-shown)) input,
+ .k-form-field:has(> .k-input:not(:placeholder-shown)) input[required],
+ .k-form-field input[required]:not(:placeholder-shown) {
+   border-bottom: 1px solid var(--success-color, #00ff00) !important;
+ }
+
+ /* Manter borda verde mesmo quando em foco (se tiver valor) */
+ .input-container:has(input[required]:not(:placeholder-shown)):focus-within,
+ .input-container-date:has(input[required]:not(:placeholder-shown)):focus-within,
+ .input-msi-combobox:has(input[required]:not(:placeholder-shown)):focus-within,
+ .input-container-icon:has(input[required]:not(:placeholder-shown)):focus-within,
+ .input-container-textarea:has(textarea[required]:not(:placeholder-shown)):focus-within {
+   border-bottom: 1px solid var(--success-color, #00ff00) !important;
+ }
+
+ /* Borda verde para input obrigatório preenchido dentro de fieldset */
+ .k-form-fieldset input[required]:not(:placeholder-shown) {
+   border-bottom: 1px solid var(--success-color, #00ff00) !important;
+ }
+
+
+
+/* Aplicar borda inferior em foco para inputs e componentes Kendo */
+:root {
+  --focus-color-inputs-border-size: 4px;
+}
+.k-textbox:focus,
+.k-input:focus,
+.k-input-md:focus,
+.k-textarea:focus,
+.k-numerictextbox.k-state-focused,
+.k-datepicker.k-state-focused .k-input,
+.k-combobox.k-state-focused .k-input,
+.k-dropdown.k-state-focused .k-dropdown-wrap,
+.k-autocomplete.k-state-focused .k-input,
+.k-multiselect.k-state-focused .k-multiselect-wrap,
+.k-dropdownlist.k-state-focused .k-input,
+.k-picker-wrap.k-state-focused,
+.k-dropdown-wrap.k-state-focused,
+.k-numeric-wrap.k-state-focused,
+.k-multiselect-wrap.k-state-focused,
+.input-container-date:focus-within,
+.input-container-yes-no:focus-within,
+.input-msi-combobox:focus-within,
+.input-container-icon2:focus-within .k-input,
+.input-container-textarea:focus-within,
+span.k-combobox.k-state-focused span.k-dropdown-wrap,
+span.k-combobox:focus span.k-dropdown-wrap,
+span.k-combobox span.k-dropdown-wrap.k-state-focused,
+span.k-combobox.k-state-active span.k-dropdown-wrap,
+.k-dropdown.k-state-focused span.k-dropdown-wrap,
+.k-datepicker.k-state-focused span.k-picker-wrap,
+.k-numerictextbox.k-state-focused span.k-numeric-wrap,
+.k-combobox.k-state-focused .k-dropdown-wrap,
+.input-msi-combobox .k-combobox.k-state-focused span.k-dropdown-wrap,
+.k-combobox.k-state-focused .k-dropdown-wrap,
+.k-dropdown.k-state-focused .k-dropdown-wrap,
+.k-datepicker.k-state-focused .k-picker-wrap,
+.k-numerictextbox.k-state-focused .k-numeric-wrap {
+  border: none !important;
+  outline: none !important;
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+  box-shadow: none !important; 
+}
+
+/* Quando o combobox recebe foco - borda azul (moved from InputsMsi.css) */
+span.k-combobox.k-state-focused span.k-dropdown-wrap,
+span.k-combobox:focus span.k-dropdown-wrap,
+span.k-combobox span.k-dropdown-wrap.k-state-focused,
+span.k-combobox.k-state-active span.k-dropdown-wrap {
+  border: none !important;
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+ /* Garantir que a borda azul apareça quando em foco */
+ .k-dropdown.k-state-focused span.k-dropdown-wrap,
+ .k-datepicker.k-state-focused span.k-picker-wrap,
+ .k-numerictextbox.k-state-focused span.k-numeric-wrap {
+   border: none !important;
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+
+ .k-combobox.k-state-focused span.k-dropdown-wrap,
+ .input-msi-combobox .k-combobox.k-state-focused span.k-dropdown-wrap {
+   border: none !important;
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   background-color: transparent !important;
+ }
+.k-combobox.k-state-focused::after,
+.k-dropdown.k-state-focused::after,
+.k-datepicker.k-state-focused::after,
+.k-numerictextbox.k-state-focused::after {
+  height: var(--focus-color-inputs-border-size, 1px);
+  background-color: var(--focus-color-inputs);
+}
+
+ .comboboxBox span.k-combobox:focus::after,
+ .comboboxBox span.k-combobox.k-state-focused::after,
+ .comboboxBox .k-combobox:focus::after,
+ .comboboxBox .k-combobox.k-state-focused::after {
+   height: var(--focus-color-inputs-border-size, 1px);
+   background-color: var(--focus-color-inputs);
+ }
+
+ /* Border azul ao focar */
+ .k-combobox.k-state-focused .k-dropdown-wrap,
+ .k-dropdown.k-state-focused .k-dropdown-wrap,
+ .k-datepicker.k-state-focused .k-picker-wrap,
+ .k-numerictextbox.k-state-focused .k-numeric-wrap {
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+ }
+
+ .input-container-date:focus-within {
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+ }
+
+ .input-container-yes-no:focus-within {
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+ }
+
+.input-container-textarea:focus-within {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+}
+
+.input-container-icon2:focus-within .k-input {
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+ }
+
+ .input-msi-combobox:focus-within {
+
+   border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+ }
+
+/* Force textarea inside the textarea container to never draw its own border
+   so the visible line is always the container's sibling div (controlled in InputMemo.tsx) */
+.input-container-textarea textarea,
+.input-container-textarea .k-textarea,
+.input-container-textarea textarea:focus,
+.input-container-textarea .k-textarea:focus {
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-color: transparent !important;
+  
+}
+
+/* Hide any pseudo-elements that might draw a line on the textarea */
+.input-container-textarea .k-textarea::after,
+.input-container-textarea .k-textarea::before {
+  display: none !important;
+  content: none !important;
+  border-bottom: none !important;
+}
+
+ 
+ 
+
+/* Ensure textarea container itself never draws a bottom border so
+   the visible line is only the sibling div rendered by `InputMemo.tsx`. */
+.input-container-textarea,
+.input-container-textarea:focus-within,
+.input-container-textarea:has(textarea[required]),
+.input-container-textarea:has(textarea[required]:not(:placeholder-shown)),
+.input-container-textarea:has(textarea[required]:focus) {
+  border-bottom: none !important;
+}
+
+/* Ensure container shows focus border (this rule comes after the 'none' override) */
+.input-container-textarea:focus-within {
+  border-bottom: none !important;
+}
+ 
+/* Ensure textarea has no base border, but show the focus color when focused
+   or when its container is focus-within. Fixed selector ordering. */
+textarea,
+.k-textarea {
+  border-bottom: none !important;
+}
+
+textarea:focus,
+.k-textarea:focus,
+.input-container-textarea:focus-within textarea,
+.input-container-textarea:focus-within .k-textarea {
+  border-bottom: var(--focus-color-inputs-border-size, 1px) solid var(--focus-color-inputs) !important;
+}
+
+
+ .k-floating-label {
+  display: block;
+  margin-bottom: 0;
+}
+
+.inputCheckBox {
+  width: 350px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.inputCheckBox label {
+  margin-left: 8px;  
+}
+
+.inputMemo {
+  width: 360px;
+  margin-top: 0px;
+  min-height: 96px;
+  display: block;
+}
+
+.input-msi-combobox {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+}
+
+.comboboxLabel {
+  width: 100%;
+  margin-bottom: 1px;
+}
+
+.k-floating-label {
+  display: block;
+  width: 360px;
+  text-align: left;
+}
+
+ 
+
+.checkBoxRed {
+  color: red;
+}
+
+.input-checkbox-container {
+  padding-top: 10px;
+}
+
+.k-checkbox {
+  max-width: 22px !important;
+}
+
+ 
+@media (max-width: 768px) {
+
+  .input-container, .input-container-icon {
+    max-width: calc(100% - 20px) !important;       
+  }
+}

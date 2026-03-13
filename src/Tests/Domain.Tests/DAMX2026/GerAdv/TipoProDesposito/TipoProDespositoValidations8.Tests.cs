@@ -9,7 +9,7 @@ public class TipoProDespositoValidationTests : IDisposable
     private readonly TipoProDespositoValidation _validation;
     private readonly Mock<ITipoProDespositoService> _mockTipoProDespositoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public TipoProDespositoValidationTests()
     {
         _validation = new TipoProDespositoValidation();

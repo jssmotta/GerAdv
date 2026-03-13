@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsDesktopHoook.tsx - Versão Refatorada
+// GridsDesktopHoook1.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,7 +39,8 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useDivisaoTribunalGrid } from "../../Hooks/hookDivisaoTribunalGrid";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
 import "@/app/styles/grid-desktop-performance.css";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
+import DivisaoTribunalHelpCrudButton from "../../Help/DivisaoTribunalHelpCrudButton";
 
 interface DivisaoTribunalGridProps {
   data: IDivisaoTribunal[];
@@ -419,7 +420,10 @@ export const DivisaoTribunalGridDesktopComponent = React.memo(
             <GridToolbar>
               {toolbar}
 
-              <PageTitle title="Divisao Tribunal" />
+              <PageTitle
+                title="Divisao Tribunal"
+                helpButton={<DivisaoTribunalHelpCrudButton isMobile={false} />}
+              />
             </GridToolbar>
             {finalGridColumns}
           </Grid>

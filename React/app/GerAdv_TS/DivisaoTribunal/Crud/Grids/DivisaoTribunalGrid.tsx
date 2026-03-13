@@ -32,6 +32,8 @@ import {
 import { useDivisaoTribunalFilter } from "../../Hooks/hookDivisaoTribunalFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/DivisaoTribunal/DivisaoTribunal.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface DivisaoTribunalGridProps {
   selectItem?: (item: IDivisaoTribunal) => void;
@@ -92,15 +94,21 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
       try {
         const offlineData = await divisaotribunalService.getAll(
           filtro ?? ({} as FilterDivisaoTribunal),
-          (onlineData) => {
-            setDivisaoTribunalData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setDivisaoTribunalData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setDivisaoTribunalData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setDivisaoTribunalData(processed);
           setLoading(false);
         } else {
           setDivisaoTribunalData([]);
@@ -113,6 +121,18 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useDivisaoTribunalFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -131,6 +151,11 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (divisaotribunal: IDivisaoTribunal) => {
     setSelectedDivisaoTribunal(divisaotribunal);
     setShowInc(true);
@@ -142,8 +167,11 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedDivisaoTribunal(DivisaoTribunalEmpty());
+  const handleAdd = async () => {
+    let empty = DivisaoTribunalEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -169,8 +197,24 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = divisaotribunalData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await divisaotribunalService.deleteDivisaoTribunal(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -203,24 +247,6 @@ const DivisaoTribunalGrid: React.FC<DivisaoTribunalGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useDivisaoTribunalFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

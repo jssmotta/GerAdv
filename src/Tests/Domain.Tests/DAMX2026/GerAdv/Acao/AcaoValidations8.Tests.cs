@@ -11,7 +11,7 @@ public class AcaoValidationTests : IDisposable
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IJusticaReader> _mockJusticaReader;
     private readonly Mock<IAreaReader> _mockAreaReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AcaoValidationTests()
     {
         _validation = new AcaoValidation();

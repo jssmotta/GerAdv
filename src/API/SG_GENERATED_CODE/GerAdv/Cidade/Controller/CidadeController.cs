@@ -4,7 +4,7 @@
 // Entity:Cidade
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class CidadeController(ICidadeService cidadeService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<CidadeResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<CidadeResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.GetAll(max, uri);
+                return await _cidadeService.GetAll(max, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<CidadeResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: GetAll failed with exception for uri = {0}", uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<CidadeResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<CidadeResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterCidade filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<CidadeResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterCidade filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            CidadeMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CidadeMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.Filter(max, filter, uri);
+                return await _cidadeService.Filter(max, filter, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<CidadeResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: Filter failed with exception for uri = {0}", uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<CidadeResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<CidadeResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<CidadeResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.GetById(id, uri, token);
+                return await _cidadeService.GetById(id, tenantKey, token);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CidadeMetrics.RecordReadByHour(uri);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CidadeMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CidadeResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: GetById failed with exception for id = {0}, {1}", id, uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<CidadeResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.GetAuditor(id, uri, token);
+                return await _cidadeService.GetAuditor(id, tenantKey, token);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCidade? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCidade? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            CidadeMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CidadeMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.GetListN(max, filtro, uri);
+                return await _cidadeService.GetListN(max, filtro, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
-            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            CidadeMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: GetListN failed with exception for uri = {0}", uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<CidadeResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<CidadeResponse>>> AddAndUpdate([FromBody] Models.Cidade regCidade, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CidadeResponse>>> AddAndUpdate([FromBody] Models.Cidade regCidade, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         var isNew = regCidade.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            CidadeMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CidadeMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.AddAndUpdate(regCidade, uri);
+                return await _cidadeService.AddAndUpdate(regCidade, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                CidadeMetrics.RecordCreated(uri);
-                CidadeMetrics.RecordCreatedByHour(uri);
+                CidadeMetrics.RecordCreated(tenantKey);
+                CidadeMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                CidadeMetrics.RecordUpdated(uri);
-                CidadeMetrics.RecordUpdatedByHour(uri);
+                CidadeMetrics.RecordUpdated(tenantKey);
+                CidadeMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CidadeResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: AddAndUpdate failed with exception for uri = {0}", uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<CidadeResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<CidadeResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<CidadeResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<CidadeResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CidadeResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.Delete(id, uri);
+                return await _cidadeService.Delete(id, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                CidadeMetrics.RecordDeleted(uri);
-                CidadeMetrics.RecordDeletedByHour(uri);
+                CidadeMetrics.RecordDeleted(tenantKey);
+                CidadeMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CidadeResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            CidadeMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Cidade: {0} conflito de FK para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Cidade: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<CidadeResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: Delete failed with exception for id = {0}, {1}", id, uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<CidadeResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<CidadeResponse>>> Validation([FromBody] Models.Cidade regCidade, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<CidadeResponse>>> Validation([FromBody] Models.Cidade regCidade, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = CidadeMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            CidadeMetrics.RecordInvalid(operacao, uri, stopwatch);
+            CidadeMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class CidadeController(ICidadeService cidadeService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _cidadeService.Validation(regCidade, uri);
+                return await _cidadeService.Validation(regCidade, tenantKey);
             });
-            CidadeMetrics.RecordSuccess(operacao, uri, stopwatch);
+            CidadeMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            CidadeMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            CidadeMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Cidade: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<CidadeResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            CidadeMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Cidade: Validation failed with exception for uri = {0}", uri);
+            CidadeMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Cidade: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<CidadeResponse>.Fail(ex.Message, 500));
         }
     }

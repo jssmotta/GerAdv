@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AcaoService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string tenantKey)
     {
         if (regAcao == null)
         {
-            _logger.Warn("Acao: BeforeDeleteAsync - regAcao is null for uri = {0}", uri);
+            _logger.Warn("Acao: BeforeDeleteAsync - regAcao is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            AcaoMetrics.RecordNotFound("BeforeDelete", uri, AcaoMetrics.StartTimer());
+            AcaoMetrics.RecordNotFound("BeforeDelete", tenantKey, AcaoMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = AcaoMetrics.StartTimer();
-        _logger.Debug("Acao: BeforeDeleteAsync success for Id={0}, uri={1}", regAcao.Id, uri);
+        _logger.Debug("Acao: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regAcao.Id, tenantKey);
         // record successful business layer pre-delete
-        AcaoMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        AcaoMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = AcaoMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Acao: AfterDeleteAsync - Id={0}, uri={1}", regAcao?.Id ?? 0, uri);
+        _logger.Info("Acao: AfterDeleteAsync - Id={0}, tenantKey={1}", regAcao?.Id ?? 0, tenantKey);
         // record delete metrics
-        AcaoMetrics.RecordDeleted(uri);
-        AcaoMetrics.RecordDeletedByHour(uri);
-        AcaoMetrics.RecordSuccess("AfterDelete", uri, sw);
+        AcaoMetrics.RecordDeleted(tenantKey);
+        AcaoMetrics.RecordDeletedByHour(tenantKey);
+        AcaoMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Acao: DeleteErrorAsync - Id={0}, uri={1}", regAcao?.Id ?? 0, uri);
+        _logger.Error("Acao: DeleteErrorAsync - Id={0}, tenantKey={1}", regAcao?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        AcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<AcaoResponse> AfterCreateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse> AfterCreateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = AcaoMetrics.StartTimer();
         var result = regAcao ?? new AcaoResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Acao: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Acao: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        AcaoMetrics.RecordCreated(uri);
-        AcaoMetrics.RecordCreatedByHour(uri);
-        AcaoMetrics.RecordSuccess("AfterCreate", uri, sw);
+        AcaoMetrics.RecordCreated(tenantKey);
+        AcaoMetrics.RecordCreatedByHour(tenantKey);
+        AcaoMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<AcaoResponse> AfterUpdateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse> AfterUpdateAsync([FromBody] AcaoResponse? regAcao, [FromRoute, Required] string tenantKey)
     {
         var sw = AcaoMetrics.StartTimer();
         var result = regAcao ?? new AcaoResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Acao: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        AcaoMetrics.RecordUpdated(uri);
-        AcaoMetrics.RecordUpdatedByHour(uri);
-        AcaoMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Acao: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        AcaoMetrics.RecordUpdated(tenantKey);
+        AcaoMetrics.RecordUpdatedByHour(tenantKey);
+        AcaoMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Acao? regAcao, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Acao? regAcao, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Acao: AddAndUpdateErrorAsync - Id={0}, uri={1}", regAcao?.Id ?? 0, uri);
+        _logger.Error("Acao: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regAcao?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        AcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AcaoMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AcaoMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

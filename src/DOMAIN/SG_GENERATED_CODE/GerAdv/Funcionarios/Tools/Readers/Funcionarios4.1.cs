@@ -40,7 +40,7 @@ LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} (NOLOCK) ON [{DBPaisesDicInfo.
         return query;
     }
 
-    public async Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
+    public async Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
         {
@@ -79,7 +79,7 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return null;
     }
 
-    public async Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
+    public async Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
@@ -95,11 +95,11 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return dataFormatada;
     }
 
-    public async Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache)
+    public async Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache)
     {
         if (oCnn is null)
             return string.Empty;
-        var cacheKey = $"{uri}-{DBFuncionariosDicInfo.PTabelaNome}-RRSAA";
+        var cacheKey = $"{tenantKey}-{DBFuncionariosDicInfo.PTabelaNome}-RRSAA";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxAuditorSecondsCacheId),

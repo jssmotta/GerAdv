@@ -1,0 +1,655 @@
+:root {
+  --kendo-color-on-base: #373737;
+  --color-menphissi: #ff6633;
+  --focus-color-inputs: #ff6633;
+  --footer-bar-height: 72px;
+  --focus-color-inputs-border-size: 4px;
+  --input-border: #c0c0c0;
+  --var-color-container: rgb(156, 154, 154, 0.8);
+  --var-color-window: #efefef;
+  --var-color-window-title: #0d0d0d;
+  --accent-color: #80c4d4;
+  --accent-color-drawer: #052d36;
+  --size-drawer-icon: 32px;
+}
+
+.float-left {
+  display: block !important;
+  float: left !important;
+}
+
+.margin-left-10 {
+  margin-left: 10px !important;
+}
+
+.buttonNavTop {
+  background-color: var(--kendo-primary) !important;
+  color: #fff !important;
+
+}
+
+.menu-toggle-button-top {
+  display: none;
+}
+
+.k-menu-link {
+  padding-inline: .50rem;
+}
+
+.bottom-window-edit {
+  display: block;
+  float: left;
+  height: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Estados de elementos */
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Layout */
+header {
+  background-color: var(--primary-color) !important;
+  background-repeat: no-repeat;
+  background-position: left;
+  box-shadow: var(--shadow-sm);
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.pesquisar-top {
+  float: left;
+  display: block;
+  margin-top: 8px;
+  max-width: 140px !important;
+}
+
+/* Marcador de pesquisa */
+.marcadorPesquisa {
+  background-color: rgba(16, 124, 16, 0.4);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 9999;
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 0 6px rgba(16, 124, 16, 0.6);
+}
+
+.hiddenImage {
+  display: none;
+}
+
+/* Toolbar customizada */
+.custom-toolbar {
+  padding: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-forms);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.custom-toolbar h3 {
+  margin-left: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.custom-toolbar::after {
+  content: attr(data-content);
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  background-color: rgba(0, 120, 212, 0.1);
+  border-radius: 3px;
+  color: var(--text-color);
+}
+
+/* TreeView e Table */
+.k-treeview-leaf-text,
+.k-table-td {
+  text-transform: capitalize;
+}
+
+.k-treeview {
+  max-width: 95vw !important;
+  min-width: 350px !important;
+  margin-left: 0.5rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* Drawer Items */
+.k-drawer-item.k-selected {
+  color: var(--text-color) !important;
+  background-color: rgba(0, 120, 212, 0.1) !important;
+  border-left: 3px solid var(--primary-color);
+}
+
+.k-drawer-item.k-selected:hover {
+  color: var(--text-color) !important;
+  background-color: rgba(0, 120, 212, 0.2) !important;
+}
+
+.k-drawer-item.k-selected:first-child:hover {
+  color: var(--text-color) !important;
+  background-color: rgba(0, 120, 212, 0.15) !important;
+}
+
+/* Biblioteca */
+.bibliotecaTreeViewHidden {
+  display: none;
+}
+
+.positionBiblio {
+  position: fixed;
+  top: 60px;
+  display: block;
+  z-index: 8000;
+  background-color: var(--bg-white);
+  min-height: 80vh;
+  max-height: 90vh;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.headerBiblio {
+  display: block;
+  float: left;
+}
+
+.nomePastas {
+  display: block;
+  width: 100%;
+  min-height: 35px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: var(--bg-forms);
+  font-weight: 500;
+}
+
+.captionPastas,
+.menuClosePastas {
+  padding: 0.5rem;
+  display: block;
+  float: left;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.menuClosePastas {
+  float: right;
+  padding-right: 0.5rem;
+  cursor: pointer;
+}
+
+.linhaTitleDetails {
+  display: block;
+  width: 100%;
+  min-height: 20px;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Imagens */
+.image-draw {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.image-draw-90 {
+  width: 90%;
+  max-width: 90%;
+  height: auto;
+}
+
+.image-draw-80 {
+  width: 80%;
+  max-width: 80%;
+  height: auto;
+}
+
+.image-draw-70 {
+  width: 70%;
+  max-width: 70%;
+  height: auto;
+}
+
+/* Navegação */
+.backButtonNavDash,
+.nextButtonNavDash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6000;
+  background-repeat: no-repeat;
+  background-size: 24px;
+  background-position: center;
+  width: 42px;
+  height: 80px;
+  position: fixed;
+  top: 45%;
+  background-color: rgba(0, 120, 212, 0.1);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  transition: var(--transition);
+}
+
+.backButtonNavDash:hover,
+.nextButtonNavDash:hover {
+  background-color: rgba(0, 120, 212, 0.2);
+}
+
+.backButtonNavDash {
+  float: left;
+  margin-left: 0;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.nextButtonNavDash {
+  float: right;
+  right: 0;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+/* Botões de compartilhamento */
+.blockShareButtons {
+  position: fixed;
+  top: 80%;
+  left: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.blockShareButtons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.blockShareButtons a:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Navegação de páginas */
+.blockNavPages {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 150px;
+  padding: 0.5rem;
+}
+
+/* Tecnologia */
+.tecnologia {
+  position: fixed;
+  display: block;
+  top: 0px !important;
+  right: 5px !important;
+  width: 150px;
+  height: 45px;
+  z-index: 99999;
+  background-repeat: no-repeat !important;
+  background-position: right;
+}
+
+/* Media Queries */
+@media screen and (max-width: 1366px) {
+  .positionBiblio {
+    top: 60px;
+  }
+
+  #zoomMenu {
+    top: 60px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .blockNavPages {
+    margin-right: 0;
+  }
+
+
+  .custom-toolbar::after {
+    display: none;
+  }
+}
+
+
+.buttonSair {
+  background-color: #20628f !important;
+  color: black;
+}
+
+.k-window-titlebar-actions span {
+  color: #fff;
+}
+
+
+.k-window-content {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+
+/* .k-drawer .k-svg-icon,
+.k-drawer .k-icon,
+.k-drawer svg {
+  fill: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+} */
+
+
+.k-checkbox .k-checkbox-box,
+.k-button-solid-primary,
+.k-button.k-primary,
+.k-link,
+.k-svg-icon,
+.k-icon,
+.k-radio .k-radio-inner,
+.k-switch .k-switch-thumb,
+.k-switch .k-switch-track,
+.k-slider .k-slider-track,
+.k-slider .k-slider-selection,
+.k-slider .k-draghandle,
+.k-tabstrip .k-tabstrip-items .k-item.k-active,
+.k-tabstrip .k-tabstrip-items .k-item.k-selected,
+.k-picker .k-picker-toggle,
+.k-picker .k-picker-toggle .k-icon,
+.k-input,
+.k-input:focus,
+.k-dropdown,
+.k-dropdown .k-dropdown-wrap,
+.k-list .k-selected,
+.k-list .k-item.k-selected,
+.k-calendar .k-calendar-header,
+.k-grid .k-grid-header,
+.k-grid .k-grid-header .k-header,
+.k-grid .k-grid-content .k-selected,
+.k-grid .k-grid-content .k-grid-row.k-selected,
+.k-drawer .k-svg-icon,
+.k-drawer .k-icon,
+.k-drawer svg {
+  color: var(--primary-color) !important;
+  fill: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  background-color: transparent;
+}
+
+.k-calendar .k-calendar-view .k-selected,
+.k-calendar .k-calendar-view .k-today {
+  color: #fff !important;
+  /* texto branco para fundo escuro */
+  background-color: var(--primary-color) !important;
+}
+
+.k-calendar .k-calendar-view .k-calendar-table td {
+  color: var(--text-color, #222) !important;
+  /* ou a cor desejada */
+}
+
+.k-calendar .k-link {
+  color: var(--text-color, #222) !important;
+  /* ou a cor desejada */
+}
+
+.k-calendar .k-calendar-view .k-today .k-link,
+.k-calendar .k-link .k-selected {
+  color: #fff !important;
+  /* ou a cor desejada */
+}
+
+/* .k-button {
+  background-color: var(--kendo-secondary);
+} */
+
+/* Para botões preenchidos */
+.k-button-solid-primary,
+.k-button.k-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+/* Para hover e foco */
+.k-button:hover,
+.k-button:focus,
+.k-button-solid-primary:hover,
+.k-button.k-primary:hover,
+.k-link:hover,
+.k-svg-icon:hover,
+.k-icon:hover {
+  /* background-color: var(--primary-hover) !important; */
+  color: #fff !important;
+  fill: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.k-checkbox input:checked+.k-checkbox-box,
+.k-checkbox:checked,
+.k-checkbox .k-checkbox-box.k-checked,
+.k-checkbox .k-checkbox-box.k-state-checked {
+  background-color: var(--kendo-primary) !important;
+  border-color: var(--kendo-primary) !important;
+  box-shadow: none !important;
+}
+
+/* Força o SVG do check a ficar branco */
+.k-checkbox input:checked+.k-checkbox-box .k-svg-icon,
+.k-checkbox .k-checkbox-box.k-checked .k-svg-icon,
+.k-checkbox .k-checkbox-box.k-state-checked .k-svg-icon,
+.k-checkbox input:checked+.k-checkbox-box svg,
+.k-checkbox .k-checkbox-box.k-checked svg,
+.k-checkbox .k-checkbox-box.k-state-checked svg {
+  color: #fff !important;
+  fill: #fff !important;
+}
+
+/* Para sliders ativos */
+.k-slider .k-slider-selection {
+  background-color: var(--primary-color) !important;
+}
+
+/* Para abas ativas */
+.k-tabstrip .k-tabstrip-items .k-item.k-active,
+.k-tabstrip .k-tabstrip-items .k-item.k-selected {
+  border-bottom-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+.buttons-container-portal {
+  margin-top: -10px;
+}
+
+
+fieldset {
+  border: 0 !important;
+}
+
+button {
+  text-transform: uppercase;
+}
+
+.k-window-content {
+  background-color: #efefef !important;
+}
+
+@media (max-width: 1366px) {
+  html {
+    zoom: 89% !important;
+  }
+}
+
+@media printer {
+  .no-printer {
+    display: none !important;
+  }
+}
+
+.k-button-filter-confirm,
+.k-button.k-button-filter-confirm,
+button.k-button-filter-confirm,
+.k-window .k-button-filter-confirm,
+.k-window-content .k-button-filter-confirm,
+.appsg-dark-mode .k-button-filter-confirm {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* SVG/Ícone do botão confirmar em preto */
+.k-button-filter-confirm svg,
+.k-button.k-button-filter-confirm svg,
+button.k-button-filter-confirm svg,
+.k-button-filter-confirm .k-icon,
+.k-button-filter-confirm i {
+  color: #121418 !important;
+  fill: #121418 !important;
+  stroke: #121418 !important;
+}
+
+.k-button-filter-confirm:hover,
+.k-button.k-button-filter-confirm:hover,
+button.k-button-filter-confirm:hover,
+.k-window .k-button-filter-confirm:hover,
+.k-window-content .k-button-filter-confirm:hover {
+  background-color: var(--kendo-primary) !important;
+  border-color: var(--kendo-primary) !important;
+  color: var(--kendo-hover) !important;
+}
+
+body {
+  background-color: #1d1c1c;
+}
+
+.k-top-header {
+  padding-top: 4px;
+  width: fit-content !important;
+  max-width: 140px !important;
+}
+
+.k-top-header .k-input-inner {
+  width: fit-content !important;
+  max-width: 160px !important;
+  z-index: 99999;
+}
+
+.k-top-header input {
+  width: 120px !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  padding-right: 30px !important;
+  color: #fff !important;
+}
+
+.k-top-header .k-input {
+  width: fit-content !important;
+  max-width: 160px !important;
+}
+
+.k-top-header .k-picker-wrap {
+  width: fit-content !important;
+}
+
+.combo-label-cadopen span {
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline-flex;
+}
+
+
+/* search/cad open icon: hidden by default, visible on hover/focus */
+.input-container .combo-label-cadopen {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+
+.input-container:hover .combo-label-cadopen,
+.input-container:focus-within .combo-label-cadopen {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* On mobile/smaller screens the cad-open icon should always be visible */
+@media (max-width: 768px) {
+  .input-container .combo-label-cadopen {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+  }
+}
+
+.k-treeview-leaf-text,
+.k-table-td {
+  text-transform: unset;
+}
+
+
+/* Stronger overrides to ensure Kendo input shows dark text on white background */
+.input-container .input-search-top,
+.input-container input.input-search-top,
+.input-container .k-input.input-search-top,
+.input-container .k-textbox.input-search-top,
+.input-search-top,
+.input-search-top .k-input-inner,
+input.input-search-top,
+.k-input.input-search-top {
+  background-color: var(--bg-forms) !important;
+  color: var(--primary-color) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  max-width: 140px !important;
+}
+
+/* placeholder color */
+.input-container input.input-search-top::placeholder,
+input.input-search-top::placeholder,
+.input-search-top::placeholder,
+.input-search-top .k-input-inner::placeholder {
+  color: var(--primary-color) !important;
+  opacity: 1 !important;
+}
+
+/* focus state */
+.input-container .input-search-top:focus,
+.input-container .input-search-top:focus .k-input-inner,
+input.input-search-top:focus,
+.k-input.input-search-top:focus {
+  background-color: var(--bg-forms) !important;
+  color: var(--primary-color) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* small visual tweak for underline/button spacing */
+.button-search {
+  margin-left: 6px !important;
+}

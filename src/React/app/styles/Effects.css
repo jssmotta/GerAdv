@@ -1,0 +1,8 @@
+.k-window {
+   box-shadow: 0 0 12px 12px rgba(0,0,0,0.08) !important;   
+   backdrop-filter: blur(10px) !important;
+   background: rgba(255,255,255,0.95) !important;   
+   border: 1px solid color-mix(in srgb, var(--kendo-primary-160) 50%, transparent) !important;  
+   border-radius: 8px 8px !important; 
+   overflow: hidden !important;
+  }

@@ -54,7 +54,7 @@ process.env.NEXT_PUBLIC_APP_ID = 'test-app';
 describe('InstanciaApi', () => {
   let instanciaApi: InstanciaApi;
   let mockNotificationService: jest.Mocked<NotificationService>;
-  const mockUri = 'test-uri';
+  const mockUri = 'test-tenantKey';
   const mockToken = 'test-token';
   const mockDecodedToken = 'decoded-test-token';
 

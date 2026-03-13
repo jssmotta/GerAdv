@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
 {
     private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("acaCodigo, acaDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<AcaoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("acaCodigo, acaDescricao", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<AcaoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = AcaoDatabaseMetrics.StartTimer();
         var connStopwatch = AcaoDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         {
             AcaoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             AcaoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAcao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAcao.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             AcaoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         }
     }
 
-    private async Task<IEnumerable<AcaoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<AcaoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = AcaoDatabaseMetrics.StartTimer();
         var result = new List<AcaoResponseAll>(max);

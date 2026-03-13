@@ -7,22 +7,22 @@ public partial class EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
 {
     private readonly SendEmailApi _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
 
-    private string ConteudoHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
+    private string ConteudoHtml(string operador, int advogado, string tenantKey, MsiSqlConnection oCnn)
     {
-        var ds = ObterAniversariantes(oCnn, uri, advogado);
+        var ds = ObterAniversariantes(oCnn, tenantKey, advogado);
         if (ds.Rows.Count == 0)
         {
             return "";
         }
         var sbRet = new StringBuilder();
-        sbRet.Append(ConteudoEmailHtml(operador, advogado, uri, oCnn));
+        sbRet.Append(ConteudoEmailHtml(operador, advogado, tenantKey, oCnn));
         sbRet.AppendLine(CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count, "você está recebendo aviso de aniversariantes somente de clientes ativos que você tem algum processo ou compromisso em nome deles.", ""));
         return sbRet.ToString();
     }
 
-    private string ConteudoEmailHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
+    private string ConteudoEmailHtml(string operador, int advogado, string tenantKey, MsiSqlConnection oCnn)
     {
-        var dsComAgenda = ObterAniversariantesComCompromissos(oCnn, uri, advogado);
+        var dsComAgenda = ObterAniversariantesComCompromissos(oCnn, tenantKey, advogado);
         if (dsComAgenda.Rows.Count == 0)
         {
             return "";
@@ -30,9 +30,9 @@ public partial class EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
         return CriarTabelaDaAgendaHtml(dsComAgenda, operador, dsComAgenda.Rows.Count, " a data ao lado do nome do cliente é a data do próximo compromisso que esse cliente possui agendado.", " com compromissos na agenda");
     }
 
-    private string ConteudoHtmlFuncionarios(string operador, int advogado, string uri, MsiSqlConnection oCnn)
+    private string ConteudoHtmlFuncionarios(string operador, int advogado, string tenantKey, MsiSqlConnection oCnn)
     {
-        var ds = ObterAniversariantesFuncionarios(oCnn, uri, operador, advogado);
+        var ds = ObterAniversariantesFuncionarios(oCnn, tenantKey, operador, advogado);
         if (ds.Rows.Count == 0)
         {
             return "";
@@ -40,7 +40,7 @@ public partial class EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
         return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count, "você está recebendo aviso de aniversariantes somente de clientes ativos porque você é um colaborador com usuário Master.", "");
     }
 
-    private void TestaViews(string uri)
+    private void TestaViews(string tenantKey)
     {
 
         string createViewScript1 = $@"
@@ -77,12 +77,12 @@ END;
                     ;";
 
 
-        using var conexao = ConfiguracoesSys.GetConnectionByUriRwAsync(uri).GetAwaiter().GetResult();
+        using var conexao = ConfiguracoesSys.GetConnectionByUriRwAsync(tenantKey).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
     private DataTable ObterAniversariantesComCompromissos(
         MsiSqlConnection conexao,
-        string uri,
+        string tenantKey,
         int advogado,
         int nTry = 0)
     {
@@ -120,7 +120,7 @@ ORDER BY ageData;
 
     private DataTable ObterAniversariantes(
         MsiSqlConnection conexao,
-        string uri,
+        string tenantKey,
         int advogado,
         int nTry = 0)
     {
@@ -147,9 +147,9 @@ ORDER BY ageData;
 
     
 
-    public async Task<int> EnviarEmailsParaAdvogados(string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaAdvogados(string tenantKey, MsiSqlConnection oCnn)
     {
-        TestaViews(uri);
+        TestaViews(tenantKey);
 
         string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And +
             DBOperadorDicInfo.Excluido.Sql(false) + TSql.And +
@@ -158,7 +158,7 @@ ORDER BY ageData;
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
-        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores,[], "operNome",new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, tenantKey, filtroOperadores,[], "operNome",new CancellationToken());
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -170,12 +170,12 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-               (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
-              : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
+               (await readerAdv.ListarNAsync(1, tenantKey, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarNAsync(1, tenantKey, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, operador.CadCod, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, operador.CadCod, tenantKey, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -192,7 +192,7 @@ ORDER BY ageData;
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                 Time2Live = 24,
-                Uri = uri,
+                TenantApp = tenantKey,
                 EmailNet = operador.EMailNet
             };
 
@@ -209,14 +209,14 @@ ORDER BY ageData;
 
     
 
-    public async Task<int> EnviarEmailsParaFuncionarios(string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaFuncionarios(string tenantKey, MsiSqlConnection oCnn)
     {
         string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And + DBOperadorDicInfo.Master.Sql(true) + TSql.And + DBOperadorDicInfo.CadID + "=" + 2;
         
         var reader = new OperadorReader( new FOperadorFactory());
         var readerAdv = new AdvogadosReader( new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
-        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, tenantKey, filtroOperadores, [], "operNome", new CancellationToken());
 
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
@@ -229,12 +229,12 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarNAsync(1, tenantKey, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarNAsync(1, tenantKey, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtmlFuncionarios(cNome, operador.CadID, uri, oCnn);
+            var conteudoHtml = ConteudoHtmlFuncionarios(cNome, operador.CadID, tenantKey, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -251,7 +251,7 @@ ORDER BY ageData;
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                 Time2Live = 24,
-                Uri = uri,
+                TenantApp = tenantKey,
                 EmailNet = operador.EMailNet
             };
 
@@ -266,7 +266,7 @@ ORDER BY ageData;
 
     private DataTable ObterAniversariantesFuncionarios(
     MsiSqlConnection conexao,
-    string uri,
+    string tenantKey,
     string operador,
     int advogado,
     int nTry = 0)
@@ -291,12 +291,12 @@ ORDER BY ageData;
                 throw;
             }
 
-            TestaViewsFuncionarios(uri);
-            return ObterAniversariantesFuncionarios(conexao, uri, operador, advogado, nTry);
+            TestaViewsFuncionarios(tenantKey);
+            return ObterAniversariantesFuncionarios(conexao, tenantKey, operador, advogado, nTry);
         }
     }
 
-    private void TestaViewsFuncionarios(string uri)
+    private void TestaViewsFuncionarios(string tenantKey)
     {
 
         string createViewScript1 = $@"
@@ -321,7 +321,7 @@ END;
                     ;";
 
 
-        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
+        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(tenantKey).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
 

@@ -182,10 +182,13 @@ export const useDivisaoTribunalList = (
 export function useValidationsDivisaoTribunal() {
   async function runValidation(
     data: IDivisaoTribunal,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const divisaotribunalApi = new DivisaoTribunalApi(uri ?? "", token ?? "");
+    const divisaotribunalApi = new DivisaoTribunalApi(
+      tenantKey ?? "",
+      token ?? "",
+    );
 
     const result = await divisaotribunalApi.validation(data);
 

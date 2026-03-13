@@ -83,7 +83,6 @@
   <ItemGroup>
     <Folder Include="SG_GENERATED_CUSTOM\Reader\" />
     <Folder Include="SG_GENERATED_CODE\" />
-    <Folder Include="SG_GENERATED_CODE_STATIC\" />
   </ItemGroup>
 
 </Project>

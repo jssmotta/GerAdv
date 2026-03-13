@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBTiposAcao
 {
-    public const string CadastroGuid = "0151cc48-3210-4d02-9b8a-83333d10d6dc";
+    public const string CadastroGuid = "36607616-da4b-494a-b477-ecfbbb0a688a";
     public const string PTabelaNome = "TiposAcao";
     public const string CamposSqlX = " TiposAcao.* ";
     public const string CampoCodigo = "tacCodigo";

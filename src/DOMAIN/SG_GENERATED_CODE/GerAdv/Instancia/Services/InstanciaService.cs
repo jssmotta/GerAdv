@@ -23,12 +23,12 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
     private readonly IForoReader foroReader = foroReader;
     private readonly ITipoRecursoReader tiporecursoReader = tiporecursoReader;
     private readonly ITribunalService tribunalService = tribunalService;
-    public async Task<ResultApi<IEnumerable<InstanciaResponseAll>>> Filter(int max, Filters.FilterInstancia filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<InstanciaResponseAll>>> Filter(int max, Filters.FilterInstancia filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Instancia: URI inválida");
+            throw new Exception("Instancia: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -42,28 +42,28 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroInstancia(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            InstanciaDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            InstanciaDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Instancia-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Instancia-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<InstanciaResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<InstanciaResponseAll>>.Fail($"Instancia - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<InstanciaResponseAll>>.Fail($"Instancia - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -72,7 +72,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
     }
 
-    public async Task<ResultApi<InstanciaResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<InstanciaResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -87,20 +87,20 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            InstanciaDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            InstanciaDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Instancia-GetById-{id}--{keyCache}", async cancel =>
+            InstanciaDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Instancia-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                InstanciaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                InstanciaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<InstanciaResponse>.NotFound($"Instancia: Registro não encontrado para id {id}");
@@ -111,25 +111,25 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            InstanciaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<InstanciaResponse>.Fail($"Instancia, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            InstanciaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<InstanciaResponse>.Fail($"Instancia, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            InstanciaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            InstanciaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<InstanciaResponse>.Fail($"Instancia - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<InstanciaResponse>.Fail($"Instancia - {uri}-: GetById: {ex.Message}", 500);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<InstanciaResponse>.Fail($"Instancia - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<InstanciaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -137,11 +137,11 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             return ResultApi<AuditorResponse>.Fail("Instancia: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Instancia: Auditor não encontrado para id {id}");
@@ -152,11 +152,11 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         catch (Exception ex)
         {
             _logger.Error(ex, "Instancia: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Instancia - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Instancia - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<InstanciaResponse>> AddAndUpdate(Models.Instancia? regInstancia, string uri, CancellationToken token = default)
+    public async Task<ResultApi<InstanciaResponse>> AddAndUpdate(Models.Instancia? regInstancia, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regInstancia == null)
@@ -164,14 +164,14 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             return ResultApi<InstanciaResponse>.Fail("Instancia: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Instancia: URI inválida");
+            throw new Exception("Instancia: TenantApp inválida");
         }
 
         var connectionStopwatch = InstanciaDatabaseMetrics.StartTimer();
         var queryStopwatch = InstanciaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -180,9 +180,9 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
 
         try
         {
-            InstanciaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            InstanciaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
+            InstanciaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -190,12 +190,12 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (SGValidationException ex)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -204,16 +204,16 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         {
             using var saved = await writer.WriteAsync(regInstancia, operadorId, oCnn);
             string tipoQuery = regInstancia.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            InstanciaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            InstanciaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regInstancia.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regInstancia.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -221,14 +221,14 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regInstancia, uri);
-            InstanciaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regInstancia, tenantKey);
+            InstanciaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<InstanciaResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<InstanciaResponse>> Validation(Models.Instancia? regInstancia, string uri, CancellationToken token = default)
+    public async Task<ResultApi<InstanciaResponse>> Validation(Models.Instancia? regInstancia, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regInstancia == null)
@@ -236,14 +236,13 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             return ResultApi<InstanciaResponse>.Fail("Instancia: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Instancia: URI inválida");
+            throw new Exception("Instancia: TenantApp inválida");
         }
 
         var connectionStopwatch = InstanciaDatabaseMetrics.StartTimer();
-        var queryStopwatch = InstanciaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -252,9 +251,9 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
 
         try
         {
-            InstanciaDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            InstanciaDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
+            InstanciaDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -262,12 +261,12 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (SGValidationException ex)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -293,7 +292,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
     }
 
-    public async Task<ResultApi<InstanciaResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<InstanciaResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -301,13 +300,13 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Instancia: URI inválida");
+            throw new Exception("Instancia: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = InstanciaDatabaseMetrics.StartTimer();
         var queryStopwatch = InstanciaDatabaseMetrics.StartTimer();
@@ -318,9 +317,9 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
 
         try
         {
-            InstanciaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            InstanciaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, tribunalService, uri, oCnn);
+            InstanciaDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            InstanciaDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tribunalService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -328,44 +327,44 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (SGValidationException ex)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<InstanciaResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<InstanciaResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var instancia = await reader.ReadAsync(id ?? default, oCnn);
         if (instancia == null)
         {
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<InstanciaResponse>.NotFound($"Instancia: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(instancia, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(instancia, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(instancia, nOperador, oCnn);
-                InstanciaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                InstanciaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(instancia, uri);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(instancia, tenantKey);
             return ResultApi<InstanciaResponse>.Ok(instancia);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(instancia, uri);
-            InstanciaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(instancia, tenantKey);
+            InstanciaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            InstanciaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<InstanciaResponse>.Fail(ex.Message, 500);
         }
     }

@@ -4,7 +4,7 @@
 // Entity:Agenda
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class AgendaController(IAgendaService agendaService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AgendaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AgendaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.GetAll(max, uri);
+                return await _agendaService.GetAll(max, tenantKey);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AgendaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AgendaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AgendaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: GetAll failed with exception for uri = {0}", uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AgendaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<AgendaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgenda filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<AgendaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgenda filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            AgendaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AgendaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.Filter(max, filter, uri);
+                return await _agendaService.Filter(max, filter, tenantKey);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AgendaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AgendaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<AgendaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: Filter failed with exception for uri = {0}", uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<AgendaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AgendaResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AgendaResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.GetById(id, uri, token);
+                return await _agendaService.GetById(id, tenantKey, token);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            AgendaMetrics.RecordReadByHour(uri);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            AgendaMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AgendaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: GetById failed with exception for id = {0}, {1}", id, uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AgendaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.GetAuditor(id, uri, token);
+                return await _agendaService.GetAuditor(id, tenantKey, token);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -154,14 +154,14 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<AgendaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<AgendaResponse>>> AddAndUpdate([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AgendaResponse>>> AddAndUpdate([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         var isNew = regAgenda.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            AgendaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AgendaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -169,32 +169,32 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.AddAndUpdate(regAgenda, uri);
+                return await _agendaService.AddAndUpdate(regAgenda, tenantKey);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                AgendaMetrics.RecordCreated(uri);
-                AgendaMetrics.RecordCreatedByHour(uri);
+                AgendaMetrics.RecordCreated(tenantKey);
+                AgendaMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                AgendaMetrics.RecordUpdated(uri);
-                AgendaMetrics.RecordUpdatedByHour(uri);
+                AgendaMetrics.RecordUpdated(tenantKey);
+                AgendaMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AgendaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: AddAndUpdate failed with exception for uri = {0}", uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<AgendaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -204,7 +204,7 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<AgendaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<AgendaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<AgendaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AgendaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "Delete";
@@ -212,33 +212,33 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.Delete(id, uri);
+                return await _agendaService.Delete(id, tenantKey);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                AgendaMetrics.RecordDeleted(uri);
-                AgendaMetrics.RecordDeletedByHour(uri);
+                AgendaMetrics.RecordDeleted(tenantKey);
+                AgendaMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AgendaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            AgendaMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Agenda: {0} conflito de FK para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Agenda: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<AgendaResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: Delete failed with exception for id = {0}, {1}", id, uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AgendaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -246,13 +246,13 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AgendaResponse>>> Validation([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<AgendaResponse>>> Validation([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = AgendaMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            AgendaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            AgendaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -260,21 +260,21 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _agendaService.Validation(regAgenda, uri);
+                return await _agendaService.Validation(regAgenda, tenantKey);
             });
-            AgendaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            AgendaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            AgendaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            AgendaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Agenda: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AgendaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            AgendaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Agenda: Validation failed with exception for uri = {0}", uri);
+            AgendaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Agenda: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<AgendaResponse>.Fail(ex.Message, 500));
         }
     }

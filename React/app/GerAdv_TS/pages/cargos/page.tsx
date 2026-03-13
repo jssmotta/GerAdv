@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ICargos } from "@/app/GerAdv_TS/Cargos/Interfaces/interface.Cargos";
 import { CargosGridAdapter } from "@/app/GerAdv_TS/Cargos/Adapter/CargosGridAdapter";
 import CargosGridContainer from "@/app/GerAdv_TS/Cargos/Components/CargosGridContainer";

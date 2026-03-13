@@ -168,10 +168,10 @@ export const useForoList = (
 export function useValidationsForo() {
   async function runValidation(
     data: IForo,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const foroApi = new ForoApi(uri ?? "", token ?? "");
+    const foroApi = new ForoApi(tenantKey ?? "", token ?? "");
 
     const result = await foroApi.validation(data);
 

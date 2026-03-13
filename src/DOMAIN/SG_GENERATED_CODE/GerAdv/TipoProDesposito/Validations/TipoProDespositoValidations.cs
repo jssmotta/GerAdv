@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoProDespositoValidation
 {
-    Task<bool> ValidateReg(Models.TipoProDesposito reg, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.TipoProDesposito reg, ITipoProDespositoService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class TipoProDespositoValidation : ITipoProDespositoValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -29,7 +29,7 @@ public class TipoProDespositoValidation : ITipoProDespositoValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.TipoProDesposito reg, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.TipoProDesposito reg, ITipoProDespositoService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

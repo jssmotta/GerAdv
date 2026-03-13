@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IAgendaSemanaValidation
 {
-    Task<bool> ValidateReg(Models.AgendaSemana reg, IAgendaSemanaService service, IFuncionariosReader funcionariosReader, IAdvogadosReader advogadosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.AgendaSemana reg, IAgendaSemanaService service, IFuncionariosReader funcionariosReader, IAdvogadosReader advogadosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class AgendaSemanaValidation : IAgendaSemanaValidation
@@ -16,7 +16,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.AgendaSemana reg, IAgendaSemanaService service, IFuncionariosReader funcionariosReader, IAdvogadosReader advogadosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.AgendaSemana reg, IAgendaSemanaService service, IFuncionariosReader funcionariosReader, IAdvogadosReader advogadosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

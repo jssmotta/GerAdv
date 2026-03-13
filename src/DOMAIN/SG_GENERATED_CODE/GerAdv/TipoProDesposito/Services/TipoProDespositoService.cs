@@ -18,12 +18,12 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
     private readonly ITipoProDespositoReader reader = reader;
     private readonly ITipoProDespositoValidation validation = validation;
     private readonly ITipoProDespositoWriter writer = writer;
-    public async Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> Filter(int max, Filters.FilterTipoProDesposito filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TipoProDespositoResponseAll>>> Filter(int max, Filters.FilterTipoProDesposito filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -37,27 +37,27 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroTipoProDesposito(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}-TipoProDesposito-Filter-{filterHash}";
+            var cacheKey = $"{tenantKey}-{max}-TipoProDesposito-Filter-{filterHash}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail($"TipoProDesposito - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail($"TipoProDesposito - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -66,7 +66,7 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
     }
 
-    public async Task<ResultApi<TipoProDespositoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<TipoProDespositoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -81,19 +81,19 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoProDesposito-GetById-{id}-", async cancel =>
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-TipoProDesposito-GetById-{id}-", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                TipoProDespositoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                TipoProDespositoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<TipoProDespositoResponse>.NotFound($"TipoProDesposito: Registro não encontrado para id {id}");
@@ -104,25 +104,25 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoProDespositoResponse>.Fail($"TipoProDesposito, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoProDespositoResponse>.Fail($"TipoProDesposito, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<TipoProDespositoResponse>.Fail($"TipoProDesposito - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoProDespositoResponse>.Fail($"TipoProDesposito - {uri}-: GetById: {ex.Message}", 500);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoProDespositoResponse>.Fail($"TipoProDesposito - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<TipoProDespositoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<TipoProDespositoResponse>> AddAndUpdate(Models.TipoProDesposito? regTipoProDesposito, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoProDespositoResponse>> AddAndUpdate(Models.TipoProDesposito? regTipoProDesposito, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoProDesposito == null)
@@ -130,14 +130,14 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             return ResultApi<TipoProDespositoResponse>.Fail("TipoProDesposito: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -146,9 +146,9 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regTipoProDesposito, this, uri, oCnn);
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regTipoProDesposito, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -156,12 +156,12 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
         catch (SGValidationException ex)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -169,16 +169,16 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         {
             using var saved = await writer.WriteAsync(regTipoProDesposito, BaseConsts.DefaultAuditor, oCnn);
             string tipoQuery = regTipoProDesposito.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            TipoProDespositoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            TipoProDespositoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regTipoProDesposito.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regTipoProDesposito.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -186,14 +186,14 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regTipoProDesposito, uri);
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regTipoProDesposito, tenantKey);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<TipoProDespositoResponse>> Validation(Models.TipoProDesposito? regTipoProDesposito, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoProDespositoResponse>> Validation(Models.TipoProDesposito? regTipoProDesposito, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoProDesposito == null)
@@ -201,14 +201,13 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             return ResultApi<TipoProDespositoResponse>.Fail("TipoProDesposito: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
-        var queryStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -217,9 +216,9 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regTipoProDesposito, this, uri, oCnn);
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regTipoProDesposito, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -227,12 +226,12 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
         catch (SGValidationException ex)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -258,7 +257,7 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
     }
 
-    public async Task<ResultApi<TipoProDespositoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoProDespositoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -266,12 +265,12 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoProDesposito: URI inválida");
+            throw new Exception("TipoProDesposito: TenantApp inválida");
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
@@ -282,9 +281,9 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            TipoProDespositoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            TipoProDespositoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -292,44 +291,44 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
         }
         catch (SGValidationException ex)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoProDespositoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var tipoprodesposito = await reader.ReadAsync(id ?? default, oCnn);
         if (tipoprodesposito == null)
         {
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoProDespositoResponse>.NotFound($"TipoProDesposito: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(tipoprodesposito, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(tipoprodesposito, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(tipoprodesposito, 0, oCnn);
-                TipoProDespositoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                TipoProDespositoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(tipoprodesposito, uri);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(tipoprodesposito, tenantKey);
             return ResultApi<TipoProDespositoResponse>.Ok(tipoprodesposito);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(tipoprodesposito, uri);
-            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(tipoprodesposito, tenantKey);
+            TipoProDespositoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            TipoProDespositoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500);
         }
     }

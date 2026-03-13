@@ -168,10 +168,10 @@ export const useAcaoList = (
 export function useValidationsAcao() {
   async function runValidation(
     data: IAcao,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const acaoApi = new AcaoApi(uri ?? "", token ?? "");
+    const acaoApi = new AcaoApi(tenantKey ?? "", token ?? "");
 
     const result = await acaoApi.validation(data);
 

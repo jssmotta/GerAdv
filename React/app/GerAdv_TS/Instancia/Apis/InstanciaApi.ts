@@ -76,22 +76,22 @@ export class InstanciaApi {
   private authorization: string;
   private baseUrl: string;
   private notificationService: INotificationService;
-  private uri: string;
+  private tenantKey: string;
   private circuitBreaker: CircuitBreaker;
 
   constructor(
-    uri: string,
+    tenantKey: string,
     authorization: string,
     version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? "1"),
   ) {
     this.authorization = authorization;
-    this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/Instancia`;
+    this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${tenantKey}/Instancia`;
     this.notificationService = new NotificationService();
-    this.uri = uri;
+    this.tenantKey = tenantKey;
 
     // Initialize Circuit Breaker for this entity
     this.circuitBreaker = circuitBreakerRegistry.getBreaker(
-      `Instancia-${uri}`,
+      `Instancia-${tenantKey}`,
       {
         ...INSTANCIA_CIRCUIT_BREAKER_CONFIG,
         onStateChange: (state, entityName) => {
@@ -376,7 +376,7 @@ export class InstanciaApi {
     max: number = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS,
   ): Promise<AxiosResponse> {
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${uniqueKeyDay()}_lst_getAll_${max}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${uniqueKeyDay()}_lst_getAll_${max}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -394,7 +394,7 @@ export class InstanciaApi {
 
   public async getById(id: number): Promise<AxiosResponse> {
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${uniqueKeyDay()}_lst_getById_${id}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${uniqueKeyDay()}_lst_getById_${id}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -423,7 +423,7 @@ export class InstanciaApi {
         : filtro;
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${uniqueKeyDay()}_lst_listN_data`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${uniqueKeyDay()}_lst_listN_data`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -445,7 +445,7 @@ export class InstanciaApi {
   ): Promise<AxiosResponse> {
     const _filtro = filtro || new FilterInstanciaDefaults();
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
     );
     const offlineData = localStorage.getItem(storageKey);
     const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
@@ -470,7 +470,7 @@ export class InstanciaApi {
         : filtro;
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -500,7 +500,7 @@ export class InstanciaApi {
     };
 
     const storageKey = btoa(
-      `${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Instancia-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`,
+      `${process.env.NEXT_PUBLIC_APP_ID}-${this.tenantKey}-Instancia-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`,
     );
 
     return this.executeWithCircuitBreaker(
@@ -713,7 +713,7 @@ export class InstanciaApi {
       voiceCommand: voiceCommand,
     };
 
-    const url = `${this.baseUrl}/Filter/${this.uri}`;
+    const url = `${this.baseUrl}/Filter/${this.tenantKey}`;
     const key = `${url}::${this.authorization}::${JSON.stringify(request)}`;
 
     return useSWR<Instancia[]>(key, fetcher, {

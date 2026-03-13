@@ -32,6 +32,8 @@ import {
 import { useFuncionariosFilter } from "../../Hooks/hookFuncionariosFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Funcionarios/Funcionarios.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface FuncionariosGridProps {
   selectItem?: (item: IFuncionarios) => void;
@@ -58,7 +60,10 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
 
   const funcionariosService = useMemo(() => {
     return new FuncionariosService(
-      new FuncionariosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new FuncionariosApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await funcionariosService.getAll(
           filtro ?? ({} as FilterFuncionarios),
-          (onlineData) => {
-            setFuncionariosData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setFuncionariosData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setFuncionariosData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setFuncionariosData(processed);
           setLoading(false);
         } else {
           setFuncionariosData([]);
@@ -106,6 +117,18 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useFuncionariosFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -124,6 +147,11 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (funcionarios: IFuncionarios) => {
     setSelectedFuncionarios(funcionarios);
     setShowInc(true);
@@ -135,8 +163,11 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedFuncionarios(FuncionariosEmpty());
+  const handleAdd = async () => {
+    let empty = FuncionariosEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -162,8 +193,24 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = funcionariosData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await funcionariosService.deleteFuncionarios(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -196,24 +243,6 @@ const FuncionariosGrid: React.FC<FuncionariosGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useFuncionariosFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

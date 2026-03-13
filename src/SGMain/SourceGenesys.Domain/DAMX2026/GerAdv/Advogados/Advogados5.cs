@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBAdvogados
 {
-    public const string CadastroGuid = "b67eafb9-efcc-48b2-91bb-a40198cb81c3";
+    public const string CadastroGuid = "1520e85a-6111-464e-bb42-12df47bf9c93";
     public const string PTabelaNome = "Advogados";
     public const string CamposSqlX = " Advogados.* ";
     public const string CampoCodigo = "advCodigo";

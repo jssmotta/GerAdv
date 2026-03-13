@@ -20,12 +20,12 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
     private readonly IProDespesasValidation validation = validation;
     private readonly IProDespesasWriter writer = writer;
     private readonly IClientesReader clientesReader = clientesReader;
-    public async Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> Filter(int max, Filters.FilterProDespesas filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> Filter(int max, Filters.FilterProDespesas filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("ProDespesas: URI inválida");
+            throw new Exception("ProDespesas: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -39,28 +39,28 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroProDespesas(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            ProDespesasDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            ProDespesasDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}ProDespesas-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}ProDespesas-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<ProDespesasResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail($"ProDespesas - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<ProDespesasResponseAll>>.Fail($"ProDespesas - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
     }
 
-    public async Task<ResultApi<ProDespesasResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<ProDespesasResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -84,20 +84,20 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            ProDespesasDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ProDespesas-GetById-{id}--{keyCache}", async cancel =>
+            ProDespesasDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-ProDespesas-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                ProDespesasDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                ProDespesasDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<ProDespesasResponse>.NotFound($"ProDespesas: Registro não encontrado para id {id}");
@@ -108,25 +108,25 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            ProDespesasDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ProDespesasResponse>.Fail($"ProDespesas, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ProDespesasResponse>.Fail($"ProDespesas, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            ProDespesasDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<ProDespesasResponse>.Fail($"ProDespesas - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<ProDespesasResponse>.Fail($"ProDespesas - {uri}-: GetById: {ex.Message}", 500);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<ProDespesasResponse>.Fail($"ProDespesas - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<ProDespesasResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -134,11 +134,11 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             return ResultApi<AuditorResponse>.Fail("ProDespesas: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"ProDespesas: Auditor não encontrado para id {id}");
@@ -149,11 +149,11 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         catch (Exception ex)
         {
             _logger.Error(ex, "ProDespesas: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"ProDespesas - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"ProDespesas - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<ProDespesasResponse>> AddAndUpdate(Models.ProDespesas? regProDespesas, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ProDespesasResponse>> AddAndUpdate(Models.ProDespesas? regProDespesas, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regProDespesas == null)
@@ -161,14 +161,14 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             return ResultApi<ProDespesasResponse>.Fail("ProDespesas: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("ProDespesas: URI inválida");
+            throw new Exception("ProDespesas: TenantApp inválida");
         }
 
         var connectionStopwatch = ProDespesasDatabaseMetrics.StartTimer();
         var queryStopwatch = ProDespesasDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -177,9 +177,9 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
 
         try
         {
-            ProDespesasDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, uri, oCnn);
+            ProDespesasDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -187,12 +187,12 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (SGValidationException ex)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -201,16 +201,16 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         {
             using var saved = await writer.WriteAsync(regProDespesas, operadorId, oCnn);
             string tipoQuery = regProDespesas.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            ProDespesasDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            ProDespesasDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regProDespesas.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regProDespesas.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -218,14 +218,14 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regProDespesas, uri);
-            ProDespesasDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regProDespesas, tenantKey);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<ProDespesasResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<ProDespesasResponse>> Validation(Models.ProDespesas? regProDespesas, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ProDespesasResponse>> Validation(Models.ProDespesas? regProDespesas, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regProDespesas == null)
@@ -233,14 +233,13 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             return ResultApi<ProDespesasResponse>.Fail("ProDespesas: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("ProDespesas: URI inválida");
+            throw new Exception("ProDespesas: TenantApp inválida");
         }
 
         var connectionStopwatch = ProDespesasDatabaseMetrics.StartTimer();
-        var queryStopwatch = ProDespesasDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -249,9 +248,9 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
 
         try
         {
-            ProDespesasDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, uri, oCnn);
+            ProDespesasDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -259,12 +258,12 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (SGValidationException ex)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -290,7 +289,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
     }
 
-    public async Task<ResultApi<ProDespesasResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<ProDespesasResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -298,13 +297,13 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("ProDespesas: URI inválida");
+            throw new Exception("ProDespesas: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = ProDespesasDatabaseMetrics.StartTimer();
         var queryStopwatch = ProDespesasDatabaseMetrics.StartTimer();
@@ -315,9 +314,9 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
 
         try
         {
-            ProDespesasDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            ProDespesasDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            ProDespesasDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            ProDespesasDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -325,44 +324,44 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (SGValidationException ex)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ProDespesasResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ProDespesasResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var prodespesas = await reader.ReadAsync(id ?? default, oCnn);
         if (prodespesas == null)
         {
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ProDespesasResponse>.NotFound($"ProDespesas: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(prodespesas, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(prodespesas, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(prodespesas, nOperador, oCnn);
-                ProDespesasDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                ProDespesasDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(prodespesas, uri);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(prodespesas, tenantKey);
             return ResultApi<ProDespesasResponse>.Ok(prodespesas);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(prodespesas, uri);
-            ProDespesasDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(prodespesas, tenantKey);
+            ProDespesasDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            ProDespesasDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<ProDespesasResponse>.Fail(ex.Message, 500);
         }
     }

@@ -9,7 +9,7 @@ public class OperadorValidationTests : IDisposable
     private readonly OperadorValidation _validation;
     private readonly Mock<IOperadorService> _mockOperadorService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public OperadorValidationTests()
     {
         _validation = new OperadorValidation();

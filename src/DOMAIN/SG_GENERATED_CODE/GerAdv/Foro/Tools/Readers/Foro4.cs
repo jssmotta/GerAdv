@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ForoReader(IFForoFactory foroFactory) : IForoReader
 {
     private readonly IFForoFactory _foroFactory = foroFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("forCodigo, forNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ForoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("forCodigo, forNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<ForoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = ForoDatabaseMetrics.StartTimer();
         var connStopwatch = ForoDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class ForoReader(IFForoFactory foroFactory) : IForoReader
         {
             ForoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             ForoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBForo.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBForo.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             ForoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class ForoReader(IFForoFactory foroFactory) : IForoReader
         }
     }
 
-    private async Task<IEnumerable<ForoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<ForoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = ForoDatabaseMetrics.StartTimer();
         var result = new List<ForoResponseAll>(max);

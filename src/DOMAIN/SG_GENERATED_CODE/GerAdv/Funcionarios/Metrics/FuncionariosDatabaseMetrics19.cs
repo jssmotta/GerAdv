@@ -10,7 +10,7 @@ using System.Diagnostics.Metrics;
 namespace MenphisSI.GerAdv.Metrics;
 /// <summary>
 /// Database-specific OpenTelemetry metrics for Funcionarios entity with tenant_id support
-/// All metrics include tenant_id (uri parameter) for multi-tenant observability
+/// All metrics include tenant_id (tenantKey parameter) for multi-tenant observability
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class FuncionariosDatabaseMetrics
@@ -63,11 +63,11 @@ public static class FuncionariosDatabaseMetrics
     // ========================================
     /// <summary>
     /// Records SQL query execution time WITH tenant_id
-    /// Usage: FuncionariosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, stopwatch, 1);
+    /// Usage: FuncionariosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, stopwatch, 1);
     /// </summary>
     /// <param name = "operacao">Operation name (GetById, Filter, ListarAsync, etc.)</param>
     /// <param name = "tipoQuery">Query type (SELECT, INSERT, UPDATE, DELETE)</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     /// <param name = "stopwatch">Stopwatch for duration measurement</param>
     /// <param name = "rowsReturned">Number of rows returned (for SELECT queries)</param>
     public static void RecordSqlQuery(string operacao, string tipoQuery, string? tenantId, Stopwatch stopwatch, int rowsReturned = 0)
@@ -133,11 +133,11 @@ public static class FuncionariosDatabaseMetrics
 
     /// <summary>
     /// Records a database error WITH tenant_id
-    /// Usage: FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
+    /// Usage: FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
     /// <param name = "tipoErro">Error type (SqlException, Timeout, ConnectionFailed, etc.)</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordDatabaseError(string operacao, string tipoErro, string? tenantId)
     {
         var tags = new List<KeyValuePair<string, object?>>
@@ -155,10 +155,10 @@ public static class FuncionariosDatabaseMetrics
 
     /// <summary>
     /// Records connection open time WITH tenant_id
-    /// Usage: FuncionariosDatabaseMetrics.RecordConnectionOpen("GetById", uri, stopwatch);
+    /// Usage: FuncionariosDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, stopwatch);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     /// <param name = "stopwatch">Stopwatch for duration measurement</param>
     public static void RecordConnectionOpen(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -177,10 +177,10 @@ public static class FuncionariosDatabaseMetrics
 
     /// <summary>
     /// Increments active connections counter WITH tenant_id
-    /// Usage: FuncionariosDatabaseMetrics.IncrementActiveConnections("GetById", uri);
+    /// Usage: FuncionariosDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void IncrementActiveConnections(string operacao, string? tenantId)
     {
         var tags = new List<KeyValuePair<string, object?>>
@@ -197,10 +197,10 @@ public static class FuncionariosDatabaseMetrics
 
     /// <summary>
     /// Decrements active connections counter WITH tenant_id
-    /// Usage: FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+    /// Usage: FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void DecrementActiveConnections(string operacao, string? tenantId)
     {
         var tags = new List<KeyValuePair<string, object?>>

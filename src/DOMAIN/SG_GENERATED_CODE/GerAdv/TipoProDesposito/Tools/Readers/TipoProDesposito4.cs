@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodespositoFactory) : ITipoProDespositoReader
 {
     private readonly IFTipoProDespositoFactory _tipoprodespositoFactory = tipoprodespositoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tpdCodigo, tpdNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<TipoProDespositoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tpdCodigo, tpdNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<TipoProDespositoResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         var connStopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodes
         {
             TipoProDespositoDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             TipoProDespositoDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBTipoProDesposito.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBTipoProDesposito.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             TipoProDespositoDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class TipoProDespositoReader(IFTipoProDespositoFactory tipoprodes
         }
     }
 
-    private async Task<IEnumerable<TipoProDespositoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<TipoProDespositoResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = TipoProDespositoDatabaseMetrics.StartTimer();
         var result = new List<TipoProDespositoResponseAll>(max);

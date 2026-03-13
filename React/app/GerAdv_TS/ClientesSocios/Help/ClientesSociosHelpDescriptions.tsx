@@ -9,7 +9,7 @@ import HelpButton from "@/app/components/Cruds/DockerInc/HelpButton";
 import HelpClientes from "@/app/GerAdv_TS/Clientes/Help/HelpClientes";
 import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Clientes Socios";
 export const help_infoDescription = "Clientes Socios";
 
@@ -89,7 +89,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `cscCliente`,
     caption: `Clientes`,
-    description: `Clientes relacionado a Clientes Socios`,
+    description: `Clientes relacionado à entidade Clientes Socios`,
     acceptedValues: `Cadastrados em Clientes`,
     required: false,
     relatedTable: (
@@ -126,7 +126,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `cscCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Clientes Socios`,
+    description: `Cidade relacionado à entidade Clientes Socios`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (

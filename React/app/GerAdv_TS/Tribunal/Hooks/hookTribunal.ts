@@ -175,10 +175,10 @@ export const useTribunalList = (
 export function useValidationsTribunal() {
   async function runValidation(
     data: ITribunal,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const tribunalApi = new TribunalApi(uri ?? "", token ?? "");
+    const tribunalApi = new TribunalApi(tenantKey ?? "", token ?? "");
 
     const result = await tribunalApi.validation(data);
 

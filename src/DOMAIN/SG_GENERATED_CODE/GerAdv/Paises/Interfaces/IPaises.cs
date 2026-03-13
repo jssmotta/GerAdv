@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IPaisesService
 {
-    Task<ResultApi<IEnumerable<PaisesResponseAll>>> Filter(int max, Filters.FilterPaises filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<PaisesResponse>> AddAndUpdate(Models.Paises? regPaises, string uri = "", CancellationToken token = default);
-    Task<ResultApi<PaisesResponse>> Validation(Models.Paises? regPaises, string uri = "", CancellationToken token = default);
-    Task<ResultApi<PaisesResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<PaisesResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<PaisesResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterPaises? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<PaisesResponseAll>>> Filter(int max, Filters.FilterPaises filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<PaisesResponse>> AddAndUpdate(Models.Paises? regPaises, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<PaisesResponse>> Validation(Models.Paises? regPaises, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<PaisesResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<PaisesResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<PaisesResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterPaises? filter, string tenantKey = "", CancellationToken token = default);
 }

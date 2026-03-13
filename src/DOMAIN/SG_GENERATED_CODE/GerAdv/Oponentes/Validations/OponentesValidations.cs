@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IOponentesValidation
 {
-    Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class OponentesValidation : IOponentesValidation
 {
-    public async Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IOponentesService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -53,7 +53,7 @@ public class OponentesValidation : IOponentesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -70,7 +70,7 @@ public class OponentesValidation : IOponentesValidation
             throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
-            var testaCpf = await IsCpfExists(reg, service, uri);
+            var testaCpf = await IsCpfExists(reg, service, tenantKey);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
             {
                 throw new SGValidationException($"Oponentes ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.");
@@ -83,7 +83,7 @@ public class OponentesValidation : IOponentesValidation
 
         if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, uri))
+        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, tenantKey))
             throw new SGValidationException($"Oponentes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
@@ -98,20 +98,20 @@ public class OponentesValidation : IOponentesValidation
         return true;
     }
 
-    private async Task<bool> IsCnpjExists(Models.Oponentes reg, IOponentesService service, string uri)
+    private async Task<bool> IsCnpjExists(Models.Oponentes reg, IOponentesService service, string tenantKey)
     {
         if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri));
+        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CNPJ = reg.CNPJ.ClearInputCnpj() }, tenantKey));
         var first = existingOponentes.Data?.FirstOrDefault();
         return first != null && first.Id > 0 && first.Id != reg.Id;
     }
 
-    private async Task<(bool, OponentesResponseAll? )> IsCpfExists(Models.Oponentes reg, IOponentesService service, string uri)
+    private async Task<(bool, OponentesResponseAll? )> IsCpfExists(Models.Oponentes reg, IOponentesService service, string tenantKey)
     {
         if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CPF = reg.CPF.ClearInputCpf() }, uri));
+        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CPF = reg.CPF.ClearInputCpf() }, tenantKey));
         var first = existingOponentes.Data?.FirstOrDefault();
         return (first != null && first.Id > 0 && first.Id != reg.Id, first);
     }

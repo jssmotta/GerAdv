@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IUFFormProps } from "../../Interfaces/interface.UF";
+import { IUF, IUFFormProps } from "../../Interfaces/interface.UF";
 import { UFService } from "../../Services/UF.service";
 import { useUFForm, useValidationsUF } from "../../Hooks/hookUF";
 import { UFEmpty } from "../../../Models/UF";
 import { UFForm } from "../Forms/UFForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/UF/UF.hooks";
 
 const UFInc: React.FC<IUFFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const systemContext = useAppSelector(selectSystemContext);
@@ -29,10 +31,35 @@ const UFInc: React.FC<IUFFormProps> = ({ id, onClose, onError, onSuccess }) => {
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadUF } = useUFForm(UFEmpty(), ufService);
+  const { data, handleChange, setData } = useUFForm(UFEmpty(), ufService);
+
+  const originalRef = useRef<IUF>(UFEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = UFEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await ufService.fetchUFById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
 
   useEffect(() => {
-    loadUF(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -46,7 +73,44 @@ const UFInc: React.FC<IUFFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedUF = await ufService.saveUF(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedUF = await ufService.saveUF(currentRecord);
 
       if (savedUF.id) {
         notificationService.showNotification(
@@ -83,7 +147,7 @@ const UFInc: React.FC<IUFFormProps> = ({ id, onClose, onError, onSuccess }) => {
   };
 
   const handleReload = () => {
-    loadUF(id);
+    handleLoad(id);
   };
 
   return (

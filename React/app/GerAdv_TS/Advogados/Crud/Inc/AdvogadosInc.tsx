@@ -13,7 +13,10 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IAdvogadosFormProps } from "../../Interfaces/interface.Advogados";
+import {
+  IAdvogados,
+  IAdvogadosFormProps,
+} from "../../Interfaces/interface.Advogados";
 import { AdvogadosService } from "../../Services/Advogados.service";
 import {
   useAdvogadosForm,
@@ -21,6 +24,8 @@ import {
 } from "../../Hooks/hookAdvogados";
 import { AdvogadosEmpty } from "../../../Models/Advogados";
 import { AdvogadosForm } from "../Forms/AdvogadosForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Advogados/Advogados.hooks";
 
 const AdvogadosInc: React.FC<IAdvogadosFormProps> = ({
   id,
@@ -33,17 +38,45 @@ const AdvogadosInc: React.FC<IAdvogadosFormProps> = ({
   const router = useRouter();
 
   const advogadosService = new AdvogadosService(
-    new AdvogadosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+    new AdvogadosApi(
+      systemContext?.TenantApp ?? "",
+      systemContext?.Token ?? "",
+    ),
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadAdvogados } = useAdvogadosForm(
+  const { data, handleChange, setData } = useAdvogadosForm(
     AdvogadosEmpty(),
     advogadosService,
   );
 
+  const originalRef = useRef<IAdvogados>(AdvogadosEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = AdvogadosEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await advogadosService.fetchAdvogadosById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
+
   useEffect(() => {
-    loadAdvogados(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +90,45 @@ const AdvogadosInc: React.FC<IAdvogadosFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedAdvogados = await advogadosService.saveAdvogados(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedAdvogados =
+        await advogadosService.saveAdvogados(currentRecord);
 
       if (savedAdvogados.id) {
         notificationService.showNotification(
@@ -94,7 +165,7 @@ const AdvogadosInc: React.FC<IAdvogadosFormProps> = ({
   };
 
   const handleReload = () => {
-    loadAdvogados(id);
+    handleLoad(id);
   };
 
   return (

@@ -20,12 +20,12 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
     private readonly ITipoCompromissoValidation validation = validation;
     private readonly ITipoCompromissoWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    public async Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> Filter(int max, Filters.FilterTipoCompromisso filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> Filter(int max, Filters.FilterTipoCompromisso filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception("TipoCompromisso: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -39,28 +39,28 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroTipoCompromisso(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}TipoCompromisso-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}TipoCompromisso-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail($"TipoCompromisso - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<TipoCompromissoResponseAll>>.Fail($"TipoCompromisso - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    public async Task<ResultApi<TipoCompromissoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<TipoCompromissoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -84,20 +84,20 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoCompromisso-GetById-{id}--{keyCache}", async cancel =>
+            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-TipoCompromisso-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                TipoCompromissoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                TipoCompromissoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<TipoCompromissoResponse>.NotFound($"TipoCompromisso: Registro não encontrado para id {id}");
@@ -108,25 +108,25 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoCompromissoResponse>.Fail($"TipoCompromisso, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoCompromissoResponse>.Fail($"TipoCompromisso, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<TipoCompromissoResponse>.Fail($"TipoCompromisso - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoCompromissoResponse>.Fail($"TipoCompromisso - {uri}-: GetById: {ex.Message}", 500);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoCompromissoResponse>.Fail($"TipoCompromisso - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<TipoCompromissoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -134,11 +134,11 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             return ResultApi<AuditorResponse>.Fail("TipoCompromisso: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"TipoCompromisso: Auditor não encontrado para id {id}");
@@ -149,11 +149,11 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         catch (Exception ex)
         {
             _logger.Error(ex, "TipoCompromisso: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"TipoCompromisso - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"TipoCompromisso - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<TipoCompromissoResponse>> AddAndUpdate(Models.TipoCompromisso? regTipoCompromisso, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoCompromissoResponse>> AddAndUpdate(Models.TipoCompromisso? regTipoCompromisso, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoCompromisso == null)
@@ -161,14 +161,14 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             return ResultApi<TipoCompromissoResponse>.Fail("TipoCompromisso: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception("TipoCompromisso: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -177,9 +177,9 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regTipoCompromisso, this, uri, oCnn);
+            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regTipoCompromisso, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -187,12 +187,12 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -201,16 +201,16 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         {
             using var saved = await writer.WriteAsync(regTipoCompromisso, operadorId, oCnn);
             string tipoQuery = regTipoCompromisso.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            TipoCompromissoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            TipoCompromissoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regTipoCompromisso.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regTipoCompromisso.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -218,14 +218,14 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regTipoCompromisso, uri);
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regTipoCompromisso, tenantKey);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<TipoCompromissoResponse>> Validation(Models.TipoCompromisso? regTipoCompromisso, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoCompromissoResponse>> Validation(Models.TipoCompromisso? regTipoCompromisso, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoCompromisso == null)
@@ -233,14 +233,13 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             return ResultApi<TipoCompromissoResponse>.Fail("TipoCompromisso: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception("TipoCompromisso: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
-        var queryStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -249,9 +248,9 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regTipoCompromisso, this, uri, oCnn);
+            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regTipoCompromisso, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -259,12 +258,12 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -290,7 +289,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    public async Task<ResultApi<TipoCompromissoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoCompromissoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -298,13 +297,13 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception("TipoCompromisso: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoCompromissoDatabaseMetrics.StartTimer();
@@ -315,9 +314,9 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
+            TipoCompromissoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            TipoCompromissoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -325,44 +324,44 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoCompromissoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var tipocompromisso = await reader.ReadAsync(id ?? default, oCnn);
         if (tipocompromisso == null)
         {
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoCompromissoResponse>.NotFound($"TipoCompromisso: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(tipocompromisso, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(tipocompromisso, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(tipocompromisso, nOperador, oCnn);
-                TipoCompromissoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                TipoCompromissoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(tipocompromisso, uri);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(tipocompromisso, tenantKey);
             return ResultApi<TipoCompromissoResponse>.Ok(tipocompromisso);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(tipocompromisso, uri);
-            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(tipocompromisso, tenantKey);
+            TipoCompromissoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            TipoCompromissoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoCompromissoResponse>.Fail(ex.Message, 500);
         }
     }

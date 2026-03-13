@@ -175,10 +175,10 @@ export const useAgendaSemanaList = (
 export function useValidationsAgendaSemana() {
   async function runValidation(
     data: IAgendaSemana,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const agendasemanaApi = new AgendaSemanaApi(uri ?? "", token ?? "");
+    const agendasemanaApi = new AgendaSemanaApi(tenantKey ?? "", token ?? "");
 
     const result = await agendasemanaApi.validation(data);
 

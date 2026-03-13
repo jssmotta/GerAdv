@@ -10,9 +10,9 @@ public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDispo
     private readonly EnvioNotificacoesAniversariantes _notificationService;
     private readonly int _horaDia;
 
-    public HealthCheckNotificadorAniversariantesService([Required] string uri, EnvioNotificacoesAniversariantes notificationService, int horaDia)
+    public HealthCheckNotificadorAniversariantesService([Required] string tenantKey, EnvioNotificacoesAniversariantes notificationService, int horaDia)
     {
-        _uri = uri;
+        _uri = tenantKey;
         _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
         _horaDia = horaDia;
     }

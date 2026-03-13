@@ -10,7 +10,7 @@ using System.Diagnostics.Metrics;
 namespace MenphisSI.GerAdv.Metrics;
 /// <summary>
 /// OpenTelemetry metrics for the Escritorios controller with tenant_id support
-/// All metrics include tenant_id (uri parameter) for multi-tenant observability
+/// All metrics include tenant_id (tenantKey parameter) for multi-tenant observability
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class EscritoriosMetrics
@@ -96,7 +96,7 @@ public static class EscritoriosMetrics
     /// <returns>Started Stopwatch</returns>
     public static Stopwatch StartTimer() => Stopwatch.StartNew();
     /// <summary>
-    /// Get tenant_id from HttpContext (alternative to using uri parameter)
+    /// Get tenant_id from HttpContext (alternative to using tenantKey parameter)
     /// </summary>
     /// <param name = "context">HttpContext</param>
     /// <returns>Tenant ID or null</returns>
@@ -110,10 +110,10 @@ public static class EscritoriosMetrics
     // ========================================
     /// <summary>
     /// Records a successful request WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordSuccess("GetAll", uri, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordSuccess("GetAll", tenantKey, stopwatch);
     /// </summary>
     /// <param name = "operacao">Operation name</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     /// <param name = "stopwatch">Stopwatch for duration</param>
     public static void RecordSuccess(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -134,7 +134,7 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records an error WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordError("GetAll", uri, ex, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordError("GetAll", tenantKey, ex, stopwatch);
     /// </summary>
     public static void RecordError(string operacao, string? tenantId, Exception ex, Stopwatch stopwatch)
     {
@@ -157,7 +157,7 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a not found (404) WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordNotFound("GetById", uri, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordNotFound("GetById", tenantKey, stopwatch);
     /// </summary>
     public static void RecordNotFound(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -178,7 +178,7 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a validation failure WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordInvalid("Create", uri, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordInvalid("Create", tenantKey, stopwatch);
     /// </summary>
     public static void RecordInvalid(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -200,7 +200,7 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a conflict (409) WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordConflict("Delete", uri, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordConflict("Delete", tenantKey, stopwatch);
     /// </summary>
     public static void RecordConflict(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -221,7 +221,7 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a bulkhead rejection WITH tenant_id tag
-    /// Usage: EscritoriosMetrics.RecordBulkheadRejection("GetAll", uri, stopwatch);
+    /// Usage: EscritoriosMetrics.RecordBulkheadRejection("GetAll", tenantKey, stopwatch);
     /// </summary>
     public static void RecordBulkheadRejection(string operacao, string? tenantId, Stopwatch stopwatch)
     {
@@ -247,10 +247,10 @@ public static class EscritoriosMetrics
     // ========================================
     /// <summary>
     /// Records the number of records returned in a query WITH tenant_id
-    /// Usage: EscritoriosMetrics.RecordRecordsCount(result?.Count() ?? 0, uri);
+    /// Usage: EscritoriosMetrics.RecordRecordsCount(result?.Count() ?? 0, tenantKey);
     /// </summary>
     /// <param name = "count">Number of records</param>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordRecordsCount(int count, string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -265,9 +265,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a created record (total counter) with tenant_id
-    /// Usage: EscritoriosMetrics.RecordCreated(uri);
+    /// Usage: EscritoriosMetrics.RecordCreated(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordCreated(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -282,9 +282,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records an updated record (total counter) with tenant_id
-    /// Usage: EscritoriosMetrics.RecordUpdated(uri);
+    /// Usage: EscritoriosMetrics.RecordUpdated(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordUpdated(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -299,9 +299,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a deleted record (total counter) with tenant_id
-    /// Usage: EscritoriosMetrics.RecordDeleted(uri);
+    /// Usage: EscritoriosMetrics.RecordDeleted(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordDeleted(string? tenantId)
     {
         if (!string.IsNullOrEmpty(tenantId))
@@ -316,9 +316,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a created record with hour tag and tenant_id
-    /// Usage: EscritoriosMetrics.RecordCreatedByHour(uri);
+    /// Usage: EscritoriosMetrics.RecordCreatedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordCreatedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -334,9 +334,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records an updated record with hour tag and tenant_id
-    /// Usage: EscritoriosMetrics.RecordUpdatedByHour(uri);
+    /// Usage: EscritoriosMetrics.RecordUpdatedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordUpdatedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -352,9 +352,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a deleted record with hour tag and tenant_id
-    /// Usage: EscritoriosMetrics.RecordDeletedByHour(uri);
+    /// Usage: EscritoriosMetrics.RecordDeletedByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordDeletedByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");
@@ -370,9 +370,9 @@ public static class EscritoriosMetrics
 
     /// <summary>
     /// Records a read record with hour tag and tenant_id
-    /// Usage: EscritoriosMetrics.RecordReadByHour(uri);
+    /// Usage: EscritoriosMetrics.RecordReadByHour(tenantKey);
     /// </summary>
-    /// <param name = "tenantId">Tenant identifier (uri from route)</param>
+    /// <param name = "tenantId">Tenant identifier (tenantKey from route)</param>
     public static void RecordReadByHour(string? tenantId)
     {
         var hour = DateTime.Now.Hour.ToString("D2");

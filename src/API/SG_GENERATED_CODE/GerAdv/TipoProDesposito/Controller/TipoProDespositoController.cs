@@ -4,7 +4,7 @@
 // Entity:TipoProDesposito
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class TipoProDespositoController(ITipoProDespositoService tipoprodespositoService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TipoProDespositoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TipoProDespositoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.GetAll(max, uri);
+                return await _tipoprodespositoService.GetAll(max, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: GetAll failed with exception for uri = {0}", uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<TipoProDespositoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoProDesposito filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<TipoProDespositoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoProDesposito filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            TipoProDespositoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.Filter(max, filter, uri);
+                return await _tipoprodespositoService.Filter(max, filter, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: Filter failed with exception for uri = {0}", uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<TipoProDespositoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.GetById(id, uri, token);
+                return await _tipoprodespositoService.GetById(id, tenantKey, token);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoProDespositoMetrics.RecordReadByHour(uri);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoProDespositoMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoProDespositoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: GetById failed with exception for id = {0}, {1}", id, uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -113,13 +113,13 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoProDesposito? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoProDesposito? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            TipoProDespositoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -127,22 +127,22 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.GetListN(max, filtro, uri);
+                return await _tipoprodespositoService.GetListN(max, filtro, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            TipoProDespositoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: GetListN failed with exception for uri = {0}", uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -156,14 +156,14 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<TipoProDespositoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> AddAndUpdate([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> AddAndUpdate([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         var isNew = regTipoProDesposito.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            TipoProDespositoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -171,32 +171,32 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.AddAndUpdate(regTipoProDesposito, uri);
+                return await _tipoprodespositoService.AddAndUpdate(regTipoProDesposito, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                TipoProDespositoMetrics.RecordCreated(uri);
-                TipoProDespositoMetrics.RecordCreatedByHour(uri);
+                TipoProDespositoMetrics.RecordCreated(tenantKey);
+                TipoProDespositoMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                TipoProDespositoMetrics.RecordUpdated(uri);
-                TipoProDespositoMetrics.RecordUpdatedByHour(uri);
+                TipoProDespositoMetrics.RecordUpdated(tenantKey);
+                TipoProDespositoMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoProDespositoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: AddAndUpdate failed with exception for uri = {0}", uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -206,7 +206,7 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<TipoProDespositoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<TipoProDespositoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "Delete";
@@ -214,33 +214,33 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.Delete(id, uri);
+                return await _tipoprodespositoService.Delete(id, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                TipoProDespositoMetrics.RecordDeleted(uri);
-                TipoProDespositoMetrics.RecordDeletedByHour(uri);
+                TipoProDespositoMetrics.RecordDeleted(tenantKey);
+                TipoProDespositoMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoProDespositoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            TipoProDespositoMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "TipoProDesposito: {0} conflito de FK para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "TipoProDesposito: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<TipoProDespositoResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: Delete failed with exception for id = {0}, {1}", id, uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -248,13 +248,13 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> Validation([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<TipoProDespositoResponse>>> Validation([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = TipoProDespositoMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            TipoProDespositoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -262,21 +262,21 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _tipoprodespositoService.Validation(regTipoProDesposito, uri);
+                return await _tipoprodespositoService.Validation(regTipoProDesposito, tenantKey);
             });
-            TipoProDespositoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            TipoProDespositoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            TipoProDespositoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("TipoProDesposito: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<TipoProDespositoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            TipoProDespositoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "TipoProDesposito: Validation failed with exception for uri = {0}", uri);
+            TipoProDespositoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "TipoProDesposito: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<TipoProDespositoResponse>.Fail(ex.Message, 500));
         }
     }

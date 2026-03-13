@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IUF } from "@/app/GerAdv_TS/UF/Interfaces/interface.UF";
 import { UFGridAdapter } from "@/app/GerAdv_TS/UF/Adapter/UFGridAdapter";
 import UFGridContainer from "@/app/GerAdv_TS/UF/Components/UFGridContainer";

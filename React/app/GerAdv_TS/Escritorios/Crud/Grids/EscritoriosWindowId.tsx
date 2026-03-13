@@ -31,7 +31,10 @@ const EscritoriosWindowId: React.FC<EscritoriosWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const escritoriosService = useMemo(() => {
     return new EscritoriosService(
-      new EscritoriosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new EscritoriosApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

@@ -32,6 +32,8 @@ import {
 import { useAdvogadosFilter } from "../../Hooks/hookAdvogadosFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Advogados/Advogados.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface AdvogadosGridProps {
   selectItem?: (item: IAdvogados) => void;
@@ -58,7 +60,10 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
 
   const advogadosService = useMemo(() => {
     return new AdvogadosService(
-      new AdvogadosApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new AdvogadosApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 
@@ -85,15 +90,21 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
       try {
         const offlineData = await advogadosService.getAll(
           filtro ?? ({} as FilterAdvogados),
-          (onlineData) => {
-            setAdvogadosData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setAdvogadosData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setAdvogadosData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setAdvogadosData(processed);
           setLoading(false);
         } else {
           setAdvogadosData([]);
@@ -106,6 +117,18 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useAdvogadosFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -123,6 +146,11 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (advogados: IAdvogados) => {
     setSelectedAdvogados(advogados);
     setShowInc(true);
@@ -134,8 +162,11 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedAdvogados(AdvogadosEmpty());
+  const handleAdd = async () => {
+    let empty = AdvogadosEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -161,8 +192,24 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = advogadosData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await advogadosService.deleteAdvogados(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -195,24 +242,6 @@ const AdvogadosGrid: React.FC<AdvogadosGridProps> = ({ selectItem }) => {
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useAdvogadosFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

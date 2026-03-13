@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IColaboradoresValidation
 {
-    Task<bool> ValidateReg(Models.Colaboradores reg, IColaboradoresService service, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Colaboradores reg, IColaboradoresService service, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class ColaboradoresValidation : IColaboradoresValidation
 {
-    public async Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -43,7 +43,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Colaboradores reg, IColaboradoresService service, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Colaboradores reg, IColaboradoresService service, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -71,7 +71,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
             throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
-            var testaCpf = await IsCpfExists(reg, service, uri);
+            var testaCpf = await IsCpfExists(reg, service, tenantKey);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
             {
                 throw new SGValidationException($"Colaborador ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.");
@@ -115,11 +115,11 @@ public class ColaboradoresValidation : IColaboradoresValidation
         return true;
     }
 
-    private async Task<(bool, ColaboradoresResponseAll? )> IsCpfExists(Models.Colaboradores reg, IColaboradoresService service, string uri)
+    private async Task<(bool, ColaboradoresResponseAll? )> IsCpfExists(Models.Colaboradores reg, IColaboradoresService service, string tenantKey)
     {
         if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingColaboradores = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { CPF = reg.CPF.ClearInputCpf() }, uri));
+        var existingColaboradores = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { CPF = reg.CPF.ClearInputCpf() }, tenantKey));
         var first = existingColaboradores.Data?.FirstOrDefault();
         return (first != null && first.Id > 0 && first.Id != reg.Id, first);
     }

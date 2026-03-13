@@ -10,10 +10,10 @@ public partial interface IDivisaoTribunalReader
     DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec, MsiSqlConnection? oCnn);
     DivisaoTribunalResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec);
-    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IHybridCache cache);
+    Task<string> ReadStringAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string tenantKey, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(string tenantKey, MsiSqlConnection? oCnn, IHybridCache cache);
     DivisaoTribunalResponseAll? ReadAll(FDivisaoTribunal dbRec, IDataRecord dr);
     DivisaoTribunalResponseAll? ReadAll(SG.GerAdv.DBDivisaoTribunal dbRec, DataRow dr);
-    Task<IEnumerable<DivisaoTribunalResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DivisaoTribunalResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -6,20 +6,20 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IAdvogadosValidation
 {
-    Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class AdvogadosValidation : IAdvogadosValidation
 {
-    public async Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id ?? default }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id ?? default }, tenantKey);
         if (agendaExists0?.Data != null && agendaExists0.Data.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Compromisso associados a ele.");
         return true;
@@ -62,7 +62,7 @@ public class AdvogadosValidation : IAdvogadosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -110,7 +110,7 @@ public class AdvogadosValidation : IAdvogadosValidation
             throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
-            var testaCpf = await IsCpfExists(reg, service, uri);
+            var testaCpf = await IsCpfExists(reg, service, tenantKey);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
             {
                 throw new SGValidationException($"Advogados ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.");
@@ -154,11 +154,11 @@ public class AdvogadosValidation : IAdvogadosValidation
         return true;
     }
 
-    private async Task<(bool, AdvogadosResponseAll? )> IsCpfExists(Models.Advogados reg, IAdvogadosService service, string uri)
+    private async Task<(bool, AdvogadosResponseAll? )> IsCpfExists(Models.Advogados reg, IAdvogadosService service, string tenantKey)
     {
         if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingAdvogados = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { CPF = reg.CPF.ClearInputCpf() }, uri));
+        var existingAdvogados = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { CPF = reg.CPF.ClearInputCpf() }, tenantKey));
         var first = existingAdvogados.Data?.FirstOrDefault();
         return (first != null && first.Id > 0 && first.Id != reg.Id, first);
     }

@@ -37,9 +37,9 @@ public class AgendaSemanaControllerTests
                 Id = 1
             }
         };
-        _mockService.Setup(x => x.Filter(max, filter, "test-uri")).ReturnsAsync(ResultApi<IEnumerable<RespAll.AgendaSemanaResponseAll>>.Ok(expectedData));
+        _mockService.Setup(x => x.Filter(max, filter, "test-tenantKey")).ReturnsAsync(ResultApi<IEnumerable<RespAll.AgendaSemanaResponseAll>>.Ok(expectedData));
         // Act
-        var actionResult = await _controller.Filter(max, filter, "test-uri");
+        var actionResult = await _controller.Filter(max, filter, "test-tenantKey");
         // Assert
         var objectResult = actionResult.Result as ObjectResult;
         objectResult.Should().NotBeNull();
@@ -55,7 +55,7 @@ public class AgendaSemanaControllerTests
         _controller.ModelState.AddModelError("test", "Test error");
         var filter = new Filters.FilterAgendaSemana();
         // Act
-        var actionResult = await _controller.Filter(10, filter, "test-uri");
+        var actionResult = await _controller.Filter(10, filter, "test-tenantKey");
         // Assert
         actionResult.Result.Should().BeOfType<BadRequestObjectResult>();
     }

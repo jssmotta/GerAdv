@@ -29,7 +29,7 @@ public static partial class DBFuncaoDicInfo
     public static string TabelaNome => PTabelaNome;
     public const string PTabelaNome = "Funcao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem FunDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
     public static DBInfoSystem FunQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
     public static DBInfoSystem FunDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "fun");
     public static DBInfoSystem FunQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 

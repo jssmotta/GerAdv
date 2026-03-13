@@ -23,12 +23,12 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IInstanciaReader instanciaReader = instanciaReader;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
-    public async Task<ResultApi<IEnumerable<TribunalResponseAll>>> Filter(int max, Filters.FilterTribunal filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TribunalResponseAll>>> Filter(int max, Filters.FilterTribunal filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception("Tribunal: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -42,28 +42,28 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroTribunal(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            TribunalDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            TribunalDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Tribunal-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Tribunal-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<TribunalResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<TribunalResponseAll>>.Fail($"Tribunal - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<TribunalResponseAll>>.Fail($"Tribunal - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -72,7 +72,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
     }
 
-    public async Task<ResultApi<TribunalResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<TribunalResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -87,20 +87,20 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            TribunalDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            TribunalDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Tribunal-GetById-{id}--{keyCache}", async cancel =>
+            TribunalDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            TribunalDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Tribunal-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                TribunalDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                TribunalDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<TribunalResponse>.NotFound($"Tribunal: Registro não encontrado para id {id}");
@@ -111,25 +111,25 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            TribunalDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TribunalResponse>.Fail($"Tribunal, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            TribunalDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TribunalResponse>.Fail($"Tribunal, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TribunalDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TribunalDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<TribunalResponse>.Fail($"Tribunal - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TribunalResponse>.Fail($"Tribunal - {uri}-: GetById: {ex.Message}", 500);
+            TribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TribunalResponse>.Fail($"Tribunal - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<TribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -137,11 +137,11 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             return ResultApi<AuditorResponse>.Fail("Tribunal: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Tribunal: Auditor não encontrado para id {id}");
@@ -152,11 +152,11 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         catch (Exception ex)
         {
             _logger.Error(ex, "Tribunal: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Tribunal - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Tribunal - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<TribunalResponse>> AddAndUpdate(Models.Tribunal? regTribunal, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TribunalResponse>> AddAndUpdate(Models.Tribunal? regTribunal, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTribunal == null)
@@ -164,14 +164,14 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             return ResultApi<TribunalResponse>.Fail("Tribunal: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception("Tribunal: TenantApp inválida");
         }
 
         var connectionStopwatch = TribunalDatabaseMetrics.StartTimer();
         var queryStopwatch = TribunalDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -180,9 +180,9 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
 
         try
         {
-            TribunalDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            TribunalDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
+            TribunalDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            TribunalDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -190,12 +190,12 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (SGValidationException ex)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -204,16 +204,16 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         {
             using var saved = await writer.WriteAsync(regTribunal, operadorId, oCnn);
             string tipoQuery = regTribunal.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            TribunalDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            TribunalDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regTribunal.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regTribunal.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -221,14 +221,14 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regTribunal, uri);
-            TribunalDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regTribunal, tenantKey);
+            TribunalDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            TribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<TribunalResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<TribunalResponse>> Validation(Models.Tribunal? regTribunal, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TribunalResponse>> Validation(Models.Tribunal? regTribunal, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTribunal == null)
@@ -236,14 +236,13 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             return ResultApi<TribunalResponse>.Fail("Tribunal: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception("Tribunal: TenantApp inválida");
         }
 
         var connectionStopwatch = TribunalDatabaseMetrics.StartTimer();
-        var queryStopwatch = TribunalDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -252,9 +251,9 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
 
         try
         {
-            TribunalDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            TribunalDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
+            TribunalDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            TribunalDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -262,12 +261,12 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (SGValidationException ex)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -293,7 +292,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
     }
 
-    public async Task<ResultApi<TribunalResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TribunalResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -301,13 +300,13 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception("Tribunal: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = TribunalDatabaseMetrics.StartTimer();
         var queryStopwatch = TribunalDatabaseMetrics.StartTimer();
@@ -318,9 +317,9 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
 
         try
         {
-            TribunalDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            TribunalDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, uri, oCnn);
+            TribunalDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            TribunalDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -328,44 +327,44 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (SGValidationException ex)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TribunalResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TribunalResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var tribunal = await reader.ReadAsync(id ?? default, oCnn);
         if (tribunal == null)
         {
-            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TribunalResponse>.NotFound($"Tribunal: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(tribunal, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(tribunal, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(tribunal, nOperador, oCnn);
-                TribunalDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                TribunalDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(tribunal, uri);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(tribunal, tenantKey);
             return ResultApi<TribunalResponse>.Ok(tribunal);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(tribunal, uri);
-            TribunalDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(tribunal, tenantKey);
+            TribunalDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            TribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TribunalResponse>.Fail(ex.Message, 500);
         }
     }

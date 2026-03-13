@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class JusticaService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string tenantKey)
     {
         if (regJustica == null)
         {
-            _logger.Warn("Justica: BeforeDeleteAsync - regJustica is null for uri = {0}", uri);
+            _logger.Warn("Justica: BeforeDeleteAsync - regJustica is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            JusticaMetrics.RecordNotFound("BeforeDelete", uri, JusticaMetrics.StartTimer());
+            JusticaMetrics.RecordNotFound("BeforeDelete", tenantKey, JusticaMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = JusticaMetrics.StartTimer();
-        _logger.Debug("Justica: BeforeDeleteAsync success for Id={0}, uri={1}", regJustica.Id, uri);
+        _logger.Debug("Justica: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regJustica.Id, tenantKey);
         // record successful business layer pre-delete
-        JusticaMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        JusticaMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string tenantKey)
     {
         var sw = JusticaMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Justica: AfterDeleteAsync - Id={0}, uri={1}", regJustica?.Id ?? 0, uri);
+        _logger.Info("Justica: AfterDeleteAsync - Id={0}, tenantKey={1}", regJustica?.Id ?? 0, tenantKey);
         // record delete metrics
-        JusticaMetrics.RecordDeleted(uri);
-        JusticaMetrics.RecordDeletedByHour(uri);
-        JusticaMetrics.RecordSuccess("AfterDelete", uri, sw);
+        JusticaMetrics.RecordDeleted(tenantKey);
+        JusticaMetrics.RecordDeletedByHour(tenantKey);
+        JusticaMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Justica: DeleteErrorAsync - Id={0}, uri={1}", regJustica?.Id ?? 0, uri);
+        _logger.Error("Justica: DeleteErrorAsync - Id={0}, tenantKey={1}", regJustica?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        JusticaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        JusticaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        JusticaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        JusticaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<JusticaResponse> AfterCreateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse> AfterCreateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string tenantKey)
     {
         var sw = JusticaMetrics.StartTimer();
         var result = regJustica ?? new JusticaResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Justica: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Justica: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        JusticaMetrics.RecordCreated(uri);
-        JusticaMetrics.RecordCreatedByHour(uri);
-        JusticaMetrics.RecordSuccess("AfterCreate", uri, sw);
+        JusticaMetrics.RecordCreated(tenantKey);
+        JusticaMetrics.RecordCreatedByHour(tenantKey);
+        JusticaMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<JusticaResponse> AfterUpdateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse> AfterUpdateAsync([FromBody] JusticaResponse? regJustica, [FromRoute, Required] string tenantKey)
     {
         var sw = JusticaMetrics.StartTimer();
         var result = regJustica ?? new JusticaResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Justica: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        JusticaMetrics.RecordUpdated(uri);
-        JusticaMetrics.RecordUpdatedByHour(uri);
-        JusticaMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Justica: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        JusticaMetrics.RecordUpdated(tenantKey);
+        JusticaMetrics.RecordUpdatedByHour(tenantKey);
+        JusticaMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Justica? regJustica, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Justica? regJustica, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Justica: AddAndUpdateErrorAsync - Id={0}, uri={1}", regJustica?.Id ?? 0, uri);
+        _logger.Error("Justica: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regJustica?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        JusticaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        JusticaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        JusticaMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        JusticaMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

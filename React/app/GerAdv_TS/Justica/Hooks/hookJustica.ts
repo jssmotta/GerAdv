@@ -175,10 +175,10 @@ export const useJusticaList = (
 export function useValidationsJustica() {
   async function runValidation(
     data: IJustica,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const justicaApi = new JusticaApi(uri ?? "", token ?? "");
+    const justicaApi = new JusticaApi(tenantKey ?? "", token ?? "");
 
     const result = await justicaApi.validation(data);
 

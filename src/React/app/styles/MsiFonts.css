@@ -1,0 +1,448 @@
+/* =====================================================
+   Menphis SI - Modern Typography System
+   Optimized for iOS/Apple platforms
+   ===================================================== */
+
+/* System Font Stack - Apple First */
+:root {
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", 
+                 "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "Menlo", "Monaco", "Courier New", monospace;
+  --font-serif: "New York", "Georgia", "Times New Roman", serif;
+}
+
+/* Global Font Reset */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Base Typography */
+body {
+  font-family: var(--font-system) !important;
+  font-size: 17px;
+  line-height: 1.47;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+}
+
+/* Headings Hierarchy */
+h1 {
+  font-family: var(--font-system) !important;
+  font-size: 28px !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.33em !important;
+  margin: 0 0 16px 0 !important;
+  color: var(--kendo-primary-160) !important;
+}
+
+h2 {
+  font-family: var(--font-system) !important;
+  font-size: 24px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.013em !important;
+  margin: 0 0 14px 0 !important;
+  color: var(--kendo-primary-140) !important;
+}
+
+h3 {
+  font-family: var(--font-system) !important;
+  font-size: 22px !important;
+  line-height: 1.27 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  margin: 0 0 12px 0 !important;
+  color: var(--kendo-primary-120) !important;
+}
+
+h4 {
+  font-family: var(--font-system) !important;
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.011em !important;
+  margin: 0 0 10px 0 !important;
+  color: var(--kendo-primary-110) !important;
+}
+
+h5 {
+  font-family: var(--font-system) !important;
+  font-size: 17px !important;
+  line-height: 1.35 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 0 8px 0 !important;
+  color: var(--kendo-primary-100) !important;
+}
+
+h6 {
+  font-family: var(--font-system) !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.008em !important;
+  margin: 0 0 8px 0 !important;
+  color: var(--kendo-primary-80) !important;
+}
+
+/* Body Text Variants */
+p {
+  font-family: var(--font-system) !important;
+  font-size: 17px !important;
+  line-height: 1.47 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.022em !important;
+  margin: 0 0 12px 0 !important;
+}
+
+/* Links */
+a {
+  font-family: var(--font-system) !important;
+  font-size: inherit !important;
+  font-weight: 400 !important;
+  letter-spacing: inherit !important;
+}
+
+/* Small Text */
+small {
+  font-family: var(--font-system) !important;
+  font-size: 14px !important;
+  line-height: 1.43 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* Labels & Form Elements */
+label,
+.k-label,
+.k-floating-label,
+.input-label,
+.comboboxLabel {
+  font-family: var(--font-system) !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Input Fields */
+input,
+textarea,
+select,
+.k-input,
+.k-input-inner,
+.k-textbox,
+.k-textarea {
+  font-family: var(--font-system) !important;
+  font-size: 17px !important;
+  line-height: 1.29 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.035em !important;
+}
+
+/* Buttons */
+button,
+.k-button {
+  font-family: var(--font-system) !important;
+  font-size: 16px !important;  
+  font-weight: 500 !important;
+  letter-spacing: -0.022em !important;
+  line-height: 1em !important;
+  padding-bottom: 6px !important;
+}
+
+/* Table Headers */
+.k-table-thead,
+.k-grid-header,
+th {
+  font-family: var(--font-system) !important;
+  font-size: 13px !important;
+  line-height: 1.38 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.008em !important;
+  text-transform: none !important;
+}
+
+/* Table Data */
+.k-table-td,
+.k-grid-content td,
+td {
+  font-family: var(--font-system) !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* Navigation & Menu */
+.k-menu,
+.k-drawer-item,
+nav,
+.k-menu-link {
+  font-family: var(--font-system) !important;
+  font-size: 17px !important;
+  line-height: 1.29 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.022em !important;
+}
+
+/* Caption Text */
+.caption,
+.k-pager-info,
+figcaption {
+  font-family: var(--font-system) !important;
+  font-size: 13px !important;
+  line-height: 1.38 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.008em !important;
+  color: #86868b;
+}
+
+/* Monospace Code */
+code,
+pre,
+.k-code,
+kbd {
+  font-family: var(--font-mono) !important;
+  font-size: 15px !important;
+  line-height: 1.47 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+/* =====================================================
+   RESPONSIVE ADJUSTMENTS
+   ===================================================== */
+
+/* Small Devices (≤480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+    line-height: 1.47;
+  }
+
+  h1 {
+    font-size: 28px !important;
+    line-height: 1.14 !important;
+  }
+
+  h2 {
+    font-size: 24px !important;
+    line-height: 1.17 !important;
+  }
+
+  h3 {
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+  }
+
+  h4 {
+    font-size: 18px !important;
+  }
+
+  h5 {
+    font-size: 16px !important;
+  }
+
+  h6 {
+    font-size: 14px !important;
+  }
+
+  p {
+    font-size: 16px !important;
+  }
+
+  button,
+  .k-button {
+    font-size: 16px !important;
+  }
+}
+
+/* Medium Devices (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  h1 {
+    font-size: 28px !important;
+  }
+
+  h2 {
+    font-size: 26px !important;
+  }
+
+  h3 {
+    font-size: 21px !important;
+  }
+}
+
+/* Large Devices (≥768px) */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+  }
+
+  h2 {
+    font-size: 26px !important;
+    line-height: 1.125 !important;
+  }
+
+  h3 {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* Extra Large Devices (≥1024px) */
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 28px !important;
+    line-height: 1.08 !important;
+  }
+
+  h2 {
+    font-size: 26px !important;
+  }
+}
+
+/* =====================================================
+   UTILITY CLASSES
+   ===================================================== */
+
+/* Display Sizes */
+.text-display {
+  font-size: 56px !important;
+  line-height: 1.07 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.text-large-title {
+  font-size: 34px !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.text-title-1 {
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.013em !important;
+}
+
+.text-title-2 {
+  font-size: 22px !important;
+  line-height: 1.27 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+}
+
+.text-title-3 {
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.011em !important;
+}
+
+.text-headline {
+  font-size: 17px !important;
+  line-height: 1.35 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.text-body {
+  font-size: 17px !important;
+  line-height: 1.47 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.022em !important;
+}
+
+.text-callout {
+  font-size: 16px !important;
+  line-height: 1.38 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.text-subheadline {
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.text-footnote {
+  font-size: 13px !important;
+  line-height: 1.38 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.008em !important;
+}
+
+.text-caption-1 {
+  font-size: 12px !important;
+  line-height: 1.33 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+.text-caption-2 {
+  font-size: 11px !important;
+  line-height: 1.27 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* Font Weights */
+.font-regular {
+  font-weight: 400 !important;
+}
+
+.font-medium {
+  font-weight: 500 !important;
+}
+
+.font-semibold {
+  font-weight: 600 !important;
+}
+
+.font-bold {
+  font-weight: 700 !important;
+}
+
+.font-heavy {
+  font-weight: 800 !important;
+}
+
+/* iOS Dynamic Type Support */
+@supports (font: -apple-system-body) {
+  body {
+    font: -apple-system-body;
+  }
+}
+
+/* Accessibility - Respect User Preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .caption,
+  .k-pager-info,
+  figcaption {
+    color: #98989d;
+  }
+}
+
+.nameApp {
+  color: var(--kendo-neutral-100);
+  font-size: 1.6em;
+  padding-top: 11px;
+  vertical-align: middle;
+  height: 50px;
+}

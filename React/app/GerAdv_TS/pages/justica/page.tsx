@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IJustica } from "@/app/GerAdv_TS/Justica/Interfaces/interface.Justica";
 import { JusticaGridAdapter } from "@/app/GerAdv_TS/Justica/Adapter/JusticaGridAdapter";
 import JusticaGridContainer from "@/app/GerAdv_TS/Justica/Components/JusticaGridContainer";

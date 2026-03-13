@@ -1,0 +1,187 @@
+    /* Validação visual dos inputs - Vermelho quando vazio, Verde quando preenchido */
+    
+    /* Garantir que o nome do sistema seja visível em light mode */
+    .login-prod-text {
+        color: #333333 !important;
+    }
+    
+    /* Borda vermelha para inputs obrigatórios vazios */
+    .input-login.k-input,
+    .input-login.k-input .k-input-inner {
+        border-bottom: 1px solid var(--error-color, #f00) !important;
+    }
+    
+    /* Borda verde quando input obrigatório está preenchido */
+    .input-login.k-input:has(input[required]:not(:placeholder-shown)),
+    .input-login.k-input:has(input[required]:not(:placeholder-shown)) .k-input-inner {
+        border-bottom: 1px solid var(--success-color, #00ff00) !important;
+    }
+    
+    /* Borda azul em foco - sobrescreve tudo */
+    .k-input.input-login:focus-within,
+    .k-input.input-login:focus-within .k-input-inner,
+    .input-login.k-input:has(input:focus),
+    .input-login.k-input:has(input:focus) .k-input-inner,
+    .input-login:focus-within,
+    .input-login:focus-within .k-input-inner,
+    .mb-3:has(.input-login:focus-within) .input-login.k-input,
+    .mb-3:has(.input-login:focus-within) .input-login.k-input .k-input-inner,
+    .mb-3:has(input:focus) .input-login.k-input,
+    .mb-3:has(input:focus) .input-login.k-input .k-input-inner {
+        border-bottom: var(--focus-color-inputs-border-size, 4px) solid var(--focus-color-inputs) !important;
+    }
+    
+    /* Suporte ao dark mode na página de change password */
+    @media (prefers-color-scheme: dark) {
+        .login-form {
+        background-color: var(--kendo-color-surface) !important;
+        color: var(--kendo-color-on-surface) !important;
+        }
+        
+        .login-prod-text,
+        .login-wellcome,
+        .login-wellcome-message,
+        .login-wellcome-message-2 {
+        color: var(--kendo-color-on-surface) !important;
+        }
+        
+        .form-group label {
+        color: var(--kendo-color-on-surface) !important;
+        }
+        
+        .form-group input,
+        .input-login {
+        background-color: var(--kendo-color-surface-alt) !important;
+        color: var(--kendo-color-on-surface) !important;
+        border-color: var(--kendo-color-border) !important;
+        }
+        
+        /* Ajuste de placeholder no dark mode */
+        .form-group input::placeholder,
+        .input-login::placeholder,
+        .input-login input::placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+        }
+        
+        .form-group input::-webkit-input-placeholder,
+        .input-login::-webkit-input-placeholder,
+        .input-login input::-webkit-input-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+        }
+        
+        .form-group input::-moz-placeholder,
+        .input-login::-moz-placeholder,
+        .input-login input::-moz-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+        }
+        
+        .form-group input:-ms-input-placeholder,
+        .input-login:-ms-input-placeholder,
+        .input-login input:-ms-input-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+        }
+        
+        .linkNaoSouEu,
+        .linkEmpresa,
+        .footer-text {
+        color: var(--kendo-color-on-surface) !important;
+        }
+    }
+    
+    .appsg-dark-mode .login-form {
+        background-color: var(--kendo-color-surface) !important;
+        color: var(--kendo-color-on-surface) !important;
+    }
+    
+    .appsg-dark-mode .login-prod-text,
+    .appsg-dark-mode .login-wellcome,
+    .appsg-dark-mode .login-wellcome-message,
+    .appsg-dark-mode .login-wellcome-message-2 {
+        color: var(--kendo-color-on-surface) !important;
+    }
+    
+    .appsg-dark-mode .form-group label {
+        color: var(--kendo-color-on-surface) !important;
+    }
+    
+    .appsg-dark-mode .form-group input,
+    .appsg-dark-mode .input-login {
+        background-color: var(--kendo-color-surface-alt) !important;
+        color: var(--kendo-color-on-surface) !important;
+        border-color: var(--kendo-color-border) !important;
+    }
+    
+    /* Ajuste de placeholder no dark mode forçado */
+    .appsg-dark-mode .form-group input::placeholder,
+    .appsg-dark-mode .input-login::placeholder,
+    .appsg-dark-mode .input-login input::placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+    }
+    
+    .appsg-dark-mode .form-group input::-webkit-input-placeholder,
+    .appsg-dark-mode .input-login::-webkit-input-placeholder,
+    .appsg-dark-mode .input-login input::-webkit-input-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+    }
+    
+    .appsg-dark-mode .form-group input::-moz-placeholder,
+    .appsg-dark-mode .input-login::-moz-placeholder,
+    .appsg-dark-mode .input-login input::-moz-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+    }
+    
+    .appsg-dark-mode .form-group input:-ms-input-placeholder,
+    .appsg-dark-mode .input-login:-ms-input-placeholder,
+    .appsg-dark-mode .input-login input:-ms-input-placeholder {
+        color: var(--kendo-color-subtle) !important;
+        opacity: 0.6;
+    }
+    
+    .appsg-dark-mode .linkNaoSouEu,
+    .appsg-dark-mode .linkEmpresa,
+    .appsg-dark-mode .footer-text {
+        color: var(--kendo-color-on-surface) !important;
+    }
+
+    /* Estilos para botões na página de change password */
+    /* Botão secundário (Cancelar) - deve ter cores visíveis em light mode */
+    .k-form-buttons .btnLogin:not([type="submit"]) {
+        background-color: #6c757d !important;
+        color: #ffffff !important;
+        border: 1px solid #6c757d !important;
+    }
+
+    .k-form-buttons .btnLogin:not([type="submit"]):hover {
+        background-color: #5a6268 !important;
+        border-color: #545b62 !important;
+    }
+
+    /* Dark mode - ajustes para botões */
+    @media (prefers-color-scheme: dark) {
+        .k-form-buttons .btnLogin:not([type="submit"]) {
+            background-color: var(--kendo-color-surface-alt) !important;
+            color: var(--kendo-color-on-surface) !important;
+            border: 1px solid var(--kendo-color-border) !important;
+        }
+
+        .k-form-buttons .btnLogin:not([type="submit"]):hover {
+            background-color: var(--kendo-color-base-hover) !important;
+        }
+    }
+
+    .appsg-dark-mode .k-form-buttons .btnLogin:not([type="submit"]) {
+        background-color: var(--kendo-color-surface-alt) !important;
+        color: var(--kendo-color-on-surface) !important;
+        border: 1px solid var(--kendo-color-border) !important;
+    }
+
+    .appsg-dark-mode .k-form-buttons .btnLogin:not([type="submit"]):hover {
+        background-color: var(--kendo-color-base-hover) !important;
+    }

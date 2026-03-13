@@ -280,7 +280,7 @@ public partial class ServiceFilter
 
 public partial class AgendaSemanaService
 {
-    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken cancellationToken)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
@@ -290,7 +290,7 @@ public partial class AgendaSemanaService
         try
         {
             // Usar o reader para obter os dados
-            return await reader.ListarAsync(oCnn!, max, uri, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
+            return await reader.ListarAsync(oCnn!, max, tenantKey, where.Replace(TSql.Where, ""), parameters, "", cancellationToken);
         }
         catch (Exception)
         {
@@ -298,13 +298,13 @@ public partial class AgendaSemanaService
         }
     }
 
-    public async Task<ResultApi<IEnumerable<AgendaSemanaResponseAll>>> GetAll(int max, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AgendaSemanaResponseAll>>> GetAll(int max, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("AgendaSemana: URI inválida");
+            throw new Exception("AgendaSemana: TenantApp inválida");
         }
 
         var entryOptions = new HybridCacheEntryOptions
@@ -312,29 +312,29 @@ public partial class AgendaSemanaService
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-        var cacheKey = $"{uri}-AgendaSemana-GetAll-{max}";
+        var cacheKey = $"{tenantKey}-AgendaSemana-GetAll-{max}";
         try
         {
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync2(oCnn!, max, string.Empty, [], tenantKey, cancel), entryOptions, cancellationToken: token);
             return ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "AgendaSemana: GetAll failed for uri = {0}", uri);
+            _logger.Error(ex, "AgendaSemana: GetAll failed for tenantKey = {0}", tenantKey);
             return ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Fail(ex.Message, 500);
         }
     }
 
-    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync2(MsiSqlConnection oCnn, int max, string where, List<SqlParameter>? parameters, string tenantKey, CancellationToken token)
     {
         if (oCnn == null || oCnn?.InnerConnection?.State == ConnectionState.Closed)
         {
             throw new DatabaseConnectionException();
         }
 
-        var result = await reader.ListarAsync(oCnn!, max, uri, where, parameters, string.Empty, token);
+        var result = await reader.ListarAsync(oCnn!, max, tenantKey, where, parameters, string.Empty, token);
         return result;
     }
 }

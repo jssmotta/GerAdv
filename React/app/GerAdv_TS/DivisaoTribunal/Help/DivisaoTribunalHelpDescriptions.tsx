@@ -12,7 +12,7 @@ import HelpCidade from "@/app/GerAdv_TS/Cidade/Help/HelpCidade";
 import HelpForo from "@/app/GerAdv_TS/Foro/Help/HelpForo";
 import HelpTribunal from "@/app/GerAdv_TS/Tribunal/Help/HelpTribunal";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Divisao Tribunal";
 export const help_infoDescription = "Divisao Tribunal";
 
@@ -28,7 +28,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `divJustica`,
     caption: `Justiça`,
-    description: `Justiça relacionado a Divisao Tribunal`,
+    description: `Justiça relacionado à entidade Divisao Tribunal`,
     acceptedValues: `Cadastrados em Justiça`,
     required: false,
     relatedTable: (
@@ -49,7 +49,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `divArea`,
     caption: `Área`,
-    description: `Área relacionado a Divisao Tribunal`,
+    description: `Área relacionado à entidade Divisao Tribunal`,
     acceptedValues: `Cadastrados em Área`,
     required: false,
     relatedTable: (
@@ -62,7 +62,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `divCidade`,
     caption: `Cidade`,
-    description: `Cidade relacionado a Divisao Tribunal`,
+    description: `Cidade relacionado à entidade Divisao Tribunal`,
     acceptedValues: `Cadastrados em Cidade`,
     required: false,
     relatedTable: (
@@ -75,7 +75,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `divForo`,
     caption: `Foro`,
-    description: `Foro relacionado a Divisao Tribunal`,
+    description: `Foro relacionado à entidade Divisao Tribunal`,
     acceptedValues: `Cadastrados em Foro`,
     required: false,
     relatedTable: (
@@ -88,7 +88,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `divTribunal`,
     caption: `Tribunal`,
-    description: `Tribunal relacionado a Divisao Tribunal`,
+    description: `Tribunal relacionado à entidade Divisao Tribunal`,
     acceptedValues: `Cadastrados em Tribunal`,
     required: false,
     relatedTable: (

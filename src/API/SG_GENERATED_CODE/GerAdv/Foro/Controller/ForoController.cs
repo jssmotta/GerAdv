@@ -4,7 +4,7 @@
 // Entity:Foro
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class ForoController(IForoService foroService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ForoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ForoResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.GetAll(max, uri);
+                return await _foroService.GetAll(max, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ForoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: GetAll failed with exception for uri = {0}", uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ForoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<ForoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterForo filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<ForoResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterForo filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            ForoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ForoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.Filter(max, filter, uri);
+                return await _foroService.Filter(max, filter, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<ForoResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: Filter failed with exception for uri = {0}", uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<ForoResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ForoResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<ForoResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.GetById(id, uri, token);
+                return await _foroService.GetById(id, tenantKey, token);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ForoMetrics.RecordReadByHour(uri);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ForoMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ForoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: GetById failed with exception for id = {0}, {1}", id, uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ForoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.GetAuditor(id, uri, token);
+                return await _foroService.GetAuditor(id, tenantKey, token);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterForo? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterForo? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            ForoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ForoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.GetListN(max, filtro, uri);
+                return await _foroService.GetListN(max, filtro, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
-            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            ForoMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: GetListN failed with exception for uri = {0}", uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<ForoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ForoResponse>>> AddAndUpdate([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ForoResponse>>> AddAndUpdate([FromBody] Models.Foro regForo, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         var isNew = regForo.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            ForoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ForoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.AddAndUpdate(regForo, uri);
+                return await _foroService.AddAndUpdate(regForo, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                ForoMetrics.RecordCreated(uri);
-                ForoMetrics.RecordCreatedByHour(uri);
+                ForoMetrics.RecordCreated(tenantKey);
+                ForoMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                ForoMetrics.RecordUpdated(uri);
-                ForoMetrics.RecordUpdatedByHour(uri);
+                ForoMetrics.RecordUpdated(tenantKey);
+                ForoMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ForoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: AddAndUpdate failed with exception for uri = {0}", uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ForoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<ForoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<ForoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<ForoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ForoResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.Delete(id, uri);
+                return await _foroService.Delete(id, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                ForoMetrics.RecordDeleted(uri);
-                ForoMetrics.RecordDeletedByHour(uri);
+                ForoMetrics.RecordDeleted(tenantKey);
+                ForoMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ForoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            ForoMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Foro: {0} conflito de FK para uri = {1}", operacao, uri);
+            ForoMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Foro: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<ForoResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: Delete failed with exception for id = {0}, {1}", id, uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<ForoResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<ForoResponse>>> Validation([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<ForoResponse>>> Validation([FromBody] Models.Foro regForo, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = ForoMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            ForoMetrics.RecordInvalid(operacao, uri, stopwatch);
+            ForoMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _foroService.Validation(regForo, uri);
+                return await _foroService.Validation(regForo, tenantKey);
             });
-            ForoMetrics.RecordSuccess(operacao, uri, stopwatch);
+            ForoMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            ForoMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Foro: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            ForoMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Foro: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<ForoResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            ForoMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Foro: Validation failed with exception for uri = {0}", uri);
+            ForoMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Foro: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<ForoResponse>.Fail(ex.Message, 500));
         }
     }

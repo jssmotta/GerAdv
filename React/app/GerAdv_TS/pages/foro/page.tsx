@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IForo } from "@/app/GerAdv_TS/Foro/Interfaces/interface.Foro";
 import { ForoGridAdapter } from "@/app/GerAdv_TS/Foro/Adapter/ForoGridAdapter";
 import ForoGridContainer from "@/app/GerAdv_TS/Foro/Components/ForoGridContainer";

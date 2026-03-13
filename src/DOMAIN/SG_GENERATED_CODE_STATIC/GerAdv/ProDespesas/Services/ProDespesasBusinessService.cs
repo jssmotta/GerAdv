@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProDespesasService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         if (regProDespesas == null)
         {
-            _logger.Warn("ProDespesas: BeforeDeleteAsync - regProDespesas is null for uri = {0}", uri);
+            _logger.Warn("ProDespesas: BeforeDeleteAsync - regProDespesas is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            ProDespesasMetrics.RecordNotFound("BeforeDelete", uri, ProDespesasMetrics.StartTimer());
+            ProDespesasMetrics.RecordNotFound("BeforeDelete", tenantKey, ProDespesasMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = ProDespesasMetrics.StartTimer();
-        _logger.Debug("ProDespesas: BeforeDeleteAsync success for Id={0}, uri={1}", regProDespesas.Id, uri);
+        _logger.Debug("ProDespesas: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regProDespesas.Id, tenantKey);
         // record successful business layer pre-delete
-        ProDespesasMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        ProDespesasMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         var sw = ProDespesasMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("ProDespesas: AfterDeleteAsync - Id={0}, uri={1}", regProDespesas?.Id ?? 0, uri);
+        _logger.Info("ProDespesas: AfterDeleteAsync - Id={0}, tenantKey={1}", regProDespesas?.Id ?? 0, tenantKey);
         // record delete metrics
-        ProDespesasMetrics.RecordDeleted(uri);
-        ProDespesasMetrics.RecordDeletedByHour(uri);
-        ProDespesasMetrics.RecordSuccess("AfterDelete", uri, sw);
+        ProDespesasMetrics.RecordDeleted(tenantKey);
+        ProDespesasMetrics.RecordDeletedByHour(tenantKey);
+        ProDespesasMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("ProDespesas: DeleteErrorAsync - Id={0}, uri={1}", regProDespesas?.Id ?? 0, uri);
+        _logger.Error("ProDespesas: DeleteErrorAsync - Id={0}, tenantKey={1}", regProDespesas?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        ProDespesasMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ProDespesasMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ProDespesasMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ProDespesasMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<ProDespesasResponse> AfterCreateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse> AfterCreateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         var sw = ProDespesasMetrics.StartTimer();
         var result = regProDespesas ?? new ProDespesasResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("ProDespesas: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("ProDespesas: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        ProDespesasMetrics.RecordCreated(uri);
-        ProDespesasMetrics.RecordCreatedByHour(uri);
-        ProDespesasMetrics.RecordSuccess("AfterCreate", uri, sw);
+        ProDespesasMetrics.RecordCreated(tenantKey);
+        ProDespesasMetrics.RecordCreatedByHour(tenantKey);
+        ProDespesasMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<ProDespesasResponse> AfterUpdateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse> AfterUpdateAsync([FromBody] ProDespesasResponse? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         var sw = ProDespesasMetrics.StartTimer();
         var result = regProDespesas ?? new ProDespesasResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("ProDespesas: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        ProDespesasMetrics.RecordUpdated(uri);
-        ProDespesasMetrics.RecordUpdatedByHour(uri);
-        ProDespesasMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("ProDespesas: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        ProDespesasMetrics.RecordUpdated(tenantKey);
+        ProDespesasMetrics.RecordUpdatedByHour(tenantKey);
+        ProDespesasMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.ProDespesas? regProDespesas, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.ProDespesas? regProDespesas, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("ProDespesas: AddAndUpdateErrorAsync - Id={0}, uri={1}", regProDespesas?.Id ?? 0, uri);
+        _logger.Error("ProDespesas: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regProDespesas?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        ProDespesasMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        ProDespesasMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        ProDespesasMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        ProDespesasMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

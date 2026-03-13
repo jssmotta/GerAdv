@@ -31,7 +31,10 @@ const InstanciaWindowId: React.FC<InstanciaWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const instanciaService = useMemo(() => {
     return new InstanciaService(
-      new InstanciaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new InstanciaApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

@@ -12,7 +12,7 @@ public class AdvogadosValidationTests : IDisposable
     private readonly Mock<ICargosReader> _mockCargosReader;
     private readonly Mock<IEscritoriosReader> _mockEscritoriosReader;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AdvogadosValidationTests()
     {
         _validation = new AdvogadosValidation();

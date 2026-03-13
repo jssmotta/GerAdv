@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ICargosService
 {
-    Task<ResultApi<IEnumerable<CargosResponseAll>>> Filter(int max, Filters.FilterCargos filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CargosResponse>> AddAndUpdate(Models.Cargos? regCargos, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CargosResponse>> Validation(Models.Cargos? regCargos, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CargosResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<CargosResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<CargosResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterCargos? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<CargosResponseAll>>> Filter(int max, Filters.FilterCargos filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CargosResponse>> AddAndUpdate(Models.Cargos? regCargos, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CargosResponse>> Validation(Models.Cargos? regCargos, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CargosResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<CargosResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<CargosResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterCargos? filter, string tenantKey = "", CancellationToken token = default);
 }

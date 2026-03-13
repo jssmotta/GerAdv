@@ -37,7 +37,7 @@ public static partial class DBTipoCompromissoDicInfo
     public const string PTabelaNome = "TipoCompromisso";
 #region PropriedadesDaTabela
     public static DBInfoSystem TipIcone => new(0, PTabelaNome, CampoCodigo, Icone, "Icone", "Icone", EDataTypeSystemInfo.SystemInfoNumber, prefixo: "tip");
-    public static DBInfoSystem TipDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, "Descrição", "Descrição", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tip");
+    public static DBInfoSystem TipDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, "Descricao", "Descricao", EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tip");
     public static DBInfoSystem TipFinanceiro => new(0, PTabelaNome, CampoCodigo, Financeiro, "Financeiro", "Financeiro", EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "tip");
     public static DBInfoSystem TipBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tip", isRequired: true);
     public static DBInfoSystem TipGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, "Guid", "Guid", EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tip");

@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class PaisesService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string tenantKey)
     {
         if (regPaises == null)
         {
-            _logger.Warn("Paises: BeforeDeleteAsync - regPaises is null for uri = {0}", uri);
+            _logger.Warn("Paises: BeforeDeleteAsync - regPaises is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            PaisesMetrics.RecordNotFound("BeforeDelete", uri, PaisesMetrics.StartTimer());
+            PaisesMetrics.RecordNotFound("BeforeDelete", tenantKey, PaisesMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = PaisesMetrics.StartTimer();
-        _logger.Debug("Paises: BeforeDeleteAsync success for Id={0}, uri={1}", regPaises.Id, uri);
+        _logger.Debug("Paises: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regPaises.Id, tenantKey);
         // record successful business layer pre-delete
-        PaisesMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        PaisesMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string tenantKey)
     {
         var sw = PaisesMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Paises: AfterDeleteAsync - Id={0}, uri={1}", regPaises?.Id ?? 0, uri);
+        _logger.Info("Paises: AfterDeleteAsync - Id={0}, tenantKey={1}", regPaises?.Id ?? 0, tenantKey);
         // record delete metrics
-        PaisesMetrics.RecordDeleted(uri);
-        PaisesMetrics.RecordDeletedByHour(uri);
-        PaisesMetrics.RecordSuccess("AfterDelete", uri, sw);
+        PaisesMetrics.RecordDeleted(tenantKey);
+        PaisesMetrics.RecordDeletedByHour(tenantKey);
+        PaisesMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Paises: DeleteErrorAsync - Id={0}, uri={1}", regPaises?.Id ?? 0, uri);
+        _logger.Error("Paises: DeleteErrorAsync - Id={0}, tenantKey={1}", regPaises?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        PaisesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        PaisesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        PaisesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        PaisesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<PaisesResponse> AfterCreateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task<PaisesResponse> AfterCreateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string tenantKey)
     {
         var sw = PaisesMetrics.StartTimer();
         var result = regPaises ?? new PaisesResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Paises: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Paises: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        PaisesMetrics.RecordCreated(uri);
-        PaisesMetrics.RecordCreatedByHour(uri);
-        PaisesMetrics.RecordSuccess("AfterCreate", uri, sw);
+        PaisesMetrics.RecordCreated(tenantKey);
+        PaisesMetrics.RecordCreatedByHour(tenantKey);
+        PaisesMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<PaisesResponse> AfterUpdateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string uri)
+    public async Task<PaisesResponse> AfterUpdateAsync([FromBody] PaisesResponse? regPaises, [FromRoute, Required] string tenantKey)
     {
         var sw = PaisesMetrics.StartTimer();
         var result = regPaises ?? new PaisesResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Paises: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        PaisesMetrics.RecordUpdated(uri);
-        PaisesMetrics.RecordUpdatedByHour(uri);
-        PaisesMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Paises: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        PaisesMetrics.RecordUpdated(tenantKey);
+        PaisesMetrics.RecordUpdatedByHour(tenantKey);
+        PaisesMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Paises? regPaises, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Paises? regPaises, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Paises: AddAndUpdateErrorAsync - Id={0}, uri={1}", regPaises?.Id ?? 0, uri);
+        _logger.Error("Paises: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regPaises?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        PaisesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        PaisesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        PaisesMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        PaisesMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

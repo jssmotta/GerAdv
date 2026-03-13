@@ -13,11 +13,13 @@ import { useAppSelector } from "@/app/store/hooks";
 import { selectSystemContext } from "@/app/store/slices/systemContextSlice";
 import { NotificationService } from "@/app/services/notification.service";
 import { NotificationComponent } from "@/app/components/Cruds/NotificationComponent";
-import { IRitoFormProps } from "../../Interfaces/interface.Rito";
+import { IRito, IRitoFormProps } from "../../Interfaces/interface.Rito";
 import { RitoService } from "../../Services/Rito.service";
 import { useRitoForm, useValidationsRito } from "../../Hooks/hookRito";
 import { RitoEmpty } from "../../../Models/Rito";
 import { RitoForm } from "../Forms/RitoForm";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
+import hooks from "@/app/GerAdv_TS_STATIC/Rito/Rito.hooks";
 
 const RitoInc: React.FC<IRitoFormProps> = ({
   id,
@@ -34,13 +36,35 @@ const RitoInc: React.FC<IRitoFormProps> = ({
   );
   const notificationService = new NotificationService();
 
-  const { data, handleChange, loadRito } = useRitoForm(
-    RitoEmpty(),
-    ritoService,
-  );
+  const { data, handleChange, setData } = useRitoForm(RitoEmpty(), ritoService);
+
+  const originalRef = useRef<IRito>(RitoEmpty());
+
+  const handleLoad = async (loadId: number) => {
+    if (!loadId || loadId === 0) {
+      let empty = RitoEmpty();
+      if (hooks.beforeAddForm) {
+        empty = await hooks.beforeAddForm(empty);
+      }
+      originalRef.current = empty;
+      setData(empty);
+      return;
+    }
+    try {
+      let record = await ritoService.fetchRitoById(loadId);
+      originalRef.current = record;
+      if (hooks.beforeLoad) {
+        record = await hooks.beforeLoad(record);
+      }
+      setData(record);
+    } catch (err) {
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
+        console.log("Erro ao carregar Cargo");
+    }
+  };
 
   useEffect(() => {
-    loadRito(id);
+    handleLoad(id);
   }, [id]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +78,44 @@ const RitoInc: React.FC<IRitoFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const savedRito = await ritoService.saveRito(data);
+      let currentRecord = { ...data };
+      const isNew = !currentRecord.id || currentRecord.id === 0;
+
+      // beforeValidation
+      const validationResult = await runBeforeHook(
+        hooks,
+        "beforeValidation",
+        currentRecord,
+      );
+      if (validationResult.cancelled) return;
+      currentRecord = validationResult.record;
+
+      // afterValidation
+      if (hooks.afterValidation) {
+        await hooks.afterValidation(currentRecord, []);
+      }
+
+      // beforeNew or beforeChange
+      if (isNew) {
+        const newResult = await runBeforeHook(
+          hooks,
+          "beforeNew",
+          currentRecord,
+        );
+        if (newResult.cancelled) return;
+        currentRecord = newResult.record;
+      } else {
+        const changeResult = await runBeforeHook(
+          hooks,
+          "beforeChange",
+          currentRecord,
+          originalRef.current,
+        );
+        if (changeResult.cancelled) return;
+        currentRecord = changeResult.record;
+      }
+
+      const savedRito = await ritoService.saveRito(currentRecord);
 
       if (savedRito.id) {
         notificationService.showNotification(
@@ -91,7 +152,7 @@ const RitoInc: React.FC<IRitoFormProps> = ({
   };
 
   const handleReload = () => {
-    loadRito(id);
+    handleLoad(id);
   };
 
   return (

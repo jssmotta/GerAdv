@@ -6,17 +6,17 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IClientesSociosValidation
 {
-    Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class ClientesSociosValidation : IClientesSociosValidation
 {
-    public async Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -67,7 +67,7 @@ public class ClientesSociosValidation : IClientesSociosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -113,7 +113,7 @@ public class ClientesSociosValidation : IClientesSociosValidation
             throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
-            var testaCpf = await IsCpfExists(reg, service, uri);
+            var testaCpf = await IsCpfExists(reg, service, tenantKey);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
             {
                 throw new SGValidationException($"Clientes Socios ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.");
@@ -126,7 +126,7 @@ public class ClientesSociosValidation : IClientesSociosValidation
 
         if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, uri))
+        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, tenantKey))
             throw new SGValidationException($"Clientes Socios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
@@ -151,20 +151,20 @@ public class ClientesSociosValidation : IClientesSociosValidation
         return true;
     }
 
-    private async Task<bool> IsCnpjExists(Models.ClientesSocios reg, IClientesSociosService service, string uri)
+    private async Task<bool> IsCnpjExists(Models.ClientesSocios reg, IClientesSociosService service, string tenantKey)
     {
         if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingClientesSocios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientesSocios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri));
+        var existingClientesSocios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientesSocios { CNPJ = reg.CNPJ.ClearInputCnpj() }, tenantKey));
         var first = existingClientesSocios.Data?.FirstOrDefault();
         return first != null && first.Id > 0 && first.Id != reg.Id;
     }
 
-    private async Task<(bool, ClientesSociosResponseAll? )> IsCpfExists(Models.ClientesSocios reg, IClientesSociosService service, string uri)
+    private async Task<(bool, ClientesSociosResponseAll? )> IsCpfExists(Models.ClientesSocios reg, IClientesSociosService service, string tenantKey)
     {
         if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingClientesSocios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientesSocios { CPF = reg.CPF.ClearInputCpf() }, uri));
+        var existingClientesSocios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientesSocios { CPF = reg.CPF.ClearInputCpf() }, tenantKey));
         var first = existingClientesSocios.Data?.FirstOrDefault();
         return (first != null && first.Id > 0 && first.Id != reg.Id, first);
     }

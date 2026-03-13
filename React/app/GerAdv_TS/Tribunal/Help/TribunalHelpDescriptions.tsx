@@ -10,7 +10,7 @@ import HelpArea from "@/app/GerAdv_TS/Area/Help/HelpArea";
 import HelpJustica from "@/app/GerAdv_TS/Justica/Help/HelpJustica";
 import HelpInstancia from "@/app/GerAdv_TS/Instancia/Help/HelpInstancia";
 
-export const help_lastUpdate = "Atualizado em 06/03/2026";
+export const help_lastUpdate = "Data da última atualização em 12/03/2026 21:55";
 export const help_entityTitle = "Tribunal";
 export const help_infoDescription = "Tribunal";
 
@@ -26,7 +26,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `triArea`,
     caption: `Área`,
-    description: `Área relacionado a Tribunal`,
+    description: `Área relacionado à entidade Tribunal`,
     acceptedValues: `Cadastrados em Área`,
     required: false,
     relatedTable: (
@@ -39,7 +39,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `triJustica`,
     caption: `Justiça`,
-    description: `Justiça relacionado a Tribunal`,
+    description: `Justiça relacionado à entidade Tribunal`,
     acceptedValues: `Cadastrados em Justiça`,
     required: false,
     relatedTable: (
@@ -60,7 +60,7 @@ export const help_helpFields: HelpField[] = [
   {
     columnName: `triInstancia`,
     caption: `Instancia`,
-    description: `Instancia relacionado a Tribunal`,
+    description: `Instancia relacionado à entidade Tribunal`,
     acceptedValues: `Cadastrados em Instancia`,
     required: false,
     relatedTable: (

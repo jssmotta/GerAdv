@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IJusticaService
 {
-    Task<ResultApi<IEnumerable<JusticaResponseAll>>> Filter(int max, Filters.FilterJustica filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<JusticaResponse>> AddAndUpdate(Models.Justica? regJustica, string uri = "", CancellationToken token = default);
-    Task<ResultApi<JusticaResponse>> Validation(Models.Justica? regJustica, string uri = "", CancellationToken token = default);
-    Task<ResultApi<JusticaResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<JusticaResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<JusticaResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterJustica? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<JusticaResponseAll>>> Filter(int max, Filters.FilterJustica filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<JusticaResponse>> AddAndUpdate(Models.Justica? regJustica, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<JusticaResponse>> Validation(Models.Justica? regJustica, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<JusticaResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<JusticaResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<JusticaResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterJustica? filter, string tenantKey = "", CancellationToken token = default);
 }

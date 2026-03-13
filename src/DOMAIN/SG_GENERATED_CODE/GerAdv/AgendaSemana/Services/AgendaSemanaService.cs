@@ -21,12 +21,12 @@ public partial class AgendaSemanaService(IOptions<AppSettings> appSettings, IFAg
     private readonly IAdvogadosReader advogadosReader = advogadosReader;
     private readonly ITipoCompromissoReader tipocompromissoReader = tipocompromissoReader;
     private readonly IClientesReader clientesReader = clientesReader;
-    public async Task<ResultApi<IEnumerable<AgendaSemanaResponseAll>>> Filter(int max, Filters.FilterAgendaSemana filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AgendaSemanaResponseAll>>> Filter(int max, Filters.FilterAgendaSemana filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("AgendaSemana: URI inválida");
+            throw new Exception("AgendaSemana: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -40,27 +40,27 @@ public partial class AgendaSemanaService(IOptions<AppSettings> appSettings, IFAg
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroAgendaSemana(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            AgendaSemanaDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
+            AgendaSemanaDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}-AgendaSemana-Filter-{filterHash}";
+            var cacheKey = $"{tenantKey}-{max}-AgendaSemana-Filter-{filterHash}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Fail($"AgendaSemana - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AgendaSemanaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            AgendaSemanaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<AgendaSemanaResponseAll>>.Fail($"AgendaSemana - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)

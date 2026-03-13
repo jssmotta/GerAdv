@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IArea } from "@/app/GerAdv_TS/Area/Interfaces/interface.Area";
 import { AreaGridAdapter } from "@/app/GerAdv_TS/Area/Adapter/AreaGridAdapter";
 import AreaGridContainer from "@/app/GerAdv_TS/Area/Components/AreaGridContainer";

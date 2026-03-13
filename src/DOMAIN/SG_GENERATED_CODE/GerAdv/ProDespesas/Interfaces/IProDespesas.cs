@@ -6,11 +6,11 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProDespesasService
 {
-    Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> Filter(int max, Filters.FilterProDespesas filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<ProDespesasResponse>> AddAndUpdate(Models.ProDespesas? regProDespesas, string uri = "", CancellationToken token = default);
-    Task<ResultApi<ProDespesasResponse>> Validation(Models.ProDespesas? regProDespesas, string uri = "", CancellationToken token = default);
-    Task<ResultApi<ProDespesasResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<ProDespesasResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> Filter(int max, Filters.FilterProDespesas filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<ProDespesasResponse>> AddAndUpdate(Models.ProDespesas? regProDespesas, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<ProDespesasResponse>> Validation(Models.ProDespesas? regProDespesas, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<ProDespesasResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<ProDespesasResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<ProDespesasResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
 }

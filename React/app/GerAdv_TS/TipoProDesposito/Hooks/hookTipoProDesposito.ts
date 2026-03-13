@@ -182,10 +182,13 @@ export const useTipoProDespositoList = (
 export function useValidationsTipoProDesposito() {
   async function runValidation(
     data: ITipoProDesposito,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const tipoprodespositoApi = new TipoProDespositoApi(uri ?? "", token ?? "");
+    const tipoprodespositoApi = new TipoProDespositoApi(
+      tenantKey ?? "",
+      token ?? "",
+    );
 
     const result = await tipoprodespositoApi.validation(data);
 

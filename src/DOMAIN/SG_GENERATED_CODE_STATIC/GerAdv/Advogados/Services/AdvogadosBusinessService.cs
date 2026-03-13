@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AdvogadosService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         if (regAdvogados == null)
         {
-            _logger.Warn("Advogados: BeforeDeleteAsync - regAdvogados is null for uri = {0}", uri);
+            _logger.Warn("Advogados: BeforeDeleteAsync - regAdvogados is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            AdvogadosMetrics.RecordNotFound("BeforeDelete", uri, AdvogadosMetrics.StartTimer());
+            AdvogadosMetrics.RecordNotFound("BeforeDelete", tenantKey, AdvogadosMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = AdvogadosMetrics.StartTimer();
-        _logger.Debug("Advogados: BeforeDeleteAsync success for Id={0}, uri={1}", regAdvogados.Id, uri);
+        _logger.Debug("Advogados: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regAdvogados.Id, tenantKey);
         // record successful business layer pre-delete
-        AdvogadosMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        AdvogadosMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         var sw = AdvogadosMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Advogados: AfterDeleteAsync - Id={0}, uri={1}", regAdvogados?.Id ?? 0, uri);
+        _logger.Info("Advogados: AfterDeleteAsync - Id={0}, tenantKey={1}", regAdvogados?.Id ?? 0, tenantKey);
         // record delete metrics
-        AdvogadosMetrics.RecordDeleted(uri);
-        AdvogadosMetrics.RecordDeletedByHour(uri);
-        AdvogadosMetrics.RecordSuccess("AfterDelete", uri, sw);
+        AdvogadosMetrics.RecordDeleted(tenantKey);
+        AdvogadosMetrics.RecordDeletedByHour(tenantKey);
+        AdvogadosMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Advogados: DeleteErrorAsync - Id={0}, uri={1}", regAdvogados?.Id ?? 0, uri);
+        _logger.Error("Advogados: DeleteErrorAsync - Id={0}, tenantKey={1}", regAdvogados?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        AdvogadosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AdvogadosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AdvogadosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AdvogadosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<AdvogadosResponse> AfterCreateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse> AfterCreateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         var sw = AdvogadosMetrics.StartTimer();
         var result = regAdvogados ?? new AdvogadosResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Advogados: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Advogados: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        AdvogadosMetrics.RecordCreated(uri);
-        AdvogadosMetrics.RecordCreatedByHour(uri);
-        AdvogadosMetrics.RecordSuccess("AfterCreate", uri, sw);
+        AdvogadosMetrics.RecordCreated(tenantKey);
+        AdvogadosMetrics.RecordCreatedByHour(tenantKey);
+        AdvogadosMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<AdvogadosResponse> AfterUpdateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse> AfterUpdateAsync([FromBody] AdvogadosResponse? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         var sw = AdvogadosMetrics.StartTimer();
         var result = regAdvogados ?? new AdvogadosResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Advogados: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        AdvogadosMetrics.RecordUpdated(uri);
-        AdvogadosMetrics.RecordUpdatedByHour(uri);
-        AdvogadosMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Advogados: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        AdvogadosMetrics.RecordUpdated(tenantKey);
+        AdvogadosMetrics.RecordUpdatedByHour(tenantKey);
+        AdvogadosMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Advogados? regAdvogados, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Advogados? regAdvogados, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Advogados: AddAndUpdateErrorAsync - Id={0}, uri={1}", regAdvogados?.Id ?? 0, uri);
+        _logger.Error("Advogados: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regAdvogados?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        AdvogadosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        AdvogadosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        AdvogadosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        AdvogadosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

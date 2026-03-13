@@ -1,0 +1,23 @@
+@media print {
+  .print-header {
+    padding: 12px 0;
+    border-bottom: 2px solid #1a365d;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #1a365d;
+    text-align: center;
+  }
+
+  .print-footer {
+    padding: 12px 0;
+    border-top: 1px solid #cbd5e0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 9px;
+    color: #718096;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+}

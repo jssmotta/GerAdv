@@ -1,0 +1,121 @@
+ /* Cards Grandes (InitialAvatar) */
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .cards-container-slim {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+    }
+
+    .card-item {
+      background: var(--primary-light);
+      border-radius: 12px;
+      padding: 12px 11px 11px 11px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px var(--primary-light);
+      border: 1px solid #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;      
+    }
+
+    .cards-control {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 8px 16px;
+    }
+
+    .card-item:hover {
+      border-color: #475569;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-item:active {
+      transform: scale(0.98);
+    }
+
+    .avatar-large {
+      width: 56px;
+      height: 56px;
+      max-height: 56px !important;
+      border-radius: 10px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-info {
+      flex: 1;
+    }
+
+    .card-info h3 {
+      color: #e2e8f0;
+      padding-top: 0;
+      margin-top: 0 !important;
+      font-size: 16px;
+      font-weight: 500;      
+    }
+     
+    .avatar-slim {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+   
+ 
+    .card-name {
+        color: var(--kendo-primary-10) !important; 
+        padding-top: 5px !important;
+        display: block;
+    }
+
+    .card-caption {
+        color: var(--kendo-primary-40) !important; 
+        font-size: 0.8em !important;
+    }
+
+    .card-item1 {
+        color: var(--kendo-primary-20) !important; 
+        font-size: 1.2em !important;
+        text-align: right;
+    }
+
+    .card-item2 {
+        color: var(--kendo-primary-10) !important; 
+        font-size: 1em !important;
+        text-align: right;
+    }
+
+    .card-agenda-icon {
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+    }
+
+    .card-related-icon .k-svg-icon > svg {    
+      color: var( --kendo-primary-20);
+      fill: var( --kendo-primary-20);
+      stroke: var( --kendo-primary-20);
+    }

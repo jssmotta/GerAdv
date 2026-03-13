@@ -27,12 +27,12 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
     private readonly IAreaReader areaReader = areaReader;
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IOperadorReader operadorReader = operadorReader;
-    public async Task<ResultApi<IEnumerable<AgendaResponseAll>>> Filter(int max, Filters.FilterAgenda filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<AgendaResponseAll>>> Filter(int max, Filters.FilterAgenda filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Agenda: URI inválida");
+            throw new Exception("Agenda: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -46,28 +46,28 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroAgenda(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            AgendaDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            AgendaDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Agenda-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Agenda-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<AgendaResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<AgendaResponseAll>>.Fail($"Agenda - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<AgendaResponseAll>>.Fail($"Agenda - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -76,7 +76,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
     }
 
-    public async Task<ResultApi<AgendaResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AgendaResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -91,20 +91,20 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            AgendaDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            AgendaDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Agenda-GetById-{id}--{keyCache}", async cancel =>
+            AgendaDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            AgendaDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Agenda-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                AgendaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                AgendaDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<AgendaResponse>.NotFound($"Agenda: Registro não encontrado para id {id}");
@@ -115,25 +115,25 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            AgendaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AgendaResponse>.Fail($"Agenda, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            AgendaDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AgendaResponse>.Fail($"Agenda, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            AgendaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            AgendaDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<AgendaResponse>.Fail($"Agenda - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<AgendaResponse>.Fail($"Agenda - {uri}-: GetById: {ex.Message}", 500);
+            AgendaDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<AgendaResponse>.Fail($"Agenda - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -141,11 +141,11 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return ResultApi<AuditorResponse>.Fail("Agenda: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Agenda: Auditor não encontrado para id {id}");
@@ -156,11 +156,11 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         catch (Exception ex)
         {
             _logger.Error(ex, "Agenda: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Agenda - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Agenda - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<AgendaResponse>> AddAndUpdate(Models.Agenda? regAgenda, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AgendaResponse>> AddAndUpdate(Models.Agenda? regAgenda, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regAgenda == null)
@@ -168,14 +168,14 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return ResultApi<AgendaResponse>.Fail("Agenda: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Agenda: URI inválida");
+            throw new Exception("Agenda: TenantApp inválida");
         }
 
         var connectionStopwatch = AgendaDatabaseMetrics.StartTimer();
         var queryStopwatch = AgendaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -184,9 +184,9 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            AgendaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            AgendaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, uri, oCnn);
+            AgendaDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            AgendaDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -194,12 +194,12 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (SGValidationException ex)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -208,16 +208,16 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         {
             using var saved = await writer.WriteAsync(regAgenda, operadorId, oCnn);
             string tipoQuery = regAgenda.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            AgendaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            AgendaDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regAgenda.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regAgenda.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -225,14 +225,14 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regAgenda, uri);
-            AgendaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regAgenda, tenantKey);
+            AgendaDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            AgendaDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<AgendaResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<AgendaResponse>> Validation(Models.Agenda? regAgenda, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AgendaResponse>> Validation(Models.Agenda? regAgenda, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regAgenda == null)
@@ -240,14 +240,13 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return ResultApi<AgendaResponse>.Fail("Agenda: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Agenda: URI inválida");
+            throw new Exception("Agenda: TenantApp inválida");
         }
 
         var connectionStopwatch = AgendaDatabaseMetrics.StartTimer();
-        var queryStopwatch = AgendaDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -256,9 +255,9 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            AgendaDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            AgendaDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, uri, oCnn);
+            AgendaDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            AgendaDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -266,12 +265,12 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (SGValidationException ex)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -297,7 +296,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
     }
 
-    public async Task<ResultApi<AgendaResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<AgendaResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -305,13 +304,13 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Agenda: URI inválida");
+            throw new Exception("Agenda: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = AgendaDatabaseMetrics.StartTimer();
         var queryStopwatch = AgendaDatabaseMetrics.StartTimer();
@@ -322,9 +321,9 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            AgendaDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            AgendaDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            AgendaDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            AgendaDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -332,44 +331,44 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (SGValidationException ex)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AgendaResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AgendaResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var agenda = await reader.ReadAsync(id ?? default, oCnn);
         if (agenda == null)
         {
-            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AgendaResponse>.NotFound($"Agenda: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(agenda, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(agenda, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(agenda, nOperador, oCnn);
-                AgendaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                AgendaDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(agenda, uri);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(agenda, tenantKey);
             return ResultApi<AgendaResponse>.Ok(agenda);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(agenda, uri);
-            AgendaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(agenda, tenantKey);
+            AgendaDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            AgendaDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<AgendaResponse>.Fail(ex.Message, 500);
         }
     }

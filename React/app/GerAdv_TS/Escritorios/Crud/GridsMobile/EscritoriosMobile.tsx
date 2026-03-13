@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project
 // Source:SOLIDGridsEFormsTSGenerator
 
-// GridsMobileHoook.tsx.txt - Versão Refatorada
+// GridsMobileHoook.tsx.txt
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
@@ -39,9 +39,10 @@ import { ExportButtons } from "@/app/components/Cruds/DockerInc/ExportButtons";
 import { useEscritoriosGrid } from "../../Hooks/hookEscritoriosGrid";
 import "@/app/styles/MobileCrudGrid.css";
 import { useIOSScrollFallback } from "@/app/tools/iosScrollFallback";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import ViewMobile from "@/app/components/Cruds/ViewMobile";
 import ViewMobileContainer from "@/app/components/Cruds/ViewMobileContainer";
+import EscritoriosHelpCrudButton from "../../Help/EscritoriosHelpCrudButton";
 
 interface EscritoriosGridProps {
   data: IEscritorios[];
@@ -323,7 +324,10 @@ export const EscritoriosGridMobileComponent = React.memo(
       <>
         {initialized && (
           <>
-            <PageTitle title="Escritorios" />
+            <PageTitle
+              title="Escritorios"
+              helpButton={<EscritoriosHelpCrudButton isMobile={true} />}
+            />
 
             <ViewMobileContainer
               title="Escritorios"

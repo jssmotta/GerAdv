@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) : IEscritoriosReader
 {
     private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("escCodigo, escNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<EscritoriosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("escCodigo, escNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<EscritoriosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = EscritoriosDatabaseMetrics.StartTimer();
         var connStopwatch = EscritoriosDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         {
             EscritoriosDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             EscritoriosDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBEscritorios.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBEscritorios.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             EscritoriosDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         }
     }
 
-    private async Task<IEnumerable<EscritoriosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<EscritoriosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = EscritoriosDatabaseMetrics.StartTimer();
         var result = new List<EscritoriosResponseAll>(max);

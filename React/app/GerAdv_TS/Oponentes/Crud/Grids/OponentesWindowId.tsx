@@ -31,7 +31,10 @@ const OponentesWindowId: React.FC<OponentesWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const oponentesService = useMemo(() => {
     return new OponentesService(
-      new OponentesApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new OponentesApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

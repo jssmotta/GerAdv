@@ -6,12 +6,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoCompromissoService
 {
-    Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> Filter(int max, Filters.FilterTipoCompromisso filter, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoCompromissoResponse>> AddAndUpdate(Models.TipoCompromisso? regTipoCompromisso, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoCompromissoResponse>> Validation(Models.TipoCompromisso? regTipoCompromisso, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoCompromissoResponse>> Delete(int? id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<TipoCompromissoResponse>> GetById(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> GetAll(int max, string uri = "", CancellationToken token = default);
-    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoCompromisso? filter, string uri = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> Filter(int max, Filters.FilterTipoCompromisso filter, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoCompromissoResponse>> AddAndUpdate(Models.TipoCompromisso? regTipoCompromisso, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoCompromissoResponse>> Validation(Models.TipoCompromisso? regTipoCompromisso, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoCompromissoResponse>> Delete(int? id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<TipoCompromissoResponse>> GetById(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<TipoCompromissoResponseAll>>> GetAll(int max, string tenantKey = "", CancellationToken token = default);
+    Task<ResultApi<IEnumerable<NomeID>>> GetListN(int max, Filters.FilterTipoCompromisso? filter, string tenantKey = "", CancellationToken token = default);
 }

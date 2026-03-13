@@ -175,10 +175,10 @@ export const useEscritoriosList = (
 export function useValidationsEscritorios() {
   async function runValidation(
     data: IEscritorios,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const escritoriosApi = new EscritoriosApi(uri ?? "", token ?? "");
+    const escritoriosApi = new EscritoriosApi(tenantKey ?? "", token ?? "");
 
     const result = await escritoriosApi.validation(data);
 

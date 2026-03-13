@@ -12,7 +12,7 @@ public class FuncionariosValidationTests : IDisposable
     private readonly Mock<ICargosReader> _mockCargosReader;
     private readonly Mock<IFuncaoReader> _mockFuncaoReader;
     private readonly Mock<ICidadeReader> _mockCidadeReader;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public FuncionariosValidationTests()
     {
         _validation = new FuncionariosValidation();

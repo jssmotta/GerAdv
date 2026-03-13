@@ -123,21 +123,21 @@ public class UserService(
 
     #region IUserService Implementation
 
-    public async Task<ResultApi<ValidaUsernameResponse>> ValidaUsername(ValidaUsernameRequest model, string uri)
+    public async Task<ResultApi<ValidaUsernameResponse>> ValidaUsername(ValidaUsernameRequest model, string tenantKey)
     {
         try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<ValidaUsernameResponse>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
-                _logger.Warn("ValidaUsername: URI não é valida {Uri}", uri);
+                _logger.Warn("ValidaUsername: URI não é valida {Uri}", tenantKey);
                 return ResultApi<ValidaUsernameResponse>.Fail("Domínio não encontrado.", 404);
             }
 
-            using var oCnn = await _connectionService.GetConnectionByUriAsync(uri);
+            using var oCnn = await _connectionService.GetConnectionByUriAsync(tenantKey);
             if (oCnn == null)
             {
                 _logger.Warn("ValidaUsername: Conexão nula");
@@ -169,13 +169,13 @@ public class UserService(
                 {
                     Id = result.Id,
                     Username = model.Username,
-                    Uri = uri
+                    TenantKey = tenantKey
                 }
                 : new ValidaUsernameResponse
                 {
                     Id = 0,
                     Username = "Usuário desconhecido",
-                    Uri = ""
+                    TenantKey = ""
                 };
 
             return ResultApi<ValidaUsernameResponse>.Ok(response);
@@ -187,28 +187,28 @@ public class UserService(
         }
     }
 
-    public async Task<ResultApi<AuthenticateResponse>> Authenticate3(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> Authenticate3(AuthenticateRequest model, string tenantKey)
     {
         try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
-                _logger.Warn("Authenticate: URI não é valida {Uri}", uri);
+                _logger.Warn("Authenticate: URI não é valida {Uri}", tenantKey);
                 return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
-            using var oCnn = await _connectionService.GetConnectionByUriAsync(uri);
+            using var oCnn = await _connectionService.GetConnectionByUriAsync(tenantKey);
             if (oCnn == null)
             {
                 _logger.Warn("Authenticate: Conexão nula");
                 return ResultApi<AuthenticateResponse>.Fail("Erro de conexão com a base de dados.", 500);
             }
 
-            var user = await AuthenticateUserAsync(model, uri, oCnn);
+            var user = await AuthenticateUserAsync(model, tenantKey, oCnn);
             if (user == null)
                 return ResultApi<AuthenticateResponse>.Fail("Credenciais inválidas", 401);
 
@@ -218,7 +218,7 @@ public class UserService(
                 var token = await GenerateJwtToken(user);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
-                var response = new AuthenticateResponse(user, token64, tipo, uri);
+                var response = new AuthenticateResponse(user, token64, tipo, tenantKey);
                 return ResultApi<AuthenticateResponse>.Ok(response);
             }
             catch (Exception ex)
@@ -234,7 +234,7 @@ public class UserService(
         }
     }
 
-    private async Task<OperadorResponse?> AuthenticateUserAsync(AuthenticateRequest model, string uri, MsiSqlConnection oCnn)
+    private async Task<OperadorResponse?> AuthenticateUserAsync(AuthenticateRequest model, string tenantKey, MsiSqlConnection oCnn)
     {
         var decodedUsername = model.Username.DecodeBase64();
         var passwordHash = model.Password.DecodeBase64().GetHashCode2();
@@ -323,19 +323,19 @@ public class UserService(
         }
     }
 
-    public async Task<ResultApi<OperadorResponse>> GetById(int id, string uri)
+    public async Task<ResultApi<OperadorResponse>> GetById(int id, string tenantKey)
     {
         try
         {
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<OperadorResponse>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
                 return ResultApi<OperadorResponse>.Fail("URI inválida", 400);
             }
 
-            var cacheKey = $"{uri}-User-GetById-{id}";
+            var cacheKey = $"{tenantKey}-User-GetById-{id}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(60),
@@ -344,7 +344,7 @@ public class UserService(
 
             var result = await _cache.GetOrCreateAsync(
                 cacheKey,
-                async cancel => await GetDataByIdAsync(id, uri, cancel),
+                async cancel => await GetDataByIdAsync(id, tenantKey, cancel),
                 entryOptions);
 
             if (result == null)
@@ -359,23 +359,23 @@ public class UserService(
         }
     }
 
-    private async Task<OperadorResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
+    private async Task<OperadorResponse?> GetDataByIdAsync(int id, string tenantKey, CancellationToken token)
     {
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         var oCnn = scope.Connection;
         return oCnn == null ? null :
             await Task.Run(() => _reader.ReadAsync(id, oCnn), token);
     }
 
     [Authorize]
-    public async Task<ResultApi<string>> Reset(string uri)
+    public async Task<ResultApi<string>> Reset(string tenantKey)
     {
         try
         {
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<string>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
                 return ResultApi<string>.Fail("URI inválida", 400);
             }
@@ -387,7 +387,7 @@ public class UserService(
                     return ResultApi<string>.Fail("Usuário não autenticado", 401);
 
                 var userId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-                using var oCnn = await _connectionService.GetConnectionByUriRwAsync(uri);
+                using var oCnn = await _connectionService.GetConnectionByUriRwAsync(tenantKey);
                 var dbU = await _operadorFactory.CreateFromIdAsync(userId, oCnn);
                 if (dbU.ID > 0)
                 {
@@ -414,22 +414,22 @@ public class UserService(
     }
 
     [Authorize]
-    public async Task<ResultApi<bool>> SetPassword(int id, string password, string uri)
+    public async Task<ResultApi<bool>> SetPassword(int id, string password, string tenantKey)
     {
         try
         {
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<bool>.Fail("URI não pode ser vazia", 400);
 
             if (string.IsNullOrEmpty(password))
                 return ResultApi<bool>.Fail("Senha não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
                 return ResultApi<bool>.Fail("URI inválida", 400);
             }
 
-            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
             var oCnn = scope.Connection;
             if (oCnn == null)
                 return ResultApi<bool>.Fail("Erro de conexão com a base de dados.", 500);
@@ -446,7 +446,7 @@ public class UserService(
 
             dbRec.Senha256 = password.GetHashCode2();
 
-            var result = await _operService.AddAndUpdate(dbRec, uri);
+            var result = await _operService.AddAndUpdate(dbRec, tenantKey);
 
             if (result != null && result?.Data?.Id > 0)
                 return ResultApi<bool>.Ok(true, "Senha alterada com sucesso");
@@ -460,23 +460,23 @@ public class UserService(
         }
     }
 
-    public async Task<ResultApi<AuthenticateResponse>> ResetPassword(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> ResetPassword(AuthenticateRequest model, string tenantKey)
     {
         try
         {
             if (model == null)
                 return ResultApi<AuthenticateResponse>.Fail("Modelo não pode ser nulo", 400);
 
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
-                _logger.Warn("ResetPassword: URI não é valida {Uri}", uri);
+                _logger.Warn("ResetPassword: URI não é valida {Uri}", tenantKey);
                 return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
-            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
             var oCnn = scope.Connection;
             if (oCnn == null)
             {
@@ -522,12 +522,12 @@ public class UserService(
                         <p class=""alert"">Se não foi você que solicitou o reset, por favor, ignore este e-mail.</p>",
                         NomeDoMail = "MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 1,
-                        Uri = uri,
+                        TenantApp = tenantKey,
                         EmailNet = dbU.FEMailNet!
 
                     });
 
-                    var response = new AuthenticateResponse(resultReset, token64, RESET_KEY, uri);
+                    var response = new AuthenticateResponse(resultReset, token64, RESET_KEY, tenantKey);
                     return ResultApi<AuthenticateResponse>.Ok(response, "Senha resetada com sucesso. Verifique seu e-mail.");
                 }
             }
@@ -541,21 +541,21 @@ public class UserService(
         }
     }
 
-    public async Task<ResultApi<AuthenticateResponse>> ChangePassword(AuthenticateRequest model, string uri)
+    public async Task<ResultApi<AuthenticateResponse>> ChangePassword(AuthenticateRequest model, string tenantKey)
     {
         try
         {
             ArgumentNullException.ThrowIfNull(model);
-            if (string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(tenantKey))
                 return ResultApi<AuthenticateResponse>.Fail("URI não pode ser vazia", 400);
 
-            if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+            if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
             {
-                _logger.Warn("ChangePassword: URI não é valida {Uri}", uri);
+                _logger.Warn("ChangePassword: URI não é valida {Uri}", tenantKey);
                 return ResultApi<AuthenticateResponse>.Fail("URI inválida", 400);
             }
 
-            using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
             var oCnn = scope.Connection;
             if (oCnn == null)
             {
@@ -602,9 +602,9 @@ public class UserService(
                 {
                     dbU.Senha256 = model.Password.DecodeBase64();
 
-                    _ = await _operService.AddAndUpdate(dbU, uri);
+                    _ = await _operService.AddAndUpdate(dbU, tenantKey);
 
-                    var response = new AuthenticateResponse(resultReset, "", "", uri);
+                    var response = new AuthenticateResponse(resultReset, "", "", tenantKey);
                     return ResultApi<AuthenticateResponse>.Ok(response, "Senha alterada com sucesso");
                 }
                 else
@@ -625,22 +625,22 @@ public class UserService(
 
     public Task<ResultApi<AuthenticateResponse>> SelfAuthenticate(AuthenticateRequest model)
     {
-        // Try to obtain uri from the current HTTP context route values (controller route contains {uri})
+        // Try to obtain tenantKey from the current HTTP context route values (controller route contains {tenantKey})
         var httpContext = _httpContextAccessor?.HttpContext;
-        string? uri = null;
+        string? tenantKey = null;
 
         try
         {
             if (httpContext != null)
             {
-                if (httpContext.Request.RouteValues.TryGetValue("uri", out var routeUri))
+                if (httpContext.Request.RouteValues.TryGetValue("tenantKey", out var routeUri))
                 {
-                    uri = routeUri?.ToString();
+                    tenantKey = routeUri?.ToString();
                 }
                 // fallback to querystring if route value not present
-                if (string.IsNullOrEmpty(uri) && httpContext.Request.Query.ContainsKey("uri"))
+                if (string.IsNullOrEmpty(tenantKey) && httpContext.Request.Query.ContainsKey("tenantKey"))
                 {
-                    uri = httpContext.Request.Query["uri"].FirstOrDefault();
+                    tenantKey = httpContext.Request.Query["tenantKey"].FirstOrDefault();
                 }
             }
         }
@@ -650,12 +650,12 @@ public class UserService(
         }
 
         // Fallback to demo URI from settings if still null/empty
-        if (string.IsNullOrEmpty(uri))
+        if (string.IsNullOrEmpty(tenantKey))
         {
-            uri = _appSettings?.Value?.DemoURI ?? string.Empty;
+            tenantKey = _appSettings?.Value?.DemoURI ?? string.Empty;
         }
 
-        return Authenticate3(model, uri);
+        return Authenticate3(model, tenantKey);
     }
 
     #endregion

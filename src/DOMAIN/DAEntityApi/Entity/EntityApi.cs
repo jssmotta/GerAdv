@@ -19,7 +19,7 @@ public static class EntityApi
 
     const string bearer = "TnBURktxSmJmbkZ2dHlDWkpweFdYTnNwRnBvak5ibTM=";
 
-    public static string? uri;
+    public static string? tenantKey;
     public static string? usuario;
     public static string? senha;
 
@@ -33,7 +33,7 @@ public static class EntityApi
             if (Token.Length == 0) return default;
         }
 
-        var apiUrl = $"{APIUrl}{uri}/";
+        var apiUrl = $"{APIUrl}{tenantKey}/";
 
         using var client = new HttpClient
         {
@@ -81,7 +81,7 @@ public static class EntityApi
         try
         {
             //var response = await client.PostAsync($"{apiUrl}users/authenticate", content);
-            var response = client.PostAsync($"{APIUrl}{uri}/users/authenticate", content).Result;
+            var response = client.PostAsync($"{APIUrl}{tenantKey}/users/authenticate", content).Result;
             response.EnsureSuccessStatusCode();
 
             if (!response.IsSuccessStatusCode)

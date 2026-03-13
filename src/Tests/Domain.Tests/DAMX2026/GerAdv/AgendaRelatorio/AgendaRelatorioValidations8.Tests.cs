@@ -9,7 +9,7 @@ public class AgendaRelatorioValidationTests : IDisposable
     private readonly AgendaRelatorioValidation _validation;
     private readonly Mock<IAgendaRelatorioService> _mockAgendaRelatorioService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
-    private readonly string _validUri = "test-uri";
+    private readonly string _validUri = "test-tenantKey";
     public AgendaRelatorioValidationTests()
     {
         _validation = new AgendaRelatorioValidation();

@@ -22,12 +22,12 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IAreaReader areaReader = areaReader;
     private readonly IInstanciaService instanciaService = instanciaService;
-    public async Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> Filter(int max, Filters.FilterTipoRecurso filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<TipoRecursoResponseAll>>> Filter(int max, Filters.FilterTipoRecurso filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoRecurso: URI inválida");
+            throw new Exception("TipoRecurso: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -41,28 +41,28 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroTipoRecurso(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}TipoRecurso-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}TipoRecurso-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<TipoRecursoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<TipoRecursoResponseAll>>.Fail($"TipoRecurso - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<TipoRecursoResponseAll>>.Fail($"TipoRecurso - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
     }
 
-    public async Task<ResultApi<TipoRecursoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<TipoRecursoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -86,20 +86,20 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            TipoRecursoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoRecurso-GetById-{id}--{keyCache}", async cancel =>
+            TipoRecursoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-TipoRecurso-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                TipoRecursoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                TipoRecursoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<TipoRecursoResponse>.NotFound($"TipoRecurso: Registro não encontrado para id {id}");
@@ -110,25 +110,25 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoRecursoResponse>.Fail($"TipoRecurso, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoRecursoResponse>.Fail($"TipoRecurso, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<TipoRecursoResponse>.Fail($"TipoRecurso - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<TipoRecursoResponse>.Fail($"TipoRecurso - {uri}-: GetById: {ex.Message}", 500);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<TipoRecursoResponse>.Fail($"TipoRecurso - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<TipoRecursoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -136,11 +136,11 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             return ResultApi<AuditorResponse>.Fail("TipoRecurso: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"TipoRecurso: Auditor não encontrado para id {id}");
@@ -151,11 +151,11 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         catch (Exception ex)
         {
             _logger.Error(ex, "TipoRecurso: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"TipoRecurso - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"TipoRecurso - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<TipoRecursoResponse>> AddAndUpdate(Models.TipoRecurso? regTipoRecurso, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoRecursoResponse>> AddAndUpdate(Models.TipoRecurso? regTipoRecurso, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoRecurso == null)
@@ -163,14 +163,14 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             return ResultApi<TipoRecursoResponse>.Fail("TipoRecurso: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoRecurso: URI inválida");
+            throw new Exception("TipoRecurso: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -179,9 +179,9 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
 
         try
         {
-            TipoRecursoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
+            TipoRecursoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -189,12 +189,12 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (SGValidationException ex)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -203,16 +203,16 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         {
             using var saved = await writer.WriteAsync(regTipoRecurso, operadorId, oCnn);
             string tipoQuery = regTipoRecurso.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            TipoRecursoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            TipoRecursoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regTipoRecurso.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regTipoRecurso.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -220,14 +220,14 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regTipoRecurso, uri);
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regTipoRecurso, tenantKey);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<TipoRecursoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<TipoRecursoResponse>> Validation(Models.TipoRecurso? regTipoRecurso, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoRecursoResponse>> Validation(Models.TipoRecurso? regTipoRecurso, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regTipoRecurso == null)
@@ -235,14 +235,13 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             return ResultApi<TipoRecursoResponse>.Fail("TipoRecurso: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoRecurso: URI inválida");
+            throw new Exception("TipoRecurso: TenantApp inválida");
         }
 
         var connectionStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
-        var queryStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -251,9 +250,9 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
 
         try
         {
-            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
+            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -261,12 +260,12 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (SGValidationException ex)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -292,7 +291,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
     }
 
-    public async Task<ResultApi<TipoRecursoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<TipoRecursoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -300,13 +299,13 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("TipoRecurso: URI inválida");
+            throw new Exception("TipoRecurso: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
         var queryStopwatch = TipoRecursoDatabaseMetrics.StartTimer();
@@ -317,9 +316,9 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
 
         try
         {
-            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            TipoRecursoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, instanciaService, uri, oCnn);
+            TipoRecursoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            TipoRecursoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, instanciaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -327,44 +326,44 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (SGValidationException ex)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoRecursoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoRecursoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var tiporecurso = await reader.ReadAsync(id ?? default, oCnn);
         if (tiporecurso == null)
         {
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoRecursoResponse>.NotFound($"TipoRecurso: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(tiporecurso, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(tiporecurso, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(tiporecurso, nOperador, oCnn);
-                TipoRecursoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                TipoRecursoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(tiporecurso, uri);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(tiporecurso, tenantKey);
             return ResultApi<TipoRecursoResponse>.Ok(tiporecurso);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(tiporecurso, uri);
-            TipoRecursoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(tiporecurso, tenantKey);
+            TipoRecursoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            TipoRecursoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<TipoRecursoResponse>.Fail(ex.Message, 500);
         }
     }

@@ -4,7 +4,7 @@
 // Entity:Instancia
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class InstanciaController(IInstanciaService instanciaService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<InstanciaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<InstanciaResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.GetAll(max, uri);
+                return await _instanciaService.GetAll(max, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<InstanciaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: GetAll failed with exception for uri = {0}", uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<InstanciaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<InstanciaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterInstancia filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<InstanciaResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterInstancia filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            InstanciaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.Filter(max, filter, uri);
+                return await _instanciaService.Filter(max, filter, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<InstanciaResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: Filter failed with exception for uri = {0}", uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<InstanciaResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<InstanciaResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<InstanciaResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.GetById(id, uri, token);
+                return await _instanciaService.GetById(id, tenantKey, token);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            InstanciaMetrics.RecordReadByHour(uri);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            InstanciaMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<InstanciaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: GetById failed with exception for id = {0}, {1}", id, uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<InstanciaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.GetAuditor(id, uri, token);
+                return await _instanciaService.GetAuditor(id, tenantKey, token);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterInstancia? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterInstancia? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            InstanciaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.GetListN(max, filtro, uri);
+                return await _instanciaService.GetListN(max, filtro, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
-            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            InstanciaMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: GetListN failed with exception for uri = {0}", uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<InstanciaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<InstanciaResponse>>> AddAndUpdate([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<InstanciaResponse>>> AddAndUpdate([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         var isNew = regInstancia.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            InstanciaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.AddAndUpdate(regInstancia, uri);
+                return await _instanciaService.AddAndUpdate(regInstancia, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                InstanciaMetrics.RecordCreated(uri);
-                InstanciaMetrics.RecordCreatedByHour(uri);
+                InstanciaMetrics.RecordCreated(tenantKey);
+                InstanciaMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                InstanciaMetrics.RecordUpdated(uri);
-                InstanciaMetrics.RecordUpdatedByHour(uri);
+                InstanciaMetrics.RecordUpdated(tenantKey);
+                InstanciaMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<InstanciaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: AddAndUpdate failed with exception for uri = {0}", uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<InstanciaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<InstanciaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<InstanciaResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<InstanciaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<InstanciaResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.Delete(id, uri);
+                return await _instanciaService.Delete(id, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                InstanciaMetrics.RecordDeleted(uri);
-                InstanciaMetrics.RecordDeletedByHour(uri);
+                InstanciaMetrics.RecordDeleted(tenantKey);
+                InstanciaMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<InstanciaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            InstanciaMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Instancia: {0} conflito de FK para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Instancia: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<InstanciaResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: Delete failed with exception for id = {0}, {1}", id, uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<InstanciaResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<InstanciaResponse>>> Validation([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<InstanciaResponse>>> Validation([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = InstanciaMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            InstanciaMetrics.RecordInvalid(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class InstanciaController(IInstanciaService instanciaService) : C
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _instanciaService.Validation(regInstancia, uri);
+                return await _instanciaService.Validation(regInstancia, tenantKey);
             });
-            InstanciaMetrics.RecordSuccess(operacao, uri, stopwatch);
+            InstanciaMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            InstanciaMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            InstanciaMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Instancia: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<InstanciaResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            InstanciaMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Instancia: Validation failed with exception for uri = {0}", uri);
+            InstanciaMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Instancia: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<InstanciaResponse>.Fail(ex.Message, 500));
         }
     }

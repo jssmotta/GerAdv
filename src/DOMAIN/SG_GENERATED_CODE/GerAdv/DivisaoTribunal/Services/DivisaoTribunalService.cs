@@ -24,12 +24,12 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IForoReader foroReader = foroReader;
     private readonly ITribunalReader tribunalReader = tribunalReader;
-    public async Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> Filter(int max, Filters.FilterDivisaoTribunal filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<DivisaoTribunalResponseAll>>> Filter(int max, Filters.FilterDivisaoTribunal filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("DivisaoTribunal: URI inválida");
+            throw new Exception("DivisaoTribunal: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -43,28 +43,28 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroDivisaoTribunal(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}DivisaoTribunal-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}DivisaoTribunal-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail($"DivisaoTribunal - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<DivisaoTribunalResponseAll>>.Fail($"DivisaoTribunal - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    public async Task<ResultApi<DivisaoTribunalResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<DivisaoTribunalResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -88,20 +88,20 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-DivisaoTribunal-GetById-{id}--{keyCache}", async cancel =>
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-DivisaoTribunal-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                DivisaoTribunalDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                DivisaoTribunalDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<DivisaoTribunalResponse>.NotFound($"DivisaoTribunal: Registro não encontrado para id {id}");
@@ -112,25 +112,25 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<DivisaoTribunalResponse>.Fail($"DivisaoTribunal, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<DivisaoTribunalResponse>.Fail($"DivisaoTribunal, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Fail($"DivisaoTribunal - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<DivisaoTribunalResponse>.Fail($"DivisaoTribunal - {uri}-: GetById: {ex.Message}", 500);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<DivisaoTribunalResponse>.Fail($"DivisaoTribunal - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<DivisaoTribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -138,11 +138,11 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return ResultApi<AuditorResponse>.Fail("DivisaoTribunal: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"DivisaoTribunal: Auditor não encontrado para id {id}");
@@ -153,11 +153,11 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         catch (Exception ex)
         {
             _logger.Error(ex, "DivisaoTribunal: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"DivisaoTribunal - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"DivisaoTribunal - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<DivisaoTribunalResponse>> AddAndUpdate(Models.DivisaoTribunal? regDivisaoTribunal, string uri, CancellationToken token = default)
+    public async Task<ResultApi<DivisaoTribunalResponse>> AddAndUpdate(Models.DivisaoTribunal? regDivisaoTribunal, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regDivisaoTribunal == null)
@@ -165,14 +165,14 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return ResultApi<DivisaoTribunalResponse>.Fail("DivisaoTribunal: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("DivisaoTribunal: URI inválida");
+            throw new Exception("DivisaoTribunal: TenantApp inválida");
         }
 
         var connectionStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
         var queryStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -181,9 +181,9 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -191,12 +191,12 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -205,16 +205,16 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         {
             using var saved = await writer.WriteAsync(regDivisaoTribunal, operadorId, oCnn);
             string tipoQuery = regDivisaoTribunal.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            DivisaoTribunalDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regDivisaoTribunal.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regDivisaoTribunal.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -222,14 +222,14 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regDivisaoTribunal, uri);
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regDivisaoTribunal, tenantKey);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<DivisaoTribunalResponse>> Validation(Models.DivisaoTribunal? regDivisaoTribunal, string uri, CancellationToken token = default)
+    public async Task<ResultApi<DivisaoTribunalResponse>> Validation(Models.DivisaoTribunal? regDivisaoTribunal, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regDivisaoTribunal == null)
@@ -237,14 +237,13 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return ResultApi<DivisaoTribunalResponse>.Fail("DivisaoTribunal: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("DivisaoTribunal: URI inválida");
+            throw new Exception("DivisaoTribunal: TenantApp inválida");
         }
 
         var connectionStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
-        var queryStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -253,9 +252,9 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -263,12 +262,12 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -294,7 +293,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    public async Task<ResultApi<DivisaoTribunalResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<DivisaoTribunalResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -302,13 +301,13 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("DivisaoTribunal: URI inválida");
+            throw new Exception("DivisaoTribunal: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
         var queryStopwatch = DivisaoTribunalDatabaseMetrics.StartTimer();
@@ -319,9 +318,9 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            DivisaoTribunalDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            DivisaoTribunalDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -329,44 +328,44 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (SGValidationException ex)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var divisaotribunal = await reader.ReadAsync(id ?? default, oCnn);
         if (divisaotribunal == null)
         {
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.NotFound($"DivisaoTribunal: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(divisaotribunal, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(divisaotribunal, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(divisaotribunal, nOperador, oCnn);
-                DivisaoTribunalDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                DivisaoTribunalDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(divisaotribunal, uri);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(divisaotribunal, tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Ok(divisaotribunal);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(divisaotribunal, uri);
-            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(divisaotribunal, tenantKey);
+            DivisaoTribunalDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            DivisaoTribunalDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<DivisaoTribunalResponse>.Fail(ex.Message, 500);
         }
     }

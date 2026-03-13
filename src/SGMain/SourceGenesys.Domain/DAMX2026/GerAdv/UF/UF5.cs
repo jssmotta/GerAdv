@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 public partial class DBUF
 {
-    public const string CadastroGuid = "4f186c3b-97f9-4d0c-a35d-d07b902dbb88";
+    public const string CadastroGuid = "d2a5d2b9-bc79-4e73-8e2a-6c5c5f16a67c";
     public const string PTabelaNome = "UF";
     public const string CamposSqlX = " UF.* ";
     public const string CampoCodigo = "ufCodigo";

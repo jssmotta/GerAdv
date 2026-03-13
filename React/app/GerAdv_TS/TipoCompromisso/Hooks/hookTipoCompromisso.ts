@@ -182,10 +182,13 @@ export const useTipoCompromissoList = (
 export function useValidationsTipoCompromisso() {
   async function runValidation(
     data: ITipoCompromisso,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const tipocompromissoApi = new TipoCompromissoApi(uri ?? "", token ?? "");
+    const tipocompromissoApi = new TipoCompromissoApi(
+      tenantKey ?? "",
+      token ?? "",
+    );
 
     const result = await tipocompromissoApi.validation(data);
 

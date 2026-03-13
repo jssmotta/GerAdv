@@ -168,10 +168,10 @@ export const useAreaList = (
 export function useValidationsArea() {
   async function runValidation(
     data: IArea,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const areaApi = new AreaApi(uri ?? "", token ?? "");
+    const areaApi = new AreaApi(tenantKey ?? "", token ?? "");
 
     const result = await areaApi.validation(data);
 

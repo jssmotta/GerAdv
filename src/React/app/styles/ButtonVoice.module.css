@@ -1,0 +1,57 @@
+/* Estilos customizados para o ButtonVoice */
+.button-voice-dialog .k-dialog {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Animação para o botão do microfone quando está escutando */
+.button-voice-listening {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(255, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+  }
+}
+
+/* Estilo para mobile - ocupar tela toda */
+@media (max-width: 768px) {
+  .button-voice-dialog .k-dialog {
+    border-radius: 0;
+    margin: 0;
+  }
+  
+  .button-voice-dialog .k-dialog-content {
+    padding: 16px;
+  }
+}
+
+/* Animação de fade para mensagens */
+.voice-message-fade {
+  animation: fadeInOut 0.3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Spinner personalizado */
+.voice-spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007acc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

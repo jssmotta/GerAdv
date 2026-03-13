@@ -31,7 +31,10 @@ const JusticaWindowId: React.FC<JusticaWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const justicaService = useMemo(() => {
     return new JusticaService(
-      new JusticaApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new JusticaApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

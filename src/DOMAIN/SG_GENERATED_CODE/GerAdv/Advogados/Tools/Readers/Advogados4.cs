@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdvogadosReader
 {
     private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("advCodigo, advNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<AdvogadosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("advCodigo, advNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<AdvogadosResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = AdvogadosDatabaseMetrics.StartTimer();
         var connStopwatch = AdvogadosDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
         {
             AdvogadosDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             AdvogadosDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAdvogados.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBAdvogados.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             AdvogadosDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
         }
     }
 
-    private async Task<IEnumerable<AdvogadosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<AdvogadosResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = AdvogadosDatabaseMetrics.StartTimer();
         var result = new List<AdvogadosResponseAll>(max);

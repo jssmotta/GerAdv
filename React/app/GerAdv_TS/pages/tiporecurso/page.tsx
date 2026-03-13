@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { ITipoRecurso } from "@/app/GerAdv_TS/TipoRecurso/Interfaces/interface.TipoRecurso";
 import { TipoRecursoGridAdapter } from "@/app/GerAdv_TS/TipoRecurso/Adapter/TipoRecursoGridAdapter";
 import TipoRecursoGridContainer from "@/app/GerAdv_TS/TipoRecurso/Components/TipoRecursoGridContainer";

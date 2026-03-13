@@ -31,7 +31,10 @@ const TipoRecursoWindowId: React.FC<TipoRecursoWindowIdProps> = ({
   const systemContext = useAppSelector(selectSystemContext);
   const tiporecursoService = useMemo(() => {
     return new TipoRecursoService(
-      new TipoRecursoApi(systemContext?.TenantApp ?? "", systemContext?.Token ?? ""),
+      new TipoRecursoApi(
+        systemContext?.TenantApp ?? "",
+        systemContext?.Token ?? "",
+      ),
     );
   }, [systemContext?.TenantApp, systemContext?.Token]);
 

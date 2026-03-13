@@ -6,7 +6,7 @@
 // Main.tsx.txt
 "use client";
 import { PageLayout } from "@/app/components/Cruds/PageLayout";
-import { PageTitle } from "@/app/components/PageTitle";
+import { PageTitle } from "@/app/components/Cruds/PageTitle";
 import { IDivisaoTribunal } from "@/app/GerAdv_TS/DivisaoTribunal/Interfaces/interface.DivisaoTribunal";
 import { DivisaoTribunalGridAdapter } from "@/app/GerAdv_TS/DivisaoTribunal/Adapter/DivisaoTribunalGridAdapter";
 import DivisaoTribunalGridContainer from "@/app/GerAdv_TS/DivisaoTribunal/Components/DivisaoTribunalGridContainer";

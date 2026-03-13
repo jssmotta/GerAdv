@@ -32,6 +32,8 @@ import {
 import { useColaboradoresFilter } from "../../Hooks/hookColaboradoresFilter";
 import GenericFilterDialog from "@/app/components/Cruds/GenericFilterDialog";
 import { ICommandSpeakerRequest } from "@/app/models/ICommandSpeakerRequest";
+import hooks from "@/app/GerAdv_TS_STATIC/Colaboradores/Colaboradores.hooks";
+import { runBeforeHook } from "@/app/hooks/CrudHooks";
 
 interface ColaboradoresGridProps {
   selectItem?: (item: IColaboradores) => void;
@@ -92,15 +94,21 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
       try {
         const offlineData = await colaboradoresService.getAll(
           filtro ?? ({} as FilterColaboradores),
-          (onlineData) => {
-            setColaboradoresData(onlineData);
+          async (onlineData) => {
+            const processed = hooks.beforeList
+              ? await hooks.beforeList(onlineData)
+              : onlineData;
+            setColaboradoresData(processed);
             setLoading(false);
             setError(null);
           },
         );
 
         if (offlineData && offlineData.length > 0) {
-          setColaboradoresData(offlineData);
+          const processed = hooks.beforeList
+            ? await hooks.beforeList(offlineData)
+            : offlineData;
+          setColaboradoresData(processed);
           setLoading(false);
         } else {
           setColaboradoresData([]);
@@ -113,6 +121,18 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
     },
     [],
   );
+
+  const {
+    showSearch,
+    windowFilter,
+    setWindowFilter,
+    handleSearch,
+    handleCloseSearch,
+    handleConfirmSearch,
+    renderInputFilters,
+    clearFilter,
+    hasActiveFilter,
+  } = useColaboradoresFilter({ handleFetchWithFilter });
 
   const loadFilter = useCallback(() => {
     if (isInitialized) return;
@@ -131,6 +151,11 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
     setIsInitialized(true);
   }, [isInitialized, handleFetchWithFilter]);
 
+  useEffect(() => {
+    if (currFilter && Object.keys(currFilter).length > 0) {
+      setWindowFilter(currFilter);
+    }
+  }, [currFilter, setWindowFilter]);
   const handleRowClick = (colaboradores: IColaboradores) => {
     setSelectedColaboradores(colaboradores);
     setShowInc(true);
@@ -142,8 +167,11 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
     }
   }, [isInitialized, loadFilter]);
 
-  const handleAdd = () => {
-    setSelectedColaboradores(ColaboradoresEmpty());
+  const handleAdd = async () => {
+    let empty = ColaboradoresEmpty();
+    if (hooks.beforeAddForm) {
+      empty = await hooks.beforeAddForm(empty);
+    }
     setShowInc(true);
   };
 
@@ -169,8 +197,24 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
 
   const confirmDelete = async () => {
     if (deleteId !== null) {
+      const toDelete = colaboradoresData.find((c) => c.id === deleteId);
+
+      if (toDelete) {
+        const { cancelled } = await runBeforeHook(
+          hooks,
+          "beforeDelete",
+          toDelete,
+        );
+        if (cancelled) {
+          setDeleteId(null);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+
       try {
         await colaboradoresService.deleteColaboradores(deleteId);
+        if (toDelete && hooks.afterDelete) await hooks.afterDelete(toDelete);
       } catch (error) {
         if (process.env.NEXT_PUBLIC_SHOW_LOG === "1")
           console.log("Erro ao excluir");
@@ -203,24 +247,6 @@ const ColaboradoresGrid: React.FC<ColaboradoresGridProps> = ({
       unsubscribe();
     };
   }, [currFilter]);
-
-  const {
-    showSearch,
-    windowFilter,
-    setWindowFilter,
-    handleSearch,
-    handleCloseSearch,
-    handleConfirmSearch,
-    renderInputFilters,
-    clearFilter,
-    hasActiveFilter,
-  } = useColaboradoresFilter({ handleFetchWithFilter });
-
-  useEffect(() => {
-    if (currFilter && Object.keys(currFilter).length > 0) {
-      setWindowFilter(currFilter);
-    }
-  }, [currFilter, setWindowFilter]);
 
   const handleVoiceFilter = useCallback(
     async (voiceCommand: ICommandSpeakerRequest) => {

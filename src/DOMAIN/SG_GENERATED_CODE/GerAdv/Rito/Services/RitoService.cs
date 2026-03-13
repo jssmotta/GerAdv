@@ -19,12 +19,12 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
     private readonly IRitoReader reader = reader;
     private readonly IRitoValidation validation = validation;
     private readonly IRitoWriter writer = writer;
-    public async Task<ResultApi<IEnumerable<RitoResponseAll>>> Filter(int max, Filters.FilterRito filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<RitoResponseAll>>> Filter(int max, Filters.FilterRito filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Rito: URI inválida");
+            throw new Exception("Rito: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -38,28 +38,28 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroRito(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            RitoDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            RitoDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Rito-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Rito-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<RitoResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            RitoDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<RitoResponseAll>>.Fail($"Rito - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            RitoDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<RitoResponseAll>>.Fail($"Rito - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -68,7 +68,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
     }
 
-    public async Task<ResultApi<RitoResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<RitoResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -83,20 +83,20 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            RitoDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            RitoDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Rito-GetById-{id}--{keyCache}", async cancel =>
+            RitoDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            RitoDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Rito-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                RitoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                RitoDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            RitoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<RitoResponse>.NotFound($"Rito: Registro não encontrado para id {id}");
@@ -107,25 +107,25 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            RitoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            RitoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<RitoResponse>.Fail($"Rito, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            RitoDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            RitoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<RitoResponse>.Fail($"Rito, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            RitoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            RitoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            RitoDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            RitoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<RitoResponse>.Fail($"Rito - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<RitoResponse>.Fail($"Rito - {uri}-: GetById: {ex.Message}", 500);
+            RitoDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<RitoResponse>.Fail($"Rito - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<RitoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -133,11 +133,11 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             return ResultApi<AuditorResponse>.Fail("Rito: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Rito: Auditor não encontrado para id {id}");
@@ -148,11 +148,11 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         catch (Exception ex)
         {
             _logger.Error(ex, "Rito: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Rito - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Rito - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<RitoResponse>> AddAndUpdate(Models.Rito? regRito, string uri, CancellationToken token = default)
+    public async Task<ResultApi<RitoResponse>> AddAndUpdate(Models.Rito? regRito, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regRito == null)
@@ -160,14 +160,14 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             return ResultApi<RitoResponse>.Fail("Rito: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Rito: URI inválida");
+            throw new Exception("Rito: TenantApp inválida");
         }
 
         var connectionStopwatch = RitoDatabaseMetrics.StartTimer();
         var queryStopwatch = RitoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -176,9 +176,9 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
 
         try
         {
-            RitoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            RitoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
+            RitoDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            RitoDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regRito, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -186,12 +186,12 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (SGValidationException ex)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -200,16 +200,16 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         {
             using var saved = await writer.WriteAsync(regRito, operadorId, oCnn);
             string tipoQuery = regRito.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            RitoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            RitoDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regRito.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regRito.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -217,14 +217,14 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regRito, uri);
-            RitoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regRito, tenantKey);
+            RitoDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            RitoDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<RitoResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<RitoResponse>> Validation(Models.Rito? regRito, string uri, CancellationToken token = default)
+    public async Task<ResultApi<RitoResponse>> Validation(Models.Rito? regRito, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regRito == null)
@@ -232,14 +232,13 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             return ResultApi<RitoResponse>.Fail("Rito: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Rito: URI inválida");
+            throw new Exception("Rito: TenantApp inválida");
         }
 
         var connectionStopwatch = RitoDatabaseMetrics.StartTimer();
-        var queryStopwatch = RitoDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -248,9 +247,9 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
 
         try
         {
-            RitoDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            RitoDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
+            RitoDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            RitoDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regRito, this, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -258,12 +257,12 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (SGValidationException ex)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -289,7 +288,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
     }
 
-    public async Task<ResultApi<RitoResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<RitoResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -297,13 +296,13 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Rito: URI inválida");
+            throw new Exception("Rito: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = RitoDatabaseMetrics.StartTimer();
         var queryStopwatch = RitoDatabaseMetrics.StartTimer();
@@ -314,9 +313,9 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
 
         try
         {
-            RitoDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            RitoDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            RitoDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            RitoDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -324,44 +323,44 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (SGValidationException ex)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<RitoResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<RitoResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var rito = await reader.ReadAsync(id ?? default, oCnn);
         if (rito == null)
         {
-            RitoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<RitoResponse>.NotFound($"Rito: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(rito, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(rito, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(rito, nOperador, oCnn);
-                RitoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                RitoDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            RitoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(rito, uri);
+            RitoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(rito, tenantKey);
             return ResultApi<RitoResponse>.Ok(rito);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(rito, uri);
-            RitoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            RitoDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(rito, tenantKey);
+            RitoDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            RitoDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<RitoResponse>.Fail(ex.Message, 500);
         }
     }

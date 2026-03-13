@@ -175,10 +175,10 @@ export const useOperadorList = (
 export function useValidationsOperador() {
   async function runValidation(
     data: IOperador,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const operadorApi = new OperadorApi(uri ?? "", token ?? "");
+    const operadorApi = new OperadorApi(tenantKey ?? "", token ?? "");
 
     const result = await operadorApi.validation(data);
 

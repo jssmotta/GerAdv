@@ -173,10 +173,10 @@ export const useFuncaoList = (
 export function useValidationsFuncao() {
   async function runValidation(
     data: IFuncao,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const funcaoApi = new FuncaoApi(uri ?? "", token ?? "");
+    const funcaoApi = new FuncaoApi(tenantKey ?? "", token ?? "");
 
     const result = await funcaoApi.validation(data);
 

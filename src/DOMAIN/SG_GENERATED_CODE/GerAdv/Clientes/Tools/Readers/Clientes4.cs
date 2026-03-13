@@ -6,8 +6,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ClientesReader(IFClientesFactory clientesFactory) : IClientesReader
 {
     private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cliCodigo, cliNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ClientesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cliCodigo, cliNome", cWhere, order, max), parameters, tenantKey, caching: false, max: max);
+    public async Task<IEnumerable<ClientesResponseAll>> ListarAsync(MsiSqlConnection oCnn, int max, string tenantKey, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
     {
         var stopwatch = ClientesDatabaseMetrics.StartTimer();
         var connStopwatch = ClientesDatabaseMetrics.StartTimer();
@@ -15,7 +15,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             ClientesDatabaseMetrics.IncrementActiveConnections("ListarAsync", oCnn?.TenantApp);
             ClientesDatabaseMetrics.RecordConnectionOpen("ListarAsync", oCnn?.TenantApp, connStopwatch);
-            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+            var result = await ListarTabelaAsync(oCnn, BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, tenantKey, caching: false, max: max, cancellationToken: cancellationToken);
             ClientesDatabaseMetrics.RecordSqlQuery("ListarAsync", "SELECT", oCnn?.TenantApp, stopwatch, result.Count());
             return result;
         }
@@ -35,7 +35,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         }
     }
 
-    private async Task<IEnumerable<ClientesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<ClientesResponseAll>> ListarTabelaAsync(MsiSqlConnection? oCnn, string sql, List<SqlParameter>? parameters, string tenantKey, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var stopwatch = ClientesDatabaseMetrics.StartTimer();
         var result = new List<ClientesResponseAll>(max);

@@ -6,20 +6,20 @@
 namespace MenphisSI.GerAdv.Validations;
 public partial interface IEscritoriosValidation
 {
-    Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
-    Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn);
 }
 
 public class EscritoriosValidation : IEscritoriosValidation
 {
-    public async Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id ?? default, uri, default);
+        var reg = await service.GetById(id ?? default, tenantKey, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id ?? default }, uri);
+        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id ?? default }, tenantKey);
         if (advogadosExists0?.Data != null && advogadosExists0.Data.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da Advogados associados a ele.");
         return true;
@@ -50,7 +50,7 @@ public class EscritoriosValidation : IEscritoriosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
+    public async Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string tenantKey, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -65,7 +65,7 @@ public class EscritoriosValidation : IEscritoriosValidation
             throw new SGValidationException($"EMail em formato inválido.");
         if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, uri))
+        if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjExists(reg, service, tenantKey))
             throw new SGValidationException($"Escritorios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
@@ -80,11 +80,11 @@ public class EscritoriosValidation : IEscritoriosValidation
         return true;
     }
 
-    private async Task<bool> IsCnpjExists(Models.Escritorios reg, IEscritoriosService service, string uri)
+    private async Task<bool> IsCnpjExists(Models.Escritorios reg, IEscritoriosService service, string tenantKey)
     {
         if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingEscritorios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEscritorios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri));
+        var existingEscritorios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEscritorios { CNPJ = reg.CNPJ.ClearInputCnpj() }, tenantKey));
         var first = existingEscritorios.Data?.FirstOrDefault();
         return first != null && first.Id > 0 && first.Id != reg.Id;
     }

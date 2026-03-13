@@ -19,9 +19,9 @@ public partial class EnvioNotificacoes
         _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
     }
 
-    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
+    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string tenantKey, MsiSqlConnection oCnn)
     {
-        var ds = ObterCompromissos(oCnn, tipo, uri, operador);
+        var ds = ObterCompromissos(oCnn, tipo, tenantKey, operador);
         if (ds.Rows.Count == 0)
         {
             return "";
@@ -29,7 +29,7 @@ public partial class EnvioNotificacoes
         return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count);
     }
 
-    private void TestaViews(string uri)
+    private void TestaViews(string tenantKey)
     {
 
         string createViewScript1 = $@"
@@ -78,7 +78,7 @@ END;
 
 
 ";
-        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
+        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(tenantKey).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript2, conexao);
     }
@@ -86,7 +86,7 @@ END;
     private DataTable ObterCompromissos(
         MsiSqlConnection conexao,
         E_TIPO_ENVIO tipo,
-        string uri,
+        string tenantKey,
         string operador,
         int nTry = 0)
     {
@@ -113,8 +113,8 @@ ORDER BY vqaData;";
                 throw;
             }
 
-            TestaViews(uri);
-            return ObterCompromissos(conexao, tipo, uri, operador, nTry);
+            TestaViews(tenantKey);
+            return ObterCompromissos(conexao, tipo, tenantKey, operador, nTry);
         }
     }
     
@@ -135,14 +135,14 @@ ORDER BY vqaData;";
    
 
     
-    public async Task<int> EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string tenantKey, MsiSqlConnection oCnn)
     {
         string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true);
 
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
        // var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
-        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, tenantKey, filtroOperadores, [], "operNome", new CancellationToken());
       
         var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
@@ -155,12 +155,12 @@ ORDER BY vqaData;";
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
+                     (await readerAdv.ListarNAsync(1, tenantKey, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome))?.ToList()?.FirstOrDefault()?.Nome() ?? ""
                     :  "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, tipo, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, tipo, tenantKey, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -176,7 +176,7 @@ ORDER BY vqaData;";
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                 Time2Live = 24,
-                Uri = uri,
+                TenantApp = tenantKey,
                 EmailNet = "motta@menphis.com.br",
                 IsDebug=true
             };
@@ -189,7 +189,7 @@ ORDER BY vqaData;";
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                 Time2Live = 24,
-                Uri = uri,
+                TenantApp = tenantKey,
                 EmailNet = operador.EMailNet
             };
 

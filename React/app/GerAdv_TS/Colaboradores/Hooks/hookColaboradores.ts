@@ -175,10 +175,10 @@ export const useColaboradoresList = (
 export function useValidationsColaboradores() {
   async function runValidation(
     data: IColaboradores,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const colaboradoresApi = new ColaboradoresApi(uri ?? "", token ?? "");
+    const colaboradoresApi = new ColaboradoresApi(tenantKey ?? "", token ?? "");
 
     const result = await colaboradoresApi.validation(data);
 

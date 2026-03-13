@@ -13,78 +13,78 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class FuncionariosService
 {
-    public async Task<bool> BeforeDeleteAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<bool> BeforeDeleteAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         if (regFuncionarios == null)
         {
-            _logger.Warn("Funcionarios: BeforeDeleteAsync - regFuncionarios is null for uri = {0}", uri);
+            _logger.Warn("Funcionarios: BeforeDeleteAsync - regFuncionarios is null for tenantKey = {0}", tenantKey);
             // record not found for this tenant
-            FuncionariosMetrics.RecordNotFound("BeforeDelete", uri, FuncionariosMetrics.StartTimer());
+            FuncionariosMetrics.RecordNotFound("BeforeDelete", tenantKey, FuncionariosMetrics.StartTimer());
             return false;
         }
 
         // SG CODE: BeforeDeleteAsync 
         var sw = FuncionariosMetrics.StartTimer();
-        _logger.Debug("Funcionarios: BeforeDeleteAsync success for Id={0}, uri={1}", regFuncionarios.Id, uri);
+        _logger.Debug("Funcionarios: BeforeDeleteAsync success for Id={0}, tenantKey={1}", regFuncionarios.Id, tenantKey);
         // record successful business layer pre-delete
-        FuncionariosMetrics.RecordSuccess("BeforeDelete", uri, sw);
+        FuncionariosMetrics.RecordSuccess("BeforeDelete", tenantKey, sw);
         return true;
     }
 
-    public async Task AfterDeleteAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task AfterDeleteAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncionariosMetrics.StartTimer();
         // SG CODE: AfterDeleteAsync 
-        _logger.Info("Funcionarios: AfterDeleteAsync - Id={0}, uri={1}", regFuncionarios?.Id ?? 0, uri);
+        _logger.Info("Funcionarios: AfterDeleteAsync - Id={0}, tenantKey={1}", regFuncionarios?.Id ?? 0, tenantKey);
         // record delete metrics
-        FuncionariosMetrics.RecordDeleted(uri);
-        FuncionariosMetrics.RecordDeletedByHour(uri);
-        FuncionariosMetrics.RecordSuccess("AfterDelete", uri, sw);
+        FuncionariosMetrics.RecordDeleted(tenantKey);
+        FuncionariosMetrics.RecordDeletedByHour(tenantKey);
+        FuncionariosMetrics.RecordSuccess("AfterDelete", tenantKey, sw);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteErrorAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task DeleteErrorAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: DeleteErrorAsync 
-        _logger.Error("Funcionarios: DeleteErrorAsync - Id={0}, uri={1}", regFuncionarios?.Id ?? 0, uri);
+        _logger.Error("Funcionarios: DeleteErrorAsync - Id={0}, tenantKey={1}", regFuncionarios?.Id ?? 0, tenantKey);
         // record error metrics for delete
-        FuncionariosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        FuncionariosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        FuncionariosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("tipo", "DeleteError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        FuncionariosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "Delete"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 
-    public async Task<FuncionariosResponse> AfterCreateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse> AfterCreateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncionariosMetrics.StartTimer();
         var result = regFuncionarios ?? new FuncionariosResponse();
         // SG CODE: AfterCreateAsync 
-        _logger.Info("Funcionarios: AfterCreateAsync - New Id={0}, uri={1}", result.Id, uri);
+        _logger.Info("Funcionarios: AfterCreateAsync - New Id={0}, tenantKey={1}", result.Id, tenantKey);
         // record create metrics
-        FuncionariosMetrics.RecordCreated(uri);
-        FuncionariosMetrics.RecordCreatedByHour(uri);
-        FuncionariosMetrics.RecordSuccess("AfterCreate", uri, sw);
+        FuncionariosMetrics.RecordCreated(tenantKey);
+        FuncionariosMetrics.RecordCreatedByHour(tenantKey);
+        FuncionariosMetrics.RecordSuccess("AfterCreate", tenantKey, sw);
         return result;
     }
 
-    public async Task<FuncionariosResponse> AfterUpdateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse> AfterUpdateAsync([FromBody] FuncionariosResponse? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         var sw = FuncionariosMetrics.StartTimer();
         var result = regFuncionarios ?? new FuncionariosResponse();
         // SG CODE: AfterUpdateAsync 
-        _logger.Info("Funcionarios: AfterUpdateAsync - Id={0}, uri={1}", result.Id, uri);
-        FuncionariosMetrics.RecordUpdated(uri);
-        FuncionariosMetrics.RecordUpdatedByHour(uri);
-        FuncionariosMetrics.RecordSuccess("AfterUpdate", uri, sw);
+        _logger.Info("Funcionarios: AfterUpdateAsync - Id={0}, tenantKey={1}", result.Id, tenantKey);
+        FuncionariosMetrics.RecordUpdated(tenantKey);
+        FuncionariosMetrics.RecordUpdatedByHour(tenantKey);
+        FuncionariosMetrics.RecordSuccess("AfterUpdate", tenantKey, sw);
         return result;
     }
 
-    public async Task AddAndUpdateErrorAsync([FromBody] Models.Funcionarios? regFuncionarios, [FromRoute, Required] string uri)
+    public async Task AddAndUpdateErrorAsync([FromBody] Models.Funcionarios? regFuncionarios, [FromRoute, Required] string tenantKey)
     {
         // SG CODE: AddAndUpdateErrorAsync 
-        _logger.Error("Funcionarios: AddAndUpdateErrorAsync - Id={0}, uri={1}", regFuncionarios?.Id ?? 0, uri);
+        _logger.Error("Funcionarios: AddAndUpdateErrorAsync - Id={0}, tenantKey={1}", regFuncionarios?.Id ?? 0, tenantKey);
         // record error metrics for add/update
-        FuncionariosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
-        FuncionariosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", uri ?? "unknown"));
+        FuncionariosMetrics.ErrorsTotal.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("tipo", "BusinessError"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
+        FuncionariosMetrics.RequestsTotalWithTenant.Add(1, new KeyValuePair<string, object?>("operacao", "AddOrUpdate"), new KeyValuePair<string, object?>("status", "error"), new KeyValuePair<string, object?>("tenant_id", tenantKey ?? "unknown"));
         await Task.CompletedTask;
     }
 }

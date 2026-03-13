@@ -23,12 +23,12 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
     private readonly IFuncaoReader funcaoReader = funcaoReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    public async Task<ResultApi<IEnumerable<FuncionariosResponseAll>>> Filter(int max, Filters.FilterFuncionarios filtro, string uri, CancellationToken token = default)
+    public async Task<ResultApi<IEnumerable<FuncionariosResponseAll>>> Filter(int max, Filters.FilterFuncionarios filtro, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Funcionarios: URI inválida");
+            throw new Exception("Funcionarios: TenantApp inválida");
         }
 
         if (max <= 0)
@@ -42,28 +42,28 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             var filtroResult = filtro == null ? null : servicesFilter.WFiltroFuncionarios(filtro!);
             string where = filtroResult?.where ?? string.Empty;
             List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-            using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+            using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
             using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
-            FuncionariosDatabaseMetrics.RecordConnectionOpen("Filter", uri, connectionStopwatch);
-            var keyCache = await reader.ReadStringAuditorAsync(uri, oCnn, _cache);
+            FuncionariosDatabaseMetrics.RecordConnectionOpen("Filter", tenantKey, connectionStopwatch);
+            var keyCache = await reader.ReadStringAuditorAsync(tenantKey, oCnn, _cache);
             var filterHash = DevourerOne.ComputeFilterHash(where, parameters);
-            var cacheKey = $"{uri}-{max}Funcionarios-Filter-{filterHash}{keyCache}";
+            var cacheKey = $"{tenantKey}-{max}Funcionarios-Filter-{filterHash}{keyCache}";
             var entryOptions = new HybridCacheEntryOptions
             {
                 Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
                 LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
             };
-            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(oCnn, max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, tenantKey, cancel), entryOptions, cancellationToken: CancellationToken.None);
             return ResultApi<IEnumerable<FuncionariosResponseAll>>.Ok(result);
         }
         catch (SqlException ex)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("Filter", "SqlException", tenantKey);
             return ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail($"Funcionarios - SQL error on filtering: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("Filter", "Timeout", tenantKey);
             return ResultApi<IEnumerable<FuncionariosResponseAll>>.Fail($"Funcionarios - timeout on filtering: {ex.Message}", 504);
         }
         catch (Exception ex)
@@ -72,7 +72,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
     }
 
-    public async Task<ResultApi<FuncionariosResponse>> GetById(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<FuncionariosResponse>> GetById(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -87,20 +87,20 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            FuncionariosDatabaseMetrics.RecordConnectionOpen("GetById", uri, connectionStopwatch);
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("GetById", uri);
-            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Funcionarios-GetById-{id}--{keyCache}", async cancel =>
+            FuncionariosDatabaseMetrics.RecordConnectionOpen("GetById", tenantKey, connectionStopwatch);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("GetById", tenantKey);
+            var keyCache = await reader.ReadStringAuditorAsync(id, tenantKey, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{tenantKey}-Funcionarios-GetById-{id}--{keyCache}", async cancel =>
             {
                 var data = await GetDataByIdAsync(id, oCnn, cancel);
-                FuncionariosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", uri, queryStopwatch, data != null ? 1 : 0);
+                FuncionariosDatabaseMetrics.RecordSqlQuery("GetById", "SELECT", tenantKey, queryStopwatch, data != null ? 1 : 0);
                 return data;
             }, entryOptions, cancellationToken: token);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             if (result == null)
             {
                 return ResultApi<FuncionariosResponse>.NotFound($"Funcionarios: Registro não encontrado para id {id}");
@@ -111,25 +111,25 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         catch (SqlException ex)
         {
             string initialCatalog = new SqlConnectionStringBuilder(oCnn.ConnectionString).InitialCatalog;
-            FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", uri);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<FuncionariosResponse>.Fail($"Funcionarios, uri: {{uri}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "SqlException", tenantKey);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<FuncionariosResponse>.Fail($"Funcionarios, tenantKey: {{tenantKey}} - InitialCatalog: {initialCatalog} - SQL error on GetById: {ex.Message}", 500);
         }
         catch (TimeoutException ex)
         {
-            FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", uri);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("GetById", "Timeout", tenantKey);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
             return ResultApi<FuncionariosResponse>.Fail($"Funcionarios - timeout on GetById: {ex.Message}", 504);
         }
         catch (Exception ex)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", uri);
-            return ResultApi<FuncionariosResponse>.Fail($"Funcionarios - {uri}-: GetById: {ex.Message}", 500);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("GetById", tenantKey);
+            return ResultApi<FuncionariosResponse>.Fail($"Funcionarios - {tenantKey}-: GetById: {ex.Message}", 500);
         }
     }
 
     private async Task<FuncionariosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
-    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string uri, CancellationToken token)
+    public async Task<ResultApi<AuditorResponse>> GetAuditor(int id, string tenantKey, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -137,11 +137,11 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             return ResultApi<AuditorResponse>.Fail("Funcionarios: Id inválido", 400);
         }
 
-        using var scope = await _connectionService.CreateConnectionScopeAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            var result = await reader.ReadAuditorAsync(id, tenantKey, oCnn);
             if (result == null)
             {
                 return ResultApi<AuditorResponse>.NotFound($"Funcionarios: Auditor não encontrado para id {id}");
@@ -152,11 +152,11 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         catch (Exception ex)
         {
             _logger.Error(ex, "Funcionarios: GetAuditor failed for id = {0}", id);
-            return ResultApi<AuditorResponse>.Fail($"Funcionarios - {uri}-: GetAuditor: {ex.Message}", 500);
+            return ResultApi<AuditorResponse>.Fail($"Funcionarios - {tenantKey}-: GetAuditor: {ex.Message}", 500);
         }
     }
 
-    public async Task<ResultApi<FuncionariosResponse>> AddAndUpdate(Models.Funcionarios? regFuncionarios, string uri, CancellationToken token = default)
+    public async Task<ResultApi<FuncionariosResponse>> AddAndUpdate(Models.Funcionarios? regFuncionarios, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regFuncionarios == null)
@@ -164,14 +164,14 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             return ResultApi<FuncionariosResponse>.Fail("Funcionarios: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Funcionarios: URI inválida");
+            throw new Exception("Funcionarios: TenantApp inválida");
         }
 
         var connectionStopwatch = FuncionariosDatabaseMetrics.StartTimer();
         var queryStopwatch = FuncionariosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -180,9 +180,9 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
 
         try
         {
-            FuncionariosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", uri, connectionStopwatch);
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", uri);
-            var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
+            FuncionariosDatabaseMetrics.RecordConnectionOpen("AddAndUpdate", tenantKey, connectionStopwatch);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("AddAndUpdate", tenantKey);
+            var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -190,12 +190,12 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (SGValidationException ex)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -204,16 +204,16 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         {
             using var saved = await writer.WriteAsync(regFuncionarios, operadorId, oCnn);
             string tipoQuery = regFuncionarios.Id.IsEmptyIDNumber() ? "INSERT" : "UPDATE";
-            FuncionariosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, uri, queryStopwatch, 1);
+            FuncionariosDatabaseMetrics.RecordSqlQuery("AddAndUpdate", tipoQuery, tenantKey, queryStopwatch, 1);
             var result = reader.Read(saved, oCnn);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             if (regFuncionarios.Id.IsEmptyIDNumber())
             {
-                result = await this.AfterCreateAsync(result, uri);
+                result = await this.AfterCreateAsync(result, tenantKey);
             }
             else
             {
-                result = await this.AfterUpdateAsync(result, uri);
+                result = await this.AfterUpdateAsync(result, tenantKey);
             }
 
             var statusCode = regFuncionarios.Id.IsEmptyIDNumber() ? 201 : 200;
@@ -221,14 +221,14 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (Exception ex)
         {
-            await this.AddAndUpdateErrorAsync(regFuncionarios, uri);
-            FuncionariosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", uri);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", uri);
+            await this.AddAndUpdateErrorAsync(regFuncionarios, tenantKey);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("AddAndUpdate", "SqlException", tenantKey);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("AddAndUpdate", tenantKey);
             return ResultApi<FuncionariosResponse>.Fail(ex.Message, 500);
         }
     }
 
-    public async Task<ResultApi<FuncionariosResponse>> Validation(Models.Funcionarios? regFuncionarios, string uri, CancellationToken token = default)
+    public async Task<ResultApi<FuncionariosResponse>> Validation(Models.Funcionarios? regFuncionarios, string tenantKey, CancellationToken token = default)
     {
         ThrowIfDisposed();
         if (regFuncionarios == null)
@@ -236,14 +236,13 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             return ResultApi<FuncionariosResponse>.Fail("Funcionarios: Registro nulo", 400);
         }
 
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Funcionarios: URI inválida");
+            throw new Exception("Funcionarios: TenantApp inválida");
         }
 
         var connectionStopwatch = FuncionariosDatabaseMetrics.StartTimer();
-        var queryStopwatch = FuncionariosDatabaseMetrics.StartTimer();
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
@@ -252,9 +251,9 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
 
         try
         {
-            FuncionariosDatabaseMetrics.RecordConnectionOpen("Validation", uri, connectionStopwatch);
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("Validation", uri);
-            var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
+            FuncionariosDatabaseMetrics.RecordConnectionOpen("Validation", tenantKey, connectionStopwatch);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("Validation", tenantKey);
+            var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, tenantKey, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -262,12 +261,12 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (SGValidationException ex)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception(ex.Message);
         }
         catch (Exception)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Validation", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Validation", tenantKey);
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
@@ -293,7 +292,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
     }
 
-    public async Task<ResultApi<FuncionariosResponse>> Delete(int? id, string uri, CancellationToken token = default)
+    public async Task<ResultApi<FuncionariosResponse>> Delete(int? id, string tenantKey, CancellationToken token = default)
     {
         if (id == null || id.IsEmptyIDNumber())
         {
@@ -301,13 +300,13 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
 
         ThrowIfDisposed();
-        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        if (!(await Uris.ValidaUriAsync(tenantKey, _entityService)))
         {
-            throw new Exception("Funcionarios: URI inválida");
+            throw new Exception("Funcionarios: TenantApp inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var scope = await _connectionService.CreateConnectionScopeRwAsync(uri);
+        using var scope = await _connectionService.CreateConnectionScopeRwAsync(tenantKey);
         using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         var connectionStopwatch = FuncionariosDatabaseMetrics.StartTimer();
         var queryStopwatch = FuncionariosDatabaseMetrics.StartTimer();
@@ -318,9 +317,9 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
 
         try
         {
-            FuncionariosDatabaseMetrics.RecordConnectionOpen("Delete", uri, connectionStopwatch);
-            FuncionariosDatabaseMetrics.IncrementActiveConnections("Delete", uri);
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
+            FuncionariosDatabaseMetrics.RecordConnectionOpen("Delete", tenantKey, connectionStopwatch);
+            FuncionariosDatabaseMetrics.IncrementActiveConnections("Delete", tenantKey);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, tenantKey, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");
@@ -328,44 +327,44 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (SGValidationException ex)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<FuncionariosResponse>.Fail(ex.Message, 422);
         }
         catch (Exception)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<FuncionariosResponse>.Fail("Erro inesperado ao validar 0x1!", 500);
         }
 
         var funcionarios = await reader.ReadAsync(id ?? default, oCnn);
         if (funcionarios == null)
         {
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<FuncionariosResponse>.NotFound($"Funcionarios: Registro não encontrado para id {id}");
         }
 
         try
         {
-            var beforeValidationBusness = await BeforeDeleteAsync(funcionarios, uri);
+            var beforeValidationBusness = await BeforeDeleteAsync(funcionarios, tenantKey);
             if (beforeValidationBusness)
             {
                 await writer.DeleteAsync(funcionarios, nOperador, oCnn);
-                FuncionariosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", uri, queryStopwatch, 1);
+                FuncionariosDatabaseMetrics.RecordSqlQuery("Delete", "DELETE", tenantKey, queryStopwatch, 1);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
                 }
             }
 
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
-            await AfterDeleteAsync(funcionarios, uri);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
+            await AfterDeleteAsync(funcionarios, tenantKey);
             return ResultApi<FuncionariosResponse>.Ok(funcionarios);
         }
         catch (Exception ex)
         {
-            await DeleteErrorAsync(funcionarios, uri);
-            FuncionariosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", uri);
-            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", uri);
+            await DeleteErrorAsync(funcionarios, tenantKey);
+            FuncionariosDatabaseMetrics.RecordDatabaseError("Delete", "SqlException", tenantKey);
+            FuncionariosDatabaseMetrics.DecrementActiveConnections("Delete", tenantKey);
             return ResultApi<FuncionariosResponse>.Fail(ex.Message, 500);
         }
     }

@@ -175,10 +175,10 @@ export const useFuncionariosList = (
 export function useValidationsFuncionarios() {
   async function runValidation(
     data: IFuncionarios,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const funcionariosApi = new FuncionariosApi(uri ?? "", token ?? "");
+    const funcionariosApi = new FuncionariosApi(tenantKey ?? "", token ?? "");
 
     const result = await funcionariosApi.validation(data);
 

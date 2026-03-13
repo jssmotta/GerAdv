@@ -4,7 +4,7 @@
 // Entity:Operador
 // Source:ControllerGenerator
 namespace MenphisSI.GerAdv.Controller;
-[Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/{tenantKey}/[controller]/[action]")]
 [ApiController]
 [ApiVersion("1.0")]
 public partial class OperadorController(IOperadorService operadorService) : ControllerBase
@@ -14,7 +14,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpGet]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<OperadorResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<OperadorResponseAll>>>> GetAll([FromQuery] int max, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "GetAll";
@@ -22,22 +22,22 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.GetAll(max, uri);
+                return await _operadorService.GetAll(max, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
-            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<OperadorResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: GetAll failed with exception for uri = {0}", uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: GetAll failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<OperadorResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -45,13 +45,13 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<OperadorResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterOperador filter, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<OperadorResponseAll>>>> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterOperador filter, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "Filter";
         if (!ModelState.IsValid)
         {
-            OperadorMetrics.RecordInvalid(operacao, uri, stopwatch);
+            OperadorMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -59,22 +59,22 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.Filter(max, filter, uri);
+                return await _operadorService.Filter(max, filter, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
-            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<OperadorResponseAll>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: Filter failed with exception for uri = {0}", uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: Filter failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<OperadorResponseAll>>.Fail(ex.Message, 500));
         }
     }
@@ -82,7 +82,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpGet("{id}")]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<OperadorResponse>>> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<OperadorResponse>>> GetById(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "GetById";
@@ -90,22 +90,22 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.GetById(id, uri, token);
+                return await _operadorService.GetById(id, tenantKey, token);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
-            OperadorMetrics.RecordReadByHour(uri);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            OperadorMetrics.RecordReadByHour(tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<OperadorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: GetById failed with exception for id = {0}, {1}", id, uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: GetById failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<OperadorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -118,7 +118,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [ProducesResponseType(typeof(ResultApi<AuditorResponse>), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<ActionResult<ResultApi<AuditorResponse>>> GetAuditor(int id, [FromRoute, Required] string tenantKey, CancellationToken token = default)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "GetAuditor";
@@ -126,21 +126,21 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.GetAuditor(id, uri, token);
+                return await _operadorService.GetAuditor(id, tenantKey, token);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<AuditorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: GetAuditor failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<AuditorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -148,13 +148,13 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filtro, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<IEnumerable<NomeID>>>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filtro, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "GetListN";
         if (!ModelState.IsValid)
         {
-            OperadorMetrics.RecordInvalid(operacao, uri, stopwatch);
+            OperadorMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -162,22 +162,22 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.LeituraPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.GetListN(max, filtro, uri);
+                return await _operadorService.GetListN(max, filtro, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
-            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, uri);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
+            OperadorMetrics.RecordRecordsCount(result.Data?.Count() ?? 0, tenantKey);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<IEnumerable<NomeID>>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: GetListN failed with exception for uri = {0}", uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: GetListN failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<IEnumerable<NomeID>>.Fail(ex.Message, 500));
         }
     }
@@ -191,14 +191,14 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ResultApi<OperadorResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<OperadorResponse>>> AddAndUpdate([FromBody] Models.Operador regOperador, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<OperadorResponse>>> AddAndUpdate([FromBody] Models.Operador regOperador, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         var isNew = regOperador.Id == 0;
         var operacao = isNew ? "Create" : "Update";
         if (!ModelState.IsValid)
         {
-            OperadorMetrics.RecordInvalid(operacao, uri, stopwatch);
+            OperadorMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -206,32 +206,32 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.AddAndUpdate(regOperador, uri);
+                return await _operadorService.AddAndUpdate(regOperador, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (isNew)
             {
-                OperadorMetrics.RecordCreated(uri);
-                OperadorMetrics.RecordCreatedByHour(uri);
+                OperadorMetrics.RecordCreated(tenantKey);
+                OperadorMetrics.RecordCreatedByHour(tenantKey);
             }
             else
             {
-                OperadorMetrics.RecordUpdated(uri);
-                OperadorMetrics.RecordUpdatedByHour(uri);
+                OperadorMetrics.RecordUpdated(tenantKey);
+                OperadorMetrics.RecordUpdatedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<OperadorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: AddAndUpdate failed with exception for uri = {0}", uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: AddAndUpdate failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<OperadorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -241,7 +241,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpDelete]
     [ProducesResponseType(typeof(ResultApi<OperadorResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResultApi<OperadorResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ResultApi<OperadorResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<OperadorResponse>>> Delete([FromQuery] int id, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "Delete";
@@ -249,33 +249,33 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.Delete(id, uri);
+                return await _operadorService.Delete(id, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             if (result.Success)
             {
-                OperadorMetrics.RecordDeleted(uri);
-                OperadorMetrics.RecordDeletedByHour(uri);
+                OperadorMetrics.RecordDeleted(tenantKey);
+                OperadorMetrics.RecordDeletedByHour(tenantKey);
             }
 
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<OperadorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Microsoft.Data.SqlClient.SqlException sqlEx)when (sqlEx.Number == 547)
         {
-            OperadorMetrics.RecordConflict(operacao, uri, stopwatch);
-            _logger.Warn(sqlEx, "Operador: {0} conflito de FK para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordConflict(operacao, tenantKey, stopwatch);
+            _logger.Warn(sqlEx, "Operador: {0} conflito de FK para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(409, ResultApi<OperadorResponse>.Fail("Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela.", 409));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: Delete failed with exception for id = {0}, {1}", id, uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: Delete failed with exception for id = {0}, {1}", id, tenantKey);
             return StatusCode(500, ResultApi<OperadorResponse>.Fail(ex.Message, 500));
         }
     }
@@ -283,13 +283,13 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [HttpPost]
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<ActionResult<ResultApi<OperadorResponse>>> Validation([FromBody] Models.Operador regOperador, [FromRoute, Required] string uri)
+    public async Task<ActionResult<ResultApi<OperadorResponse>>> Validation([FromBody] Models.Operador regOperador, [FromRoute, Required] string tenantKey)
     {
         var stopwatch = OperadorMetrics.StartTimer();
         const string operacao = "Validation";
         if (!ModelState.IsValid)
         {
-            OperadorMetrics.RecordInvalid(operacao, uri, stopwatch);
+            OperadorMetrics.RecordInvalid(operacao, tenantKey, stopwatch);
             return BadRequest(ResultApi<object>.ValidationFail(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
         }
 
@@ -297,21 +297,21 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         {
             var result = await BulkheadPolicies.EscritaPolicy.ExecuteAsync(async () =>
             {
-                return await _operadorService.Validation(regOperador, uri);
+                return await _operadorService.Validation(regOperador, tenantKey);
             });
-            OperadorMetrics.RecordSuccess(operacao, uri, stopwatch);
+            OperadorMetrics.RecordSuccess(operacao, tenantKey, stopwatch);
             return StatusCode(result.StatusCode, result);
         }
         catch (BulkheadRejectedException)
         {
-            OperadorMetrics.RecordBulkheadRejection(operacao, uri, stopwatch);
-            _logger.Warn("Operador: {0} rejeitado por sobrecarga para uri = {1}", operacao, uri);
+            OperadorMetrics.RecordBulkheadRejection(operacao, tenantKey, stopwatch);
+            _logger.Warn("Operador: {0} rejeitado por sobrecarga para tenantKey = {1}", operacao, tenantKey);
             return StatusCode(503, ResultApi<OperadorResponse>.Fail("Serviço temporariamente sobrecarregado. Tente novamente.", 503));
         }
         catch (Exception ex)
         {
-            OperadorMetrics.RecordError(operacao, uri, ex, stopwatch);
-            _logger.Error(ex, "Operador: Validation failed with exception for uri = {0}", uri);
+            OperadorMetrics.RecordError(operacao, tenantKey, ex, stopwatch);
+            _logger.Error(ex, "Operador: Validation failed with exception for tenantKey = {0}", tenantKey);
             return StatusCode(500, ResultApi<OperadorResponse>.Fail(ex.Message, 500));
         }
     }

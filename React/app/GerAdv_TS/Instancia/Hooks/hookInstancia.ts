@@ -175,10 +175,10 @@ export const useInstanciaList = (
 export function useValidationsInstancia() {
   async function runValidation(
     data: IInstancia,
-    uri?: string,
+    tenantKey?: string,
     token?: string,
   ): Promise<{ isValid: boolean; message: string } | null> {
-    const instanciaApi = new InstanciaApi(uri ?? "", token ?? "");
+    const instanciaApi = new InstanciaApi(tenantKey ?? "", token ?? "");
 
     const result = await instanciaApi.validation(data);
 
